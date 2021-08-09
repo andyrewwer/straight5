@@ -1,0 +1,46 @@
+.CardTable {
+  display:  grid;
+  text-align: center;
+  grid-template-rows: auto 1fr 1fr 1fr auto;
+  background: var(--secondary-background);
+}
+
+.CardTableFooter .PlayerCard {
+  margin-left: calc(50% - 36px);
+}
+
+.DiscardSection .PlayerCard {
+  box-shadow: 1px 1px 1px rgb(256, 256, 256, 0.5);
+}
+
+.CardTableFooter {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 2px;
+  justify-content: center;
+  background-color: var(--secondary-background);
+  margin-bottom: 20px;
+}
+
+button {
+  border: 1px solid rgb(256, 256, 256, 0.5);
+  padding: 5px;
+  background: var(--button-background);
+  color: #ffffff;
+  width: 80%;
+  border-radius: 7px;
+  box-shadow: 1px 1px 1px rgb(256, 256, 256, 0.5);
+}
+
+button:hover{
+  background: #0053ba;
+}
+
+.mt-2 {
+  margin-top: 10px;
+}
+
+.mb-2 {
+  margin-bottom: 5px;
+}

@@ -1,0 +1,10 @@
+.PlayerHand {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(5, 72px);
+  grid-gap: 5px;
+  justify-content: space-around;
+  background-color: var(--player-background);
+  grid-template-rows: auto 100px;
+  padding-bottom: 10px;
+}

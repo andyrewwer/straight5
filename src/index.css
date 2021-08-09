@@ -1,0 +1,26 @@
+:root {
+  --primary-background: rgb(116, 164, 236);
+  --secondary-background: rgb(156, 165, 179);
+  --card-background: rgb(116, 164, 236);
+  --player-background: #BAD5AA;
+  --button-background: rgb(116, 164, 236);
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--primary-background);
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.FullWidth {
+  grid-column: 1 / -1;
+}
