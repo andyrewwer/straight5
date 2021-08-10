@@ -22,6 +22,8 @@ function getPlayerTextForMoveState(moveState, cardIndex) {
       return 'Selected ' + cardIndex + '. Please select a second card to swap'
     case "PreEndState":
       return 'Please select a token to claim or pass'
+    case "ClaimingToken":
+      return 'Please select the first card of your run';
     default:
       return 'UNKONWN STATE DETECTED'
   }
@@ -31,6 +33,7 @@ function canClaimToken(deck, token, existing_tokens) {
   if (existing_tokens.includes(token)) {
     return false;
   }
+
   switch (token) {
     case 'THREE_IN_A_ROW':
       for (let j = 0; j < 3; j ++) {

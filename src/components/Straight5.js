@@ -4,16 +4,17 @@ import MiddleSection from './MiddleSection.js';
 import FooterSection from './FooterSection.js';
 import './Straight5.css';
 const { GameService } = require('../service/GameService.js')
+const { PlayerService } = require('../service/PlayerService.js')
 
 class Straight5 extends Component {
   constructor(props) {
     super(props);
-    this.gameService = new GameService(2);
+    this.playerService = new PlayerService(2);
+    this.gameService = new GameService(2, this.playerService);
 
-// THIS.PLAYERS instead of this.gameService.getPlayers and  this.PlayersTokens. This.Players['deck'] this.players['tokens']
     this.state = {
       AppMode: "NoAction", // NOT USED CURRENTLY - NoAction, Game, PlayerWin,
-      MoveState: "StartState", // StartState, CardDrawn, DiscardChosen, CardDiscarded, SwapChosen, SwapInProgress, PreEndState
+      MoveState: "StartState", // StartState, CardDrawn, DiscardChosen, CardDiscarded, SwapChosen, SwapInProgress, PreEndState, ClaimingToken
     };
     this.TableCanvas = React.createRef();
 
@@ -29,7 +30,7 @@ class Straight5 extends Component {
   }
 
   StartNewGame = () => {
-    this.gameService.startNewGame(2);
+    this.gameService.startNewGame();
     this.setState({
       MoveState: "StartState",
       AppMode: "Game"
@@ -90,13 +91,12 @@ class Straight5 extends Component {
     if (!this.gameService.turnCardFaceUp(index)) {
       return;
     }
-    const moveState = this.state.MoveState === 'DiscardChosen' ? 'CardDiscarded' : 'DiscardDone';
-    if (moveState === 'DiscardDone') {
+    if (this.state.MoveState === 'CardDiscarded') {
       this.EndMove();
       return;
     }
     this.setState({
-      MoveState: moveState,
+      MoveState: 'CardDiscarded',
     });
   }
 
@@ -122,8 +122,25 @@ class Straight5 extends Component {
   }
 
   ClaimToken = token => {
-    this.gameService.getActivePlayersTokens().push(token);
-    this.ChangeTurn()
+    this.gameService.setTokenToClaim(token);
+    if(['THREE_OF_A_KIND', 'FULL_HOUSE', 'FIVE_IN_A_ROW'].includes(token)) {
+      // this could be smarter if only one option for three / four in a row
+      this.gameService.claimToken();
+      return this.ChangeTurn();
+    }
+    this.setState({
+        MoveState: "ClaimingToken"
+      });
+  }
+
+  ClaimTokenCardPress = index => {
+    if (this.gameService.isValidIndexForToken(index)) {
+      this.gameService.claimToken(index);
+      this.gameService.getActivePlayersTokens().push(this.gameService.getTokenToClaim());
+      this.ChangeTurn()
+    } else {
+      console.error('invalid index :(')
+    }
   }
 
   ChangeTurn = () => {
@@ -150,6 +167,9 @@ class Straight5 extends Component {
       case "SwapInProgress":
         this.SwapCards(index)
         break
+      case "ClaimingToken":
+        this.ClaimTokenCardPress(index);
+        break;
       default:
         console.error('NO ACTION FOR THIS')
     }
@@ -157,6 +177,7 @@ class Straight5 extends Component {
   // TODO SHOW THE RESULTS OF THE TOKENS/SCORE SOMEWHERE
   // TODO SHOW ACTIVE PLAYER
   // TODO DISCARD CARDS / SELECT CARDS when you claim token
+
 
   render = () => {
     return (
@@ -166,9 +187,9 @@ class Straight5 extends Component {
     </div>
     {this.state.AppMode  === 'Game' &&
     <React.Fragment>
-      <Hand gameService={this.gameService} id={0} cardPressedCallback={this.handlePlayerAction} />
+      <Hand playerService={this.playerService} id={0} cardPressedCallback={this.handlePlayerAction} />
       <MiddleSection gameService={this.gameService} drawDiscardCallback={() => {this.DrawCard('discard')}} drawDeckCallback={() => {this.DrawCard('deck')}} />
-      <Hand gameService={this.gameService} id={1} cardPressedCallback={this.handlePlayerAction} />
+      <Hand playerService={this.playerService} id={1} cardPressedCallback={this.handlePlayerAction} />
       <FooterSection gameService={this.gameService} moveState={this.state.MoveState} passTurnButtonPressed={this.PassTurnButtonPressed} turnCardsFaceUpButtonPressed={this.TurnCardsFaceUpButtonPressed} swapCardsButtonPressed={this.SwapCardsButtonPressed} changeTurn={this.ChangeTurn} claimToken={this.ClaimToken} />
     </React.Fragment>}
   </div>

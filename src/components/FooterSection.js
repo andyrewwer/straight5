@@ -19,7 +19,7 @@ class Hand extends Component {
   }
 
   ShowToken = token => {
-    return canClaimToken(this.gameService.getPlayers()[this.gameService().getActivePlayerIndex()], token, this.gameService.getActivePlayersTokens());
+    return canClaimToken(this.gameService.getActivePlayersDeck(), token, this.gameService.getActivePlayersTokens());
   }
 
   render = () => {
