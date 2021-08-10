@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './FooterSection.css';
-const { getPlayerTextForMoveState, canClaimToken} = require('../Utils.js')
+const { getPlayerTextForMoveState} = require('../Utils.js')
 
 class Hand extends Component {
   constructor(props) {
@@ -9,6 +9,7 @@ class Hand extends Component {
     this.TableCanvas = React.createRef();
     this.render.bind(this);
   }
+  //TODO Hide turn-faceup if all cards are faceup
 
   ShowCardActions = () => {
     return ["CardDrawn", "DiscardChosen", "CardDiscarded", "SwapChosen", "SwapInProgress"].includes(this.props.moveState)
@@ -19,13 +20,13 @@ class Hand extends Component {
   }
 
   ShowToken = token => {
-    return canClaimToken(this.gameService.getActivePlayersDeck(), token, this.gameService.getActivePlayersTokens());
+    return this.gameService.canClaimToken(token);
   }
 
   render = () => {
     return (
       <div className="CardTableFooter">
-        <div className="FullWidth">
+        <div className="FullWidth" role='header'>
           {getPlayerTextForMoveState(this.props.moveState, this.gameService.getSwapCardIndex() + 1)}
         </div>
         {this.ShowCardActions() &&
@@ -33,8 +34,8 @@ class Hand extends Component {
             <div className="FullWidth"><button className="mb-2 FullWidth" onClick={this.props.passTurnButtonPressed}> Pass </button></div>
               {(!!this.gameService.getActiveCard() && !!this.gameService.getActiveCard().value) &&
               <React.Fragment>
-                <div className="PlayerCard">
-                  {this.gameService.getActiveCard()?.value}
+                <div className="PlayerCard" role="activeCard">
+                  {this.gameService.getActiveCard().value}
                 </div>
                 <div>
                   <button onClick={this.props.turnCardsFaceUpButtonPressed}> Discard to turn two face up </button>

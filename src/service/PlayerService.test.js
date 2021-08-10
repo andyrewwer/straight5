@@ -1,9 +1,9 @@
-const {shuffleArray, canClaimToken} = require('../Utils');
+const {shuffleArray} = require('../Utils');
 const {PlayerService} = require('./PlayerService.js')
 
 const playerService = new PlayerService();
 
-//TODO 
+//TODO
 beforeEach(() => {
   // this.playerService = new PlayerService(2);
 })

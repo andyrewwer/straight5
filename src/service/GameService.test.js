@@ -1,4 +1,4 @@
-const {shuffleArray, canClaimToken} = require('../Utils');
+const {shuffleArray} = require('../Utils');
 const {GameService} = require('./GameService.js')
 const {PlayerService} = require('./PlayerService.js')
 const {Player} = require('../model/Player.js');
@@ -8,25 +8,19 @@ let playerService = new PlayerService();
 
 jest.mock('../Utils', () => ({
   shuffleArray(array) {
-    return array },
-  canClaimToken() {
-    return true;
-  }
+    return array }
 }
 ));
 
 beforeEach(() => {
   playerService = new PlayerService(2);
   gameService = new GameService(2, playerService);
-})
+});
 
 test('createDeck creates and calls shuffle', () => {
   gameService.createDeck(2,2);
   expect(gameService.getDeck()).toEqual([{value: 1, seen: false}, {value: 2, seen: false},{value: 1, seen: false}, {value: 2, seen: false}]);
-  // const mock = jest.mock('../Utils', () => ({
-  //   shuffleArray(array) {
-  //     return array }
-  // }));
+  // TODO check if mock was called
 });
 
 test('getTopCardFromDeck given full deck returns top card', () => {
@@ -133,9 +127,8 @@ test('startNewGame', () => {
 });
 
 test('activePlayerCanClaimToken', () => {
-  // TODO VERYIFY CALLS TO THE mock service
   gameService.setActivePlayerIndex(0);
-  playerService.setPlayers([new Player([0,1,2,3,4], [])]);
+  playerService.getPlayers()[0].setDeck([{seen: true, value:0}, {seen: true, value:1}, {seen: true, value:2}, {seen: false, value:0}, {seen: true, value:0}]);
   expect(gameService.activePlayerCanClaimToken()).toBe(true);
 });
 
@@ -302,4 +295,123 @@ test('claimToken FOUR_IN_A_ROW[1]', () => {
   expect(gameService.getActivePlayersDeck()[3].seen).toEqual(false);
   expect(gameService.getActivePlayersDeck()[4].seen).toEqual(false);
   expect(gameService.getDiscard()).toEqual([{seen:true, value:2},{seen:true, value:3},{seen:true, value:4},{seen:true, value:5}]);
+});
+
+test('canClaimToken THREE_IN_A_ROW basics pass', () => {
+  playerService.getPlayers()[0].setDeck([{seen: true, value:0}, {seen: true, value:1}, {seen: true, value:2}, {seen: false, value:0}, {seen: true, value:0}]);
+  expect(gameService.canClaimToken('THREE_IN_A_ROW')).toBe(true);
+
+  playerService.getPlayers()[0].setDeck([{seen: false, value:10}, {seen: true, value:5}, {seen: true, value:6}, {seen: true, value:7}, {seen: true, value:9}]);
+  expect(gameService.canClaimToken('THREE_IN_A_ROW')).toBe(true);
+
+  playerService.getPlayers()[0].setDeck([{seen: false, value:0}, {seen: false, value:1}, {seen: true, value:4}, {seen: true, value:5}, {seen: true, value:6}]);
+  expect(gameService.canClaimToken('THREE_IN_A_ROW')).toBe(true);
+
+  playerService.getPlayers()[0].setDeck([{seen: true, value:0}, {seen: true, value:1}, {seen: true, value:2}, {seen: true, value:3}, {seen: true, value:4}]);
+  expect(gameService.canClaimToken('THREE_IN_A_ROW')).toBe(true);
+});
+
+test('canClaimToken THREE_IN_A_ROW error cases', () => {
+  playerService.getPlayers()[0].setDeck([{seen: true, value:0}, {seen: false, value:1}, {seen: true, value:2}, {seen: false, value:0}, {seen: true, value:0}]);
+  expect(gameService.canClaimToken('THREE_IN_A_ROW')).toBe(false);
+
+  playerService.getPlayers()[0].setDeck([{seen: true, value:10}, {seen: true, value:5}, {seen: true, value:7}, {seen: true, value:5}, {seen: true, value:9}]);
+  expect(gameService.canClaimToken('THREE_IN_A_ROW')).toBe(false);
+
+  playerService.getPlayers()[0].setDeck([{seen: true, value:0}, {seen: true, value:1}, {seen: true, value:2}, {seen: true, value:3}, {seen: true, value:4}]);
+  playerService.getPlayers()[0].setTokens(['THREE_IN_A_ROW']);
+  expect(gameService.canClaimToken('THREE_IN_A_ROW')).toBe(false);
+
+});
+
+test('canClaimToken FOUR_IN_A_ROW basics pass', () => {
+  playerService.getPlayers()[0].setDeck([{seen: true, value:0}, {seen: true, value:1}, {seen: true, value:2}, {seen: true, value:3}, {seen: true, value:0}]);
+  expect(gameService.canClaimToken('FOUR_IN_A_ROW')).toBe(true);
+
+  playerService.getPlayers()[0].setDeck([{seen: false, value:10}, {seen: true, value:5}, {seen: true, value:6}, {seen: true, value:7}, {seen: true, value:8}]);
+  expect(gameService.canClaimToken('FOUR_IN_A_ROW')).toBe(true);
+
+  playerService.getPlayers()[0].setDeck([{seen: true, value:0}, {seen: true, value:1}, {seen: true, value:2}, {seen: true, value:3}, {seen: true, value:4}]);
+  expect(gameService.canClaimToken('FOUR_IN_A_ROW')).toBe(true);
+});
+
+test('canClaimToken FOUR_IN_A_ROW error cases', () => {
+  playerService.getPlayers()[0].setDeck([{seen: true, value:0}, {seen: true, value:1}, {seen: false, value:2}, {seen: true, value:3}, {seen: true, value:0}]);
+  expect(gameService.canClaimToken('FOUR_IN_A_ROW')).toBe(false);
+
+  playerService.getPlayers()[0].setDeck([{seen: true, value:10}, {seen: true, value:5}, {seen: true, value:7}, {seen: true, value:5}, {seen: true, value:9}]);
+  expect(gameService.canClaimToken('FOUR_IN_A_ROW')).toBe(false);
+
+  playerService.getPlayers()[0].setDeck([{seen: true, value:0}, {seen: true, value:1}, {seen: true, value:2}, {seen: true, value:3}, {seen: true, value:4}]);
+  playerService.getPlayers()[0].setTokens(['FOUR_IN_A_ROW']);
+  expect(gameService.canClaimToken('FOUR_IN_A_ROW')).toBe(false);
+});
+
+test('canClaimToken FIVE_IN_A_ROW basics pass', () => {
+  playerService.getPlayers()[0].setDeck([{seen: true, value:0}, {seen: true, value:1}, {seen: true, value:2}, {seen: true, value:3}, {seen: true, value:4}]);
+  expect(gameService.canClaimToken('FIVE_IN_A_ROW')).toBe(true);
+});
+
+test('canClaimToken FIVE_IN_A_ROW error cases', () => {
+  playerService.getPlayers()[0].setDeck([{seen: true, value:0}, {seen: true, value:1}, {seen: false, value:2}, {seen: true, value:3}, {seen: true, value:4}]);
+  expect(gameService.canClaimToken('FIVE_IN_A_ROW')).toBe(false);
+
+  playerService.getPlayers()[0].setDeck([{seen: true, value:10}, {seen: true, value:5}, {seen: true, value:7}, {seen: true, value:5}, {seen: true, value:9}]);
+  expect(gameService.canClaimToken('FIVE_IN_A_ROW')).toBe(false);
+
+  playerService.getPlayers()[0].setDeck([{seen: true, value:0}, {seen: true, value:1}, {seen: true, value:2}, {seen: true, value:3}, {seen: true, value:4}]);
+  playerService.getPlayers()[0].setTokens(['FIVE_IN_A_ROW']);
+  expect(gameService.canClaimToken('FIVE_IN_A_ROW')).toBe(false);
+});
+
+test('canClaimToken THREE_OF_A_KIND basics pass', () => {
+  playerService.getPlayers()[0].setDeck([{seen: true, value:0}, {seen: true, value:0}, {seen: true, value:2}, {seen: true, value:2}, {seen: true, value:2}]);
+  expect(gameService.canClaimToken('THREE_OF_A_KIND')).toBe(true);
+
+  playerService.getPlayers()[0].setDeck([{seen: false, value:2}, {seen: true, value:5}, {seen: true, value:6}, {seen: true, value:5}, {seen: true, value:5}]);
+  expect(gameService.canClaimToken('THREE_OF_A_KIND')).toBe(true);
+
+  playerService.getPlayers()[0].setDeck([{seen: true, value:0}, {seen: false, value:0}, {seen: true, value:0}, {seen: false, value:0}, {seen: true, value:0}]);
+  expect(gameService.canClaimToken('THREE_OF_A_KIND')).toBe(true);
+});
+
+test('canClaimToken THREE_OF_A_KIND error cases', () => {
+  playerService.getPlayers()[0].setDeck([{seen: true, value:0}, {seen: true, value:0}, {seen: false, value:2}, {seen: true, value:2}, {seen: true, value:2}]);
+  expect(gameService.canClaimToken('THREE_OF_A_KIND')).toBe(false);
+
+  playerService.getPlayers()[0].setDeck([{seen: true, value:0}, {seen: false, value:1}, {seen: true, value:2}, {seen: false, value:0}, {seen: true, value:0}]);
+  expect(gameService.canClaimToken('THREE_OF_A_KIND')).toBe(false);
+
+  playerService.getPlayers()[0].setDeck([{seen: true, value:0}, {seen: false, value:0}, {seen: true, value:0}, {seen: false, value:0}, {seen: true, value:0}]);
+  playerService.getPlayers()[0].setTokens(['THREE_OF_A_KIND']);
+  expect(gameService.canClaimToken('THREE_OF_A_KIND')).toBe(false);
+});
+
+test('canClaimToken FULL_HOUSE basics pass', () => {
+  playerService.getPlayers()[0].setDeck([{seen: true, value:0}, {seen: true, value:1}, {seen: true, value:0}, {seen: true, value:0}, {seen: true, value:1}]);
+  expect(gameService.canClaimToken('FULL_HOUSE')).toBe(true);
+
+  playerService.getPlayers()[0].setDeck([{seen: true, value:1}, {seen: true, value:1}, {seen: true, value:0}, {seen: true, value:0}, {seen: true, value:1}]);
+  expect(gameService.canClaimToken('FULL_HOUSE')).toBe(true);
+
+  playerService.getPlayers()[0].setDeck([{seen: true, value:3}, {seen: true, value:3}, {seen: true, value:3}, {seen: true, value:5}, {seen: true, value:5}]);
+  expect(gameService.canClaimToken('FULL_HOUSE')).toBe(true);
+});
+
+test('canClaimToken FULL_HOUSE error cases', () => {
+  playerService.getPlayers()[0].setDeck([{seen: true, value:0}, {seen: true, value:1}, {seen: true, value:2}, {seen: true, value:0}, {seen: true, value:0}]);
+  expect(gameService.canClaimToken('FULL_HOUSE')).toBe(false);
+
+  playerService.getPlayers()[0].setDeck([{seen: true, value:3}, {seen: true, value:3}, {seen: false, value:3}, {seen: true, value:5}, {seen: true, value:5}]);
+  expect(gameService.canClaimToken('FULL_HOUSE')).toBe(false);
+
+  playerService.getPlayers()[0].setDeck([{seen: true, value:3}, {seen: true, value:3}, {seen: true, value:3}, {seen: false, value:5}, {seen: true, value:5}]);
+  expect(gameService.canClaimToken('FULL_HOUSE')).toBe(false);
+
+  playerService.getPlayers()[0].setDeck([{seen: true, value:3}, {seen: true, value:3}, {seen: true, value:3}, {seen: true, value:3}, {seen: true, value:5}]);
+  expect(gameService.canClaimToken('FULL_HOUSE')).toBe(false);
+
+  playerService.getPlayers()[0].setDeck([{seen: true, value:3}, {seen: true, value:3}, {seen: true, value:3}, {seen: true, value:5}, {seen: true, value:5}]);
+  playerService.getPlayers()[0].setTokens(['FULL_HOUSE']);
+  expect(gameService.canClaimToken('FULL_HOUSE')).toBe(false);
 });

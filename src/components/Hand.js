@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './Hand.css';
 
+
 class Hand extends Component {
   constructor(props) {
     super(props);
@@ -13,20 +14,20 @@ class Hand extends Component {
   render = () => {
     return (
       <div className="PlayerHand">
-        <div className="PlayerHeader">
+        <div role="header" className="PlayerHeader" name="Player1">
           Player {this.props.id+1}
         </div>
         <div className="PlayerTokenHeader">
           Tokens
         </div>
         {this.deck.map((card, index) => (
-          <div className='PlayerCard' key={index} onClick={() => this.props.cardPressedCallback(this.props.id, index)}>
+          <div className='PlayerCard' role='playerCard' key={index} onClick={() => this.props.cardPressedCallback(this.props.id, index)}>
             {card.seen ? card.value : '?'}
           </div>
         ))}
         <div className='PlayerTokens'>
         {this.tokens.map((token, index) => (
-          <div className='PlayerToken' key={index}>
+          <div className='PlayerToken' role='playerToken' key={index}>
             {token}
           </div>
         ))}

@@ -6,30 +6,25 @@ import './Straight5.css';
 const { GameService } = require('../service/GameService.js')
 const { PlayerService } = require('../service/PlayerService.js')
 
+// TODO Start game
+//  TODO WIN
 class Straight5 extends Component {
   constructor(props) {
     super(props);
-    this.playerService = new PlayerService(2);
-    this.gameService = new GameService(2, this.playerService);
-
     this.state = {
-      AppMode: "NoAction", // NOT USED CURRENTLY - NoAction, Game, PlayerWin,
+      AppMode: "StartState", // NOT USED CURRENTLY - NoGame, Game, PlayerWin
       MoveState: "StartState", // StartState, CardDrawn, DiscardChosen, CardDiscarded, SwapChosen, SwapInProgress, PreEndState, ClaimingToken
     };
     this.TableCanvas = React.createRef();
-
-    // binding for set this
-    this.SwapCardsButtonPressed.bind(this);
-    this.TurnCardsFaceUpButtonPressed.bind(this);
-    this.PassTurnButtonPressed.bind(this);
-    this.render.bind(this);
   }
 
   componentDidMount() {
-    this.StartNewGame();
+    // this.StartNewGame();
   }
 
   StartNewGame = () => {
+    this.playerService = new PlayerService(2);
+    this.gameService = new GameService(2, this.playerService);
     this.gameService.startNewGame();
     this.setState({
       MoveState: "StartState",
@@ -91,6 +86,7 @@ class Straight5 extends Component {
     if (!this.gameService.turnCardFaceUp(index)) {
       return;
     }
+    // TODO if all face-up should skip this step
     if (this.state.MoveState === 'CardDiscarded') {
       this.EndMove();
       return;
@@ -128,6 +124,7 @@ class Straight5 extends Component {
       this.gameService.claimToken();
       return this.ChangeTurn();
     }
+    // TODO COME BACK TO THIS LATER, would like more auto-claim
     this.setState({
         MoveState: "ClaimingToken"
       });
@@ -137,7 +134,14 @@ class Straight5 extends Component {
     if (this.gameService.isValidIndexForToken(index)) {
       this.gameService.claimToken(index);
       this.gameService.getActivePlayersTokens().push(this.gameService.getTokenToClaim());
-      this.ChangeTurn()
+      if (this.gameService.getActivePlayersTokens().length >= 4) {
+      // if (this.gameService.getActivePlayersTokens().length >= 4) {
+        this.setState({
+          AppMode: 'PlayerWin'
+        });
+      } else {
+        this.ChangeTurn();
+      }
     } else {
       console.error('invalid index :(')
     }
@@ -174,7 +178,6 @@ class Straight5 extends Component {
         console.error('NO ACTION FOR THIS')
     }
   }
-  // TODO SHOW THE RESULTS OF THE TOKENS/SCORE SOMEWHERE
   // TODO SHOW ACTIVE PLAYER
   // TODO DISCARD CARDS / SELECT CARDS when you claim token
 
@@ -182,15 +185,30 @@ class Straight5 extends Component {
   render = () => {
     return (
   <div className="CardTable">
-    <div>
-      Straight 5
-    </div>
     {this.state.AppMode  === 'Game' &&
     <React.Fragment>
+      <div>
+        Straight 5
+      </div>
       <Hand playerService={this.playerService} id={0} cardPressedCallback={this.handlePlayerAction} />
       <MiddleSection gameService={this.gameService} drawDiscardCallback={() => {this.DrawCard('discard')}} drawDeckCallback={() => {this.DrawCard('deck')}} />
       <Hand playerService={this.playerService} id={1} cardPressedCallback={this.handlePlayerAction} />
       <FooterSection gameService={this.gameService} moveState={this.state.MoveState} passTurnButtonPressed={this.PassTurnButtonPressed} turnCardsFaceUpButtonPressed={this.TurnCardsFaceUpButtonPressed} swapCardsButtonPressed={this.SwapCardsButtonPressed} changeTurn={this.ChangeTurn} claimToken={this.ClaimToken} />
+    </React.Fragment>}
+    {this.state.AppMode === 'StartState' &&
+    <React.Fragment>
+        <div className="mb-4">
+        Welcome to Straight 5!
+        <button className="mt-2" onClick={this.StartNewGame}>Start New Game</button>
+        </div>
+    </React.Fragment>}
+
+    {this.state.AppMode === 'PlayerWin' &&
+    <React.Fragment>
+        <div className="mb-4">
+        Congratulations to Player {this.gameService.getActivePlayerIndex()+1}
+        <button className="mt-2" onClick={this.StartNewGame}>Start a new Game</button>
+        </div>
     </React.Fragment>}
   </div>
   )}

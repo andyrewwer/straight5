@@ -1,5 +1,4 @@
-const { shuffleArray, canClaimToken } = require('../Utils.js')
-const { PlayerService } = require('./PlayerService.js')
+const { shuffleArray } = require('../Utils.js')
 
 class GameService {
 
@@ -84,18 +83,106 @@ class GameService {
 
   startNewGame() {
     this.createDeck();
-    //TODO TEST
     this.playerService.dealCardsToPlayers(this.getDeck());
     this.initializeDiscard();
   }
 
   activePlayerCanClaimToken() {
-    const activePlayer = this.getActivePlayersDeck();
-    return canClaimToken(activePlayer, 'THREE_IN_A_ROW', this.getActivePlayersTokens()) ||
-     canClaimToken(activePlayer, 'FOUR_IN_A_ROW', this.getActivePlayersTokens()) ||
-     canClaimToken(activePlayer, 'FIVE_IN_A_ROW', this.getActivePlayersTokens()) ||
-     canClaimToken(activePlayer, 'THREE_OF_A_KIND', this.getActivePlayersTokens()) ||
-     canClaimToken(activePlayer, 'FULL_HOUSE', this.getActivePlayersTokens());
+    return this.canClaimToken('THREE_IN_A_ROW') ||
+     this.canClaimToken('FOUR_IN_A_ROW') ||
+     this.canClaimToken('FIVE_IN_A_ROW') ||
+     this.canClaimToken('THREE_OF_A_KIND') ||
+     this.canClaimToken('FULL_HOUSE');
+  }
+
+  canClaimToken(token) {
+    const deck = this.getActivePlayersDeck();
+    const existing_tokens = this.getActivePlayersTokens();
+    if (existing_tokens.includes(token)) {
+      return false;
+    }
+
+    switch (token) {
+      case 'THREE_IN_A_ROW':
+        for (let j = 0; j < 3; j ++) {
+          let won = true;
+          if (!deck[j].seen) {
+            continue
+          }
+          for (let i = j+1; i < 3+j; i ++) {
+            if (!deck[i].seen || deck[i].value !== deck[i-1].value + 1) {
+              won = false;
+              break;
+            }
+          }
+          if (won) {
+            return true
+          }
+        }
+        return false;
+      case 'FOUR_IN_A_ROW':
+        for (let j = 0; j < 2; j ++) {
+          let won = true;
+          if (!deck[j].seen) {
+            continue
+          }
+          for (let i = j+1; i < 4+j; i ++) {
+            if (!deck[i].seen || deck[i].value !== deck[i-1].value + 1) {
+              won = false;
+              break;
+            }
+          }
+          if (won) {
+            return true
+          }
+        }
+        return false;
+      case 'FIVE_IN_A_ROW':
+        if (!deck[0].seen) {
+          return false
+        }
+        for (let i = 1; i < 5; i ++) {
+          if (!deck[i].seen || deck[i].value !== deck[i-1].value + 1) {
+            return false
+          }
+        }
+        return true;
+      case 'THREE_OF_A_KIND':
+        let three_map = {};
+        for (let i = 0; i < 5; i++) {
+          if (!deck[i].seen) {
+            continue;
+          }
+          if (!three_map[deck[i].value]) {
+            three_map[deck[i].value] = 0
+          }
+          three_map[deck[i].value] = three_map[deck[i].value] + 1
+        }
+
+        for (let key of Object.keys(three_map)) {
+          if (three_map[key] >= 3) {
+            return true;
+          }
+        }
+        return false;
+      case 'FULL_HOUSE':
+        let fh_map = {};
+        for (let i = 0; i < 5; i++) {
+          if (!deck[i].seen) {
+            continue;
+          }
+          if (!fh_map[deck[i].value]) {
+            fh_map[deck[i].value] = 0
+          }
+          fh_map[deck[i].value] = fh_map[deck[i].value] + 1
+        }
+        const keys = Object.keys(fh_map);
+        if (keys.length !== 2) {
+          return false;
+        }
+        return (fh_map[keys[0]] === 2 && fh_map[keys[1]] === 3) || (fh_map[keys[0]] === 3 && fh_map[keys[1]] === 2)
+    }
+    return false;
   }
 
   nextPlayer() {
@@ -138,7 +225,6 @@ class GameService {
     return false;
   }
 
-  // TODO LATER PICK TOP CARD
   claimToken(index) {
     const deck = this.getActivePlayersDeck();
     switch (this.getTokenToClaim()) {

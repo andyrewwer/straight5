@@ -24,3 +24,21 @@ code {
 .FullWidth {
   grid-column: 1 / -1;
 }
+
+.PlayerCard {
+  border: 1px solid rgb(256, 256, 256, 0.5);
+  border-radius: 10%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
+  width: 72px;
+  background: var(--card-background);
+  box-shadow: 1px 1px 1px rgb(0, 0, 0, 0.4);
+}
+
+.PlayerCardMini {
+  height: 70% ;
+  width: 70%;
+  transform: translateX(50%);
+}
