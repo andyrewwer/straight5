@@ -122,9 +122,17 @@ class Straight5 extends Component {
     if(['THREE_OF_A_KIND', 'FULL_HOUSE', 'FIVE_IN_A_ROW'].includes(token)) {
       // this could be smarter if only one option for three / four in a row
       this.gameService.claimToken();
+      if (this.gameService.getActivePlayersTokens().length >= 4) {
+      // if (this.gameService.getActivePlayersTokens().length >= 4) {
+        this.setState({
+          AppMode: 'PlayerWin'
+        });
+        return;
+      }
       return this.ChangeTurn();
     }
-    // TODO COME BACK TO THIS LATER, would like more auto-claim
+    // TODO COME BACK TO THIS LATER, would like more auto-claim for 3/4 in a row
+    // TODO Less autoclaim if multiple options for three of a
     this.setState({
         MoveState: "ClaimingToken"
       });
@@ -178,7 +186,6 @@ class Straight5 extends Component {
     }
   }
   // TODO SHOW ACTIVE PLAYER
-  // TODO DISCARD CARDS / SELECT CARDS when you claim token
 
 
   render = () => {
