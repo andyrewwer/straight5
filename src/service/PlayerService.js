@@ -27,4 +27,4 @@ class PlayerService {
   }
 }
 
-module.exports = {PlayerService};
+export {PlayerService};

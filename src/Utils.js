@@ -29,4 +29,4 @@ function getPlayerTextForMoveState(moveState, cardIndex) {
   }
 }
 
-module.exports = {shuffleArray, getPlayerTextForMoveState};
+export {shuffleArray, getPlayerTextForMoveState};

@@ -336,4 +336,4 @@ class GameService {
   }
 }
 
-module.exports = {GameService};
+export {GameService};
