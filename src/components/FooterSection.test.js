@@ -29,7 +29,7 @@ beforeEach(() => {
   })
 
   const playerService = new PlayerService(2);
-  gameService = new GameService(2, playerService);
+  gameService = new GameService(playerService);
 });
 
 test('render given basic state hides all subsections and displays right text', () => {
@@ -118,7 +118,7 @@ test('claimToken callbacks', () => {
   mockCanClaimToken.mockReturnValue(true);
   const mockChangeTurn = jest.fn();
   const mockClaimToken = jest.fn();
-  
+
   render(<FooterSection gameService={gameService} moveState={'PreEndState'}
   changeTurn={mockChangeTurn} claimToken={mockClaimToken}  />)
   expect(screen.queryAllByRole('button').length).toBe(6);

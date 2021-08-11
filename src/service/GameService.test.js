@@ -3,8 +3,8 @@ const {GameService} = require('./GameService.js')
 const {PlayerService} = require('./PlayerService.js')
 const {Player} = require('../model/Player.js');
 
-let gameService = new GameService();
-let playerService = new PlayerService();
+let playerService;
+let gameService;
 
 jest.mock('../Utils', () => ({
   shuffleArray(array) {
@@ -14,7 +14,7 @@ jest.mock('../Utils', () => ({
 
 beforeEach(() => {
   playerService = new PlayerService(2);
-  gameService = new GameService(2, playerService);
+  gameService = new GameService(playerService);
 });
 
 test('createDeck creates and calls shuffle', () => {
@@ -114,7 +114,6 @@ test('discardActiveCard', () => {
 });
 
 test('startNewGame', () => {
-  gameService = new GameService(1, playerService);
   gameService.startNewGame();
   expect(gameService.getDeck().length).toBe(43);
   expect(playerService.getPlayers().length).toBe(2);

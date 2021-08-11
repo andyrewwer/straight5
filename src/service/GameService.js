@@ -2,9 +2,9 @@ const { shuffleArray } = require('../Utils.js')
 
 class GameService {
 
-  constructor(numPlayers, playerService) {
-      this.numPlayers = numPlayers;
+  constructor(playerService) {
       this.playerService = playerService;
+      this.numPlayers = this.playerService.getNumberOfPlayers();
 
       this.deck = [];
       this.discard = [];

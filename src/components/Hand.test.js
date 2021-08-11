@@ -14,7 +14,7 @@ let playerService = new PlayerService(3);
 
 beforeEach(() => {
   playerService = new PlayerService(3);
-  const gameService = new GameService(3, playerService);
+  const gameService = new GameService(playerService);
   gameService.startNewGame();
 })
 

@@ -11,8 +11,8 @@ class PlayerService {
   }
 
   dealCardsToPlayers(deck) {
-    for (let i = 0; i < this.getPlayers().length; i ++) {
-      for (let j = 0; j < 5; j++) {
+    for (let j = 0; j < 5; j++) {
+      for (let i = 0; i < this.getPlayers().length; i ++) {
         this.players[i].getDeck().push(deck.pop());
       }
     }
@@ -24,6 +24,10 @@ class PlayerService {
 
   setPlayers(players) {
     this.players = players;
+  }
+
+  getNumberOfPlayers() {
+    return this.numPlayers;
   }
 }
 

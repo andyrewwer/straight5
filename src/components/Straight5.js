@@ -24,7 +24,7 @@ class Straight5 extends Component {
 
   StartNewGame = () => {
     this.playerService = new PlayerService(2);
-    this.gameService = new GameService(2, this.playerService);
+    this.gameService = new GameService(this.playerService);
     this.gameService.startNewGame();
     this.setState({
       MoveState: "StartState",
@@ -186,6 +186,8 @@ class Straight5 extends Component {
     }
   }
   // TODO SHOW ACTIVE PLAYER
+  // TODO ADD joker
+  // TODO ADD AI
 
 
   render = () => {
@@ -197,7 +199,7 @@ class Straight5 extends Component {
         Straight 5
       </div>
       <Hand playerService={this.playerService} id={0} cardPressedCallback={this.handlePlayerAction} />
-      <MiddleSection gameService={this.gameService} drawDiscardCallback={() => {this.DrawCard('discard')}} drawDeckCallback={() => {this.DrawCard('deck')}} />
+      <MiddleSection gameService={this.gameService} drawCallback={this.DrawCard}/>
       <Hand playerService={this.playerService} id={1} cardPressedCallback={this.handlePlayerAction} />
       <FooterSection gameService={this.gameService} moveState={this.state.MoveState} passTurnButtonPressed={this.PassTurnButtonPressed} turnCardsFaceUpButtonPressed={this.TurnCardsFaceUpButtonPressed} swapCardsButtonPressed={this.SwapCardsButtonPressed} changeTurn={this.ChangeTurn} claimToken={this.ClaimToken} />
     </React.Fragment>}

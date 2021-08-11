@@ -9,24 +9,28 @@ class Hand extends Component {
     this.gameService = props.gameService;
   }
 
+  getTopDiscardValue() {
+    return this.gameService.getDiscard().length > 0 ? this.gameService.getDiscard()[this.gameService.getDiscard().length-1].value : '';
+  }
+
   render = () => {
     return (
       <div className="MiddleSection">
         <div>
         </div>
         <div className="DiscardSection">
-          <div className="FullWidth">
-            Discard ({this.gameService.getDiscard().length})
+          <div className="FullWidth" role="header">
+            Discard
           </div>
-          <div className="PlayerCard" onClick={this.props.drawDiscardCallback}>
-            {this.gameService.getDiscard().length > 0 ? this.gameService.getDiscard()[this.gameService.getDiscard().length-1].value : ''}
+          <div className="PlayerCard" role="playerCard" onClick={() => {this.props.drawCallback('discard')}}>
+            {this.getTopDiscardValue()}
           </div>
         </div>
         <div  className="DeckSection">
-          <div className="FullWidth">
-            Deck ({this.gameService.getDeck().length})
+          <div className="FullWidth" role="header">
+            Deck
           </div>
-          <div className="PlayerCard Card" onClick={this.props.drawDeckCallback}>
+          <div className="PlayerCard Card" role="playerCard" onClick={() => {this.props.drawCallback('deck')}}>
             ?
           </div>
         </div>
