@@ -16,18 +16,18 @@ const mockFooterSection = jest.fn();
 
 jest.mock('../service/GameService', () => jest.fn());
 jest.mock('../service/PlayerService', () => jest.fn());
-jest.mock('./Hand.js', () => (props) => {
+jest.mock('./game/Hand.js', () => (props) => {
   mockHandComponent(props)
   return  <div data-testid="hand" onClick={() => props.cardPressedCallback(0,0)}/>;
 });
-jest.mock('./MiddleSection.js', () => (props) => {
+jest.mock('./game/MiddleSection.js', () => (props) => {
   mockMiddleSection(props)
   return  <div data-testid="middle-section">
             <div data-testid="middle-section-deck" onClick={() => props.drawCallback('deck')}/>
             <div data-testid="middle-section-discard" onClick={() => props.drawCallback('discard')}/>
           </div>;
 });
-jest.mock('./FooterSection.js', () => (props) => {
+jest.mock('./game/FooterSection.js', () => (props) => {
   mockFooterSection(props)
   return  <div data-testid="footer-section">
             <div data-testid="footer-section-pass" onClick={() => {props.buttonPressedCallback('pass')}}/>

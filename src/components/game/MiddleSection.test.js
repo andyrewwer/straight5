@@ -7,8 +7,8 @@ import '@testing-library/jest-dom'
 import {cleanup, render, screen} from '@testing-library/react';
 import userEvent from '@testing-library/user-event'
 import MiddleSection from './MiddleSection.js'
-const {GameService} = require('../service/GameService.js')
-const {PlayerService} = require('../service/PlayerService.js')
+const {GameService} = require('../../service/GameService.js')
+const {PlayerService} = require('../../service/PlayerService.js')
 
 
 let gameService;

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './FooterSection.css';
-const { getPlayerTextForMoveState} = require('../Utils.js')
+const { getPlayerTextForMoveState} = require('../../Utils.js')
 
 class Hand extends Component {
   constructor(props) {

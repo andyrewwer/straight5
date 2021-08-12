@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import Hand from './Hand.js';
-import MiddleSection from './MiddleSection.js';
-import FooterSection from './FooterSection.js';
+import Hand from './game/Hand.js';
+import MiddleSection from './game/MiddleSection.js';
+import FooterSection from './game/FooterSection.js';
 import './Straight5.css';
 
 class Straight5 extends Component {

@@ -7,10 +7,10 @@ import '@testing-library/jest-dom'
 import {cleanup, fireEvent, render, screen} from '@testing-library/react';
 import userEvent from '@testing-library/user-event'
 import FooterSection from './FooterSection.js'
-const {PlayerService} = require('../service/PlayerService.js')
-const GameService = require('../service/GameService.js')
+const {PlayerService} = require('../../service/PlayerService.js')
+const GameService = require('../../service/GameService.js')
 
-jest.mock('../service/GameService', () => jest.fn());
+jest.mock('../../service/GameService', () => jest.fn());
 
 let gameService;
 const mockSwapCardIndex = jest.fn()
