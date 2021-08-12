@@ -24,9 +24,8 @@ test('render with Discard shows value', () => {
   expect(screen.getAllByRole('header').length).toBe(2);
   expect(screen.getAllByRole('header')[0]).toHaveTextContent('Discard');
   expect(screen.getAllByRole('header')[1]).toHaveTextContent('Deck');
-  expect(screen.getAllByRole('playerCard').length).toEqual(2);
-  expect(screen.getAllByRole('playerCard')[0]).toHaveTextContent('2');
-  expect(screen.getAllByRole('playerCard')[1]).toHaveTextContent('?');
+  expect(screen.getByTestId('middle-section-discard')).toHaveTextContent('2');
+  expect(screen.getByTestId('middle-section-deck')).toHaveTextContent('?');
 });
 
 test('render without Discard shows question  mark', () => {
@@ -34,21 +33,20 @@ test('render without Discard shows question  mark', () => {
   expect(screen.getAllByRole('header').length).toBe(2);
   expect(screen.getAllByRole('header')[0]).toHaveTextContent('Discard');
   expect(screen.getAllByRole('header')[1]).toHaveTextContent('Deck');
-  expect(screen.getAllByRole('playerCard').length).toEqual(2);
-  expect(screen.getAllByRole('playerCard')[0]).toHaveTextContent('');
-  expect(screen.getAllByRole('playerCard')[1]).toHaveTextContent('?');
+  expect(screen.getByTestId('middle-section-discard')).toHaveTextContent('');
+  expect(screen.getByTestId('middle-section-deck')).toHaveTextContent('?');
 });
 
 test('render buttons fire as expected', () => {
   const mockCallback = jest.fn();
   render(<MiddleSection gameService={gameService} drawCallback={mockCallback}/>);
 
-  userEvent.click(screen.getAllByRole('playerCard')[0])
+  userEvent.click(screen.getByTestId('middle-section-discard'));
   expect(mockCallback.mock.calls.length).toBe(1);
   expect(mockCallback.mock.calls[0][0]).toBe('discard');
 
   mockCallback.mockClear();
-  userEvent.click(screen.getAllByRole('playerCard')[1])
+  userEvent.click(screen.getByTestId('middle-section-deck'));
   expect(mockCallback.mock.calls.length).toBe(1);
   expect(mockCallback.mock.calls[0][0]).toBe('deck');
 });

@@ -29,7 +29,7 @@ class Hand extends Component {
 
   render = () => {
     return (
-      <div className="CardTableFooter">
+      <div className="CardTableFooter" data-testid="footer-section">
         <div className="FullWidth" role='header'>
           {getPlayerTextForMoveState(this.props.moveState, this.gameService.getSwapCardIndex() + 1)}
         </div>
@@ -42,7 +42,7 @@ class Hand extends Component {
                   {this.gameService.getActiveCard().value}
                 </div>
                 <div>
-                  {this.ShowTurnUpAction() && <button onClick={() => {this.props.buttonPressedCallback('turnFaceUp')}}> Discard to turn two face up </button>}
+                  {this.ShowTurnUpAction() && <button data-testid='turn-face-up-button' onClick={() => {this.props.buttonPressedCallback('turnFaceUp')}}> Discard to turn two face up </button>}
                   <button onClick={() => {this.props.buttonPressedCallback('swap')}}> Discard to swap two </button>
                 </div>
             </React.Fragment>}

@@ -153,7 +153,7 @@ class Straight5 extends Component {
 
   handlePlayerCardPressed = (player, index)  =>  {
     if (player !== this.gameService.getActivePlayerIndex()) {
-      console.error('WRONG PLAYER')
+      console.log('card from wrong player clicked')
       return;
     }
     switch (this.state.MoveState) {
@@ -172,7 +172,7 @@ class Straight5 extends Component {
         this.ClaimTokenCardPress(index);
         break;
       default:
-        console.warn('No action for this status', this.state.MoveState)
+        console.log('No action for this status', this.state.MoveState)
     }
   }
   // TODO SHOW ACTIVE PLAYER

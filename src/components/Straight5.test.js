@@ -38,8 +38,6 @@ jest.mock('./FooterSection.js', () => (props) => {
           </div>;
 });
 
-//TODO integration test that stands whole system up
-
 let gameService;
 let playerService;
 const mockStartNewGame = jest.fn()

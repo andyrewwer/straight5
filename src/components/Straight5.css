@@ -3,6 +3,7 @@
   text-align: center;
   grid-template-rows: auto 1fr 1fr 1fr auto;
   background: var(--secondary-background);
+  border-radius: 8px;
 }
 
 .CardTableFooter .PlayerCard {

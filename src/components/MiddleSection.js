@@ -15,14 +15,14 @@ class Hand extends Component {
 
   render = () => {
     return (
-      <div className="MiddleSection">
+      <div className="MiddleSection" data-testid="middle-section">
         <div>
         </div>
         <div className="DiscardSection">
           <div className="FullWidth" role="header">
             Discard
           </div>
-          <div className="PlayerCard" role="playerCard" onClick={() => {this.props.drawCallback('discard')}}>
+          <div className="PlayerCard" data-testid="middle-section-discard" onClick={() => {this.props.drawCallback('discard')}}>
             {this.getTopDiscardValue()}
           </div>
         </div>
@@ -30,7 +30,7 @@ class Hand extends Component {
           <div className="FullWidth" role="header">
             Deck
           </div>
-          <div className="PlayerCard Card" role="playerCard" onClick={() => {this.props.drawCallback('deck')}}>
+          <div className="PlayerCard Card" data-testid="middle-section-deck" onClick={() => {this.props.drawCallback('deck')}}>
             ?
           </div>
         </div>

@@ -13,7 +13,7 @@ class Hand extends Component {
 
   render = () => {
     return (
-      <div className="PlayerHand">
+      <div className="PlayerHand" data-testid="hand">
         <div role="header" className="PlayerHeader" name="Player1">
           Player {this.props.id+1}
         </div>
