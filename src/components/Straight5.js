@@ -89,7 +89,7 @@ class Straight5 extends Component {
   }
 
   checkIfWinner() {
-    if (this.gameService.getActivePlayersTokens().length >= 1) {
+    if (this.gameService.getActivePlayersTokens().length >= 4) {
       this.setState({
         AppMode: 'PlayerWin'
       });
@@ -186,7 +186,7 @@ class Straight5 extends Component {
     {this.state.AppMode === 'StartState' &&
     <React.Fragment>
         <div className="mb-4" data-testid="start-header">
-        Welcome to Straight 5!
+        Welcome to Straight 5
         <button className="mt-2" onClick={this.StartNewGame}>Start New Game</button>
         </div>
     </React.Fragment>}

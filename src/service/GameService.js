@@ -84,6 +84,10 @@ class GameService {
     this.createDeck(repeats, max);
     this.playerService.dealCardsToPlayers(this.getDeck());
     this.initializeDiscard();
+    this.setSwapCardIndex(-1);
+    this.setActiveCard({});
+    this.setActivePlayerIndex(0);
+    this.setTokenToClaim('');
   }
 
   activePlayerCanClaimToken() {

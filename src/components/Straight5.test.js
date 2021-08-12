@@ -93,10 +93,9 @@ beforeEach(() => {
   gameService = new GameService(playerService);
 });
 
-
 test('render Start Section', () => {
   const straight5 = render(<Straight5 gameService={gameService} playerService={playerService} />);
-  expect(screen.getByTestId('start-header')).toHaveTextContent('Welcome to Straight 5!');
+  expect(screen.getByTestId('start-header')).toHaveTextContent('Welcome to Straight 5');
   expect(screen.getByRole('button')).toHaveTextContent('Start New Game');
 
   expect(screen.queryByTestId('game-header')).toBeNull();

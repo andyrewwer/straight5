@@ -114,6 +114,11 @@ test('discardActiveCard', () => {
 });
 
 test('startNewGame', () => {
+  gameService.setSwapCardIndex(2);
+  gameService.setActiveCard({value: 5, seen: false});
+  gameService.setActivePlayerIndex(1);
+  gameService.setTokenToClaim('THREE_IN_A_ROW');
+  gameService.setSwapCardIndex(2);
   gameService.startNewGame(6, 9);
   expect(gameService.getDeck().length).toBe(43);
   expect(playerService.getPlayers().length).toBe(2);
@@ -123,6 +128,10 @@ test('startNewGame', () => {
   expect(playerService.getPlayers()[0].getTokens()).toEqual([]);
   expect(playerService.getPlayers()[1].getTokens()).toEqual([]);
   expect(gameService.getDiscard().length).toBe(1);
+  expect(gameService.getSwapCardIndex()).toBe(-1);
+  expect(gameService.getActiveCard()).toEqual({});
+  expect(gameService.getActivePlayerIndex()).toBe(0);
+  expect(gameService.getTokenToClaim()).toBe('');
 });
 
 test('activePlayerCanClaimToken', () => {
