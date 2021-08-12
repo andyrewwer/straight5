@@ -5,7 +5,12 @@ class PlayerService {
   constructor(numPlayers) {
     this.numPlayers = numPlayers;
     this.players = [];
-    for (let i = 0; i < numPlayers; i ++) {
+    this.resetPlayers();
+  }
+
+  resetPlayers() {
+    this.players = []
+    for (let i = 0; i < this.getNumberOfPlayers(); i ++) {
       this.players.push(new Player([], []));
     }
   }
@@ -24,6 +29,10 @@ class PlayerService {
 
   setPlayers(players) {
     this.players = players;
+  }
+
+  setNumberOfPlayers(numPlayers) {
+    this.numPlayers = numPlayers;
   }
 
   getNumberOfPlayers() {

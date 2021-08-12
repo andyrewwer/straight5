@@ -4,7 +4,6 @@ class GameService {
 
   constructor(playerService) {
       this.playerService = playerService;
-      this.numPlayers = this.playerService.getNumberOfPlayers();
 
       this.deck = [];
       this.discard = [];
@@ -14,7 +13,7 @@ class GameService {
       this.tokenToClaim = '';
   }
 
-  createDeck(repeats = 6, max = 9) {
+  createDeck(repeats, max) {
     this.deck = [];
     for (let i = 0; i < repeats; i++) {
       for (let j = 0; j < max; j++) {
@@ -81,8 +80,8 @@ class GameService {
     this.setActiveCard({});
   }
 
-  startNewGame() {
-    this.createDeck();
+  startNewGame(repeats, max) {
+    this.createDeck(repeats, max);
     this.playerService.dealCardsToPlayers(this.getDeck());
     this.initializeDiscard();
   }
@@ -186,7 +185,7 @@ class GameService {
   }
 
   nextPlayer() {
-    this.setActivePlayerIndex(this.getActivePlayerIndex() + 1 === this.numPlayers ? 0 : this.getActivePlayerIndex() + 1);
+    this.setActivePlayerIndex(this.getActivePlayerIndex() + 1 === this.playerService.getNumberOfPlayers() ? 0 : this.getActivePlayerIndex() + 1);
   }
 
   isValidIndexForToken(index) {
@@ -274,9 +273,6 @@ class GameService {
     }
     this.getActivePlayersTokens().push(this.getTokenToClaim());
     this.setTokenToClaim('');
-
-    // discard cards from index
-    // push token to player
   }
 
   getActivePlayersTokens() {

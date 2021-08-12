@@ -31,27 +31,27 @@ class Hand extends Component {
         </div>
         {this.ShowCardActions() &&
           <React.Fragment>
-            <div className="FullWidth"><button className="mb-2 FullWidth" onClick={this.props.passTurnButtonPressed}> Pass </button></div>
+            <div className="FullWidth"><button className="mb-2 FullWidth" onClick={() => {this.props.buttonPressedCallback('pass')}}> Pass </button></div>
               {(!!this.gameService.getActiveCard() && !!this.gameService.getActiveCard().value) &&
               <React.Fragment>
                 <div className="PlayerCard" role="activeCard">
                   {this.gameService.getActiveCard().value}
                 </div>
                 <div>
-                  <button onClick={this.props.turnCardsFaceUpButtonPressed}> Discard to turn two face up </button>
-                  <button onClick={this.props.swapCardsButtonPressed}> Discard to swap two </button>
+                  <button onClick={() => {this.props.buttonPressedCallback('turnFaceUp')}}> Discard to turn two face up </button>
+                  <button onClick={() => {this.props.buttonPressedCallback('swap')}}> Discard to swap two </button>
                 </div>
             </React.Fragment>}
           </React.Fragment>}
 
           {this.ShowEndActions() &&
             <React.Fragment>
-                <div className="FullWidth"><button className="mb-2 FullWidth" onClick={this.props.changeTurn}> Pass </button></div>
-                {this.ShowToken('THREE_IN_A_ROW') && <div><button onClick={() => this.props.claimToken('THREE_IN_A_ROW')}> THREE IN A ROW </button></div>}
-                {this.ShowToken('FOUR_IN_A_ROW') && <div><button onClick={() => this.props.claimToken('FOUR_IN_A_ROW')}> FOUR IN A ROW </button></div>}
-                {this.ShowToken('FIVE_IN_A_ROW') && <div><button onClick={() => this.props.claimToken('FIVE_IN_A_ROW')}> FIVE IN A ROW </button></div>}
-                {this.ShowToken('THREE_OF_A_KIND') && <div><button onClick={() => this.props.claimToken('THREE_OF_A_KIND')}> THREE OF A KIND </button></div>}
-                {this.ShowToken('FULL_HOUSE') && <div><button onClick={() => this.props.claimToken('FULL_HOUSE')}> FULL HOUSE </button></div>}
+                <div className="FullWidth"><button className="mb-2 FullWidth" onClick={() => {this.props.buttonPressedCallback('changeTurn')}}> Pass </button></div>
+                {this.ShowToken('THREE_IN_A_ROW') && <div><button onClick={() => this.props.buttonPressedCallback('claimToken', 'THREE_IN_A_ROW')}> THREE IN A ROW </button></div>}
+                {this.ShowToken('FOUR_IN_A_ROW') && <div><button onClick={() => this.props.buttonPressedCallback('claimToken', 'FOUR_IN_A_ROW')}> FOUR IN A ROW </button></div>}
+                {this.ShowToken('FIVE_IN_A_ROW') && <div><button onClick={() => this.props.buttonPressedCallback('claimToken', 'FIVE_IN_A_ROW')}> FIVE IN A ROW </button></div>}
+                {this.ShowToken('THREE_OF_A_KIND') && <div><button onClick={() => this.props.buttonPressedCallback('claimToken', 'THREE_OF_A_KIND')}> THREE OF A KIND </button></div>}
+                {this.ShowToken('FULL_HOUSE') && <div><button onClick={() => this.props.buttonPressedCallback('claimToken', 'FULL_HOUSE')}> FULL HOUSE </button></div>}
             </React.Fragment>}
       </div>
   )}

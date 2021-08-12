@@ -3,29 +3,22 @@ import Hand from './Hand.js';
 import MiddleSection from './MiddleSection.js';
 import FooterSection from './FooterSection.js';
 import './Straight5.css';
-const { GameService } = require('../service/GameService.js')
-const { PlayerService } = require('../service/PlayerService.js')
 
-// TODO Start game
-//  TODO WIN
 class Straight5 extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      AppMode: "StartState", // NOT USED CURRENTLY - NoGame, Game, PlayerWin
+      AppMode: "StartState", // StartState, Game, PlayerWin
       MoveState: "StartState", // StartState, CardDrawn, DiscardChosen, CardDiscarded, SwapChosen, SwapInProgress, PreEndState, ClaimingToken
     };
-    this.TableCanvas = React.createRef();
-  }
-
-  componentDidMount() {
-    // this.StartNewGame();
+    this.playerService = props.playerService;
+    this.gameService = props.gameService;
   }
 
   StartNewGame = () => {
-    this.playerService = new PlayerService(2);
-    this.gameService = new GameService(this.playerService);
-    this.gameService.startNewGame();
+    this.playerService.setNumberOfPlayers(2);
+    this.playerService.resetPlayers();
+    this.gameService.startNewGame(6, 9);
     this.setState({
       MoveState: "StartState",
       AppMode: "Game"
@@ -40,6 +33,7 @@ class Straight5 extends Component {
     if (type === 'deck') {
       this.gameService.drawCardFromDeck();
     } else if (type === 'discard') {
+
       this.gameService.drawCardFromDiscard();
     } else {
       console.error('draw card failed', type);
@@ -57,29 +51,6 @@ class Straight5 extends Component {
 
   DiscardCard = () => {
     this.gameService.discardActiveCard();
-  }
-
-  SwapCardsButtonPressed = () => {
-    if (this.state.MoveState !== 'CardDrawn') {
-      return
-    }
-    this.setState({MoveState: 'SwapChosen'})
-    this.DiscardCard()
-  }
-
-  TurnCardsFaceUpButtonPressed = () => {
-    if (this.state.MoveState !== 'CardDrawn') {
-      return
-    }
-    this.setState({MoveState: 'DiscardChosen'})
-    this.DiscardCard()
-  }
-
-  PassTurnButtonPressed = () => {
-    if (this.state.MoveState === "CardDrawn") {
-      this.DiscardCard()
-    }
-    this.EndMove();
   }
 
   TurnCardFaceUp = index => {
@@ -117,37 +88,21 @@ class Straight5 extends Component {
 
   }
 
-  ClaimToken = token => {
-    this.gameService.setTokenToClaim(token);
-    if(['THREE_OF_A_KIND', 'FULL_HOUSE', 'FIVE_IN_A_ROW'].includes(token)) {
-      // this could be smarter if only one option for three / four in a row
-      this.gameService.claimToken();
-      if (this.gameService.getActivePlayersTokens().length >= 4) {
-      // if (this.gameService.getActivePlayersTokens().length >= 4) {
-        this.setState({
-          AppMode: 'PlayerWin'
-        });
-        return;
-      }
-      return this.ChangeTurn();
-    }
-    // TODO COME BACK TO THIS LATER, would like more auto-claim for 3/4 in a row
-    // TODO Less autoclaim if multiple options for three of a
-    this.setState({
-        MoveState: "ClaimingToken"
+  checkIfWinner() {
+    if (this.gameService.getActivePlayersTokens().length >= 1) {
+      this.setState({
+        AppMode: 'PlayerWin'
       });
+      return true;
+    }
+    return false;
   }
 
   ClaimTokenCardPress = index => {
     if (this.gameService.isValidIndexForToken(index)) {
       this.gameService.claimToken(index);
-      if (this.gameService.getActivePlayersTokens().length >= 4) {
-      // if (this.gameService.getActivePlayersTokens().length >= 4) {
-        this.setState({
-          AppMode: 'PlayerWin'
-        });
-      } else {
-        this.ChangeTurn();
+      if (!this.checkIfWinner()) {
+        return this.ChangeTurn();
       }
     } else {
       console.error('invalid index :(')
@@ -156,12 +111,47 @@ class Straight5 extends Component {
 
   ChangeTurn = () => {
     this.gameService.nextPlayer();
-    this.setState({
+    return this.setState({
       MoveState: "StartState"
-    })
+    });
   }
 
-  handlePlayerAction = (player, index)  =>  {
+  handleActionButtonPressed = (action, token) => {
+    if (action === 'pass') {
+      if (this.state.MoveState === "CardDrawn") {
+        this.DiscardCard()
+      }
+      return this.EndMove();
+    }
+    if (action === 'swap') {
+      this.setState({MoveState: 'SwapChosen'})
+      return this.DiscardCard()
+    }
+    if (action === 'changeTurn') {
+      return this.ChangeTurn()
+    }
+    if (action === 'turnFaceUp') {
+      this.setState({MoveState: 'DiscardChosen'})
+      return this.DiscardCard()
+    }
+    if (action === 'claimToken') {
+      this.gameService.setTokenToClaim(token);
+      if(['THREE_OF_A_KIND', 'FULL_HOUSE', 'FIVE_IN_A_ROW'].includes(token)) {
+        // this could be smarter if only one option for three / four in a row
+        this.gameService.claimToken();
+        if (!this.checkIfWinner()) {
+          return this.ChangeTurn();
+        }
+      }
+      // TODO COME BACK TO THIS LATER, would like more auto-claim for 3/4 in a row
+      // TODO Less autoclaim if multiple options for three of a
+      this.setState({
+        MoveState: "ClaimingToken"
+      });
+    }
+  }
+
+  handlePlayerCardPressed = (player, index)  =>  {
     if (player !== this.gameService.getActivePlayerIndex()) {
       console.error('WRONG PLAYER')
       return;
@@ -193,29 +183,30 @@ class Straight5 extends Component {
   render = () => {
     return (
   <div className="CardTable">
-    {this.state.AppMode  === 'Game' &&
-    <React.Fragment>
-      <div>
-        Straight 5
-      </div>
-      <Hand playerService={this.playerService} id={0} cardPressedCallback={this.handlePlayerAction} />
-      <MiddleSection gameService={this.gameService} drawCallback={this.DrawCard}/>
-      <Hand playerService={this.playerService} id={1} cardPressedCallback={this.handlePlayerAction} />
-      <FooterSection gameService={this.gameService} moveState={this.state.MoveState} passTurnButtonPressed={this.PassTurnButtonPressed} turnCardsFaceUpButtonPressed={this.TurnCardsFaceUpButtonPressed} swapCardsButtonPressed={this.SwapCardsButtonPressed} changeTurn={this.ChangeTurn} claimToken={this.ClaimToken} />
-    </React.Fragment>}
     {this.state.AppMode === 'StartState' &&
     <React.Fragment>
-        <div className="mb-4">
+        <div className="mb-4" data-testid="start-header">
         Welcome to Straight 5!
         <button className="mt-2" onClick={this.StartNewGame}>Start New Game</button>
         </div>
     </React.Fragment>}
 
+    {this.state.AppMode  === 'Game' &&
+    <React.Fragment>
+      <div data-testid="game-header">
+        Straight 5
+      </div>
+      <Hand playerService={this.playerService} id={0} cardPressedCallback={this.handlePlayerCardPressed} />
+      <MiddleSection gameService={this.gameService} drawCallback={this.DrawCard}/>
+      <Hand playerService={this.playerService} id={1} cardPressedCallback={this.handlePlayerCardPressed} />
+      <FooterSection gameService={this.gameService} moveState={this.state.MoveState} buttonPressedCallback={this.handleActionButtonPressed} />
+    </React.Fragment>}
+
     {this.state.AppMode === 'PlayerWin' &&
     <React.Fragment>
-        <div className="mb-4">
+        <div className="mb-4" data-testid="win-header">
         Congratulations to Player {this.gameService.getActivePlayerIndex()+1}
-        <button className="mt-2" onClick={this.StartNewGame}>Start a new Game</button>
+        <button data-testid="win-startNewGame" className="mt-2" onClick={this.StartNewGame}>Start a new Game</button>
         </div>
     </React.Fragment>}
   </div>

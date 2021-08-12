@@ -15,7 +15,7 @@ let playerService = new PlayerService(3);
 beforeEach(() => {
   playerService = new PlayerService(3);
   const gameService = new GameService(playerService);
-  gameService.startNewGame();
+  gameService.startNewGame(6, 9);
 })
 
 test('render new component has 5 face down cards and no tokens', () => {

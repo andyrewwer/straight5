@@ -114,7 +114,7 @@ test('discardActiveCard', () => {
 });
 
 test('startNewGame', () => {
-  gameService.startNewGame();
+  gameService.startNewGame(6, 9);
   expect(gameService.getDeck().length).toBe(43);
   expect(playerService.getPlayers().length).toBe(2);
   expect(playerService.getPlayers()[0].getDeck().length).toBe(5);
@@ -175,7 +175,7 @@ test('isValidIndexForToken edge cases', () => {
 
 
 test('claimToken FIVE_IN_A_ROW', () => {
-  gameService.createDeck();
+  gameService.createDeck(6, 9);
   gameService.setTokenToClaim('FIVE_IN_A_ROW');
   playerService.getPlayers()[1].setDeck([{seen:true, value:1},{seen:true, value:2},{seen:true, value:3},{seen:true, value:4},{seen:true, value:5}]);
   gameService.setActivePlayerIndex(1);
@@ -190,7 +190,7 @@ test('claimToken FIVE_IN_A_ROW', () => {
 });
 
 test('claimToken FULL_HOUSE', () => {
-  gameService.createDeck();
+  gameService.createDeck(6, 9);
   gameService.setTokenToClaim('FULL_HOUSE');
   playerService.getPlayers()[1].setDeck([{seen:true, value:1},{seen:true, value:1},{seen:true, value:1},{seen:true, value:5},{seen:true, value:5}]);
   gameService.setActivePlayerIndex(1);
@@ -206,7 +206,7 @@ test('claimToken FULL_HOUSE', () => {
 });
 
 test('claimToken THREE_OF_A_KIND', () => {
-  gameService.createDeck();
+  gameService.createDeck(6, 9);
   gameService.setTokenToClaim('THREE_OF_A_KIND');
   playerService.getPlayers()[1].setDeck([{seen:true, value:1},{seen:true, value:2},{seen:true, value:1},{seen:true, value:1},{seen:true, value:1}]);
   gameService.setActivePlayerIndex(1);
@@ -221,7 +221,7 @@ test('claimToken THREE_OF_A_KIND', () => {
 });
 
 test('claimToken THREE_IN_A_ROW[0]', () => {
-  gameService.createDeck();
+  gameService.createDeck(6, 9);
   gameService.setTokenToClaim('THREE_IN_A_ROW');
   playerService.getPlayers()[1].setDeck([{seen:true, value:1},{seen:true, value:2},{seen:true, value:3},{seen:true, value:4},{seen:true, value:5}]);
   gameService.setActivePlayerIndex(1);
@@ -236,7 +236,7 @@ test('claimToken THREE_IN_A_ROW[0]', () => {
 });
 
 test('claimToken THREE_IN_A_ROW[1]', () => {
-  gameService.createDeck();
+  gameService.createDeck(6, 9);
   gameService.setTokenToClaim('THREE_IN_A_ROW');
   playerService.getPlayers()[0].setDeck([{seen:true, value:1},{seen:true, value:2},{seen:true, value:3},{seen:true, value:4},{seen:true, value:5}]);
   gameService.setActivePlayerIndex(0);
@@ -251,7 +251,7 @@ test('claimToken THREE_IN_A_ROW[1]', () => {
 });
 
 test('claimToken THREE_IN_A_ROW[2]', () => {
-  gameService.createDeck();
+  gameService.createDeck(6, 9);
   gameService.setTokenToClaim('THREE_IN_A_ROW');
   playerService.getPlayers()[1].setDeck([{seen:true, value:1},{seen:true, value:2},{seen:true, value:3},{seen:true, value:4},{seen:true, value:5}]);
   gameService.setActivePlayerIndex(1);
@@ -267,7 +267,7 @@ test('claimToken THREE_IN_A_ROW[2]', () => {
 });
 
 test('claimToken FOUR_IN_A_ROW[0]', () => {
-  gameService.createDeck();
+  gameService.createDeck(6, 9);
   gameService.setTokenToClaim('FOUR_IN_A_ROW');
   playerService.getPlayers()[1].setDeck([{seen:true, value:1},{seen:true, value:2},{seen:true, value:3},{seen:true, value:4},{seen:true, value:5}]);
   gameService.setActivePlayerIndex(1);
@@ -282,7 +282,7 @@ test('claimToken FOUR_IN_A_ROW[0]', () => {
 });
 
 test('claimToken FOUR_IN_A_ROW[1]', () => {
-  gameService.createDeck();
+  gameService.createDeck(6, 9);
   gameService.setTokenToClaim('FOUR_IN_A_ROW');
   playerService.getPlayers()[1].setDeck([{seen:true, value:1},{seen:true, value:2},{seen:true, value:3},{seen:true, value:4},{seen:true, value:5}]);
   gameService.setActivePlayerIndex(1);
