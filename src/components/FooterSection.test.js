@@ -16,13 +16,15 @@ let gameService;
 const mockSwapCardIndex = jest.fn()
 const mockCanClaimToken = jest.fn()
 const mockGetActiveCard = jest.fn()
+const mockAllCardsFaceUp = jest.fn()
 
 beforeEach(() => {
   GameService.mockImplementation(() => {
     return {
       getSwapCardIndex: mockSwapCardIndex,
       canClaimToken: mockCanClaimToken,
-      getActiveCard: mockGetActiveCard
+      getActiveCard: mockGetActiveCard,
+      activePlayerHasAllCardsFaceUp: mockAllCardsFaceUp
     }
   })
 
@@ -78,6 +80,7 @@ test('render PreEndState shows end actions with some Tokens', () => {
 });
 
 test('render CardDrawn activeCard and options', () => {
+  mockAllCardsFaceUp.mockReturnValue(false);
   mockGetActiveCard.mockReturnValue({value: 10})
   render(<FooterSection gameService={gameService} moveState={'CardDrawn'}  />)
   expect(screen.getByRole('header')).toHaveTextContent('Replace card in your hand or choose a discard option');
@@ -91,7 +94,17 @@ test('render CardDrawn activeCard and options', () => {
   expect(mockGetActiveCard.mock.calls.length).toBe(3);
 });
 
+test('render givenAllCardsFaceUp shouldHideTurnFaceUp', () => {
+  mockAllCardsFaceUp.mockReturnValue(true);
+  mockGetActiveCard.mockReturnValue({value: 10})
+  render(<FooterSection gameService={gameService} moveState={'CardDrawn'}  />)
+  expect(screen.queryAllByRole('button').length).toBe(2);
+  expect(screen.queryAllByRole('button')[0]).toHaveTextContent('Pass');
+  expect(screen.queryAllByRole('button')[1]).toHaveTextContent('Discard to swap two');
+});
+
 test('activeCard callbacks', () => {
+  mockAllCardsFaceUp.mockReturnValue(false);
   mockGetActiveCard.mockReturnValue({value: 10})
   const mockCallback = jest.fn();
   render(<FooterSection gameService={gameService} moveState={'CardDrawn'}

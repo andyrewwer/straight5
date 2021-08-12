@@ -172,7 +172,7 @@ class Straight5 extends Component {
         this.ClaimTokenCardPress(index);
         break;
       default:
-        console.error('NO ACTION FOR THIS')
+        console.warn('No action for this status', this.state.MoveState)
     }
   }
   // TODO SHOW ACTIVE PLAYER

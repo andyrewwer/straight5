@@ -423,3 +423,14 @@ test('canClaimToken FULL_HOUSE error cases', () => {
   playerService.getPlayers()[0].setTokens(['FULL_HOUSE']);
   expect(gameService.canClaimToken('FULL_HOUSE')).toBe(false);
 });
+
+test('allCardsFaceUp', () => {
+  playerService.getPlayers()[0].setDeck([{seen: true, value:0}, {seen: true, value:1}, {seen: true, value:2}, {seen: true, value:0}, {seen: true, value:0}]);
+  expect(gameService.activePlayerHasAllCardsFaceUp()).toBe(true);
+
+  playerService.getPlayers()[0].setDeck([{seen: false, value:0}, {seen: false, value:1}, {seen: false, value:2}, {seen: false, value:0}, {seen: false, value:0}]);
+  expect(gameService.activePlayerHasAllCardsFaceUp()).toBe(false);
+
+  playerService.getPlayers()[0].setDeck([{seen: true, value:0}, {seen: true, value:1}, {seen: true, value:2}, {seen: false, value:0}, {seen: true, value:0}]);
+  expect(gameService.activePlayerHasAllCardsFaceUp()).toBe(false);
+});

@@ -15,6 +15,10 @@ class Hand extends Component {
     return ["CardDrawn", "DiscardChosen", "CardDiscarded", "SwapChosen", "SwapInProgress"].includes(this.props.moveState)
   }
 
+  ShowTurnUpAction = () => {
+    return !this.gameService.activePlayerHasAllCardsFaceUp();
+  }
+
   ShowEndActions = () => {
     return this.props.moveState === "PreEndState";
   }
@@ -38,7 +42,7 @@ class Hand extends Component {
                   {this.gameService.getActiveCard().value}
                 </div>
                 <div>
-                  <button onClick={() => {this.props.buttonPressedCallback('turnFaceUp')}}> Discard to turn two face up </button>
+                  {this.ShowTurnUpAction() && <button onClick={() => {this.props.buttonPressedCallback('turnFaceUp')}}> Discard to turn two face up </button>}
                   <button onClick={() => {this.props.buttonPressedCallback('swap')}}> Discard to swap two </button>
                 </div>
             </React.Fragment>}

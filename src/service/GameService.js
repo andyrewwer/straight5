@@ -279,6 +279,16 @@ class GameService {
     this.setTokenToClaim('');
   }
 
+  activePlayerHasAllCardsFaceUp() {
+    const playerDeck = this.getActivePlayersDeck()
+    for (let i = 0; i < playerDeck.length; i++) {
+      if (!playerDeck[i].seen) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   getActivePlayersTokens() {
     return this.playerService.getPlayers()[this.getActivePlayerIndex()].getTokens();
   }
