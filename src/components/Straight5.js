@@ -180,6 +180,7 @@ class Straight5 extends Component {
   // TODO SHOW ACTIVE PLAYER
   // TODO ADD joker
   // TODO ADD AI
+  // TODO  state service instead of this.state
 
 
   render = () => {
@@ -199,9 +200,9 @@ class Straight5 extends Component {
 
     {this.state.AppMode  === AppMode.GAME &&
     <React.Fragment>
-      <Hand playerService={this.playerService} id={0} cardPressedCallback={this.handlePlayerCardPressed} />
-      <MiddleSection gameService={this.gameService} drawCallback={this.DrawCard}/>
-      <Hand playerService={this.playerService} id={1} cardPressedCallback={this.handlePlayerCardPressed} />
+      <Hand gameService={this.gameService} moveState={this.state.MoveState} playerService={this.playerService} id={0} cardPressedCallback={this.handlePlayerCardPressed} />
+      <MiddleSection gameService={this.gameService} drawCallback={this.DrawCard} moveState={this.state.MoveState}/>
+      <Hand gameService={this.gameService} moveState={this.state.MoveState} playerService={this.playerService} id={1} cardPressedCallback={this.handlePlayerCardPressed} />
       <FooterSection gameService={this.gameService} moveState={this.state.MoveState} buttonPressedCallback={this.handleActionButtonPressed} />
     </React.Fragment>}
 

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './Hand.css';
-
+const classNames = require('classnames');
+const {MoveState} = require('../../model/Enums.js')
 
 class Hand extends Component {
   constructor(props) {
@@ -9,6 +10,14 @@ class Hand extends Component {
     this.render.bind(this);
     this.deck = this.props.playerService.getPlayers()[this.props.id].getDeck();
     this.tokens = this.props.playerService.getPlayers()[this.props.id].getTokens();
+  }
+
+  // TODO maybe add this for claimToken logic. Think too much
+
+  canDrawCard() {
+    return [MoveState.CARD_DRAWN, MoveState.DISCARD_CHOSEN, MoveState.CARD_DISCARDED, MoveState.SWAP_CHOSEN, MoveState.SWAP_IN_PROGRESS,  MoveState.CLAIMING_TOKEN].includes(this.props.moveState)  &&
+      this.props.id === this.props.gameService.getActivePlayerIndex();
+
   }
 
   render = () => {
@@ -21,7 +30,7 @@ class Hand extends Component {
           <p className="playerTag">Tokens</p>
         </div>
         {this.deck.map((card, index) => (
-          <div className='PlayerCard' role='playerCard' key={index} onClick={() => this.props.cardPressedCallback(this.props.id, index)}>
+          <div className={classNames('PlayerCard', {"PlayerCardIsActive" : this.canDrawCard()})} role='playerCard' key={index} onClick={() => this.props.cardPressedCallback(this.props.id, index)}>
             {card.seen ? card.value : '?'}
           </div>
         ))}

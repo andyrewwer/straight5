@@ -70,9 +70,11 @@ button:hover{
 
 
 /* TODO only hover on cards that can be clicked  */
-.PlayerCard:hover, .PlayerCardMini:hover{
+
+.PlayerCardIsActive:hover {
   background: #0053ba;
 }
+
 .PlayerCardMini {
   height: 70% ;
   width: 70%;
