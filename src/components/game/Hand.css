@@ -18,6 +18,6 @@
   grid-column: 1/6;
 }
 
-.PlayerTokenHeader {
-
+.playerTag {
+  margin: 5px 0px 0px 0px;
 }

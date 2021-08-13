@@ -95,8 +95,9 @@ beforeEach(() => {
 
 test('render Start Section', () => {
   const straight5 = render(<Straight5 gameService={gameService} playerService={playerService} />);
-  expect(screen.getByTestId('start-header')).toHaveTextContent('Welcome to Straight 5');
+  expect(screen.getByTestId('start-header')).toBeInTheDocument();
   expect(screen.getByRole('button')).toHaveTextContent('Start New Game');
+  expect(screen.getByTestId('rules-section')).toBeInTheDocument();
 
   expect(screen.queryByTestId('game-header')).toBeNull();
   expect(screen.queryByTestId('win-header')).toBeNull();
@@ -105,8 +106,8 @@ test('render Start Section', () => {
 test('renderGameMode sets up screen as expected', () => {
   startGame();
 
-  expect(screen.queryByTestId('start-header')).toBeNull()
-  expect(screen.getByTestId('game-header')).toHaveTextContent('Straight 5');
+  expect(screen.queryByTestId('start-header')).toBeInTheDocument();
+  expect(screen.queryByTestId('rules-section')).toBeNull();
   expect(screen.getAllByTestId('hand').length).toBe(2);
   expect(screen.queryByTestId('middle-section')).toBeInTheDocument();
   expect(screen.queryByTestId('middle-section-deck')).toBeInTheDocument();
@@ -277,13 +278,17 @@ test('renderGameMode winner and renderPlayerWin', () => {
   userEvent.click(screen.getByTestId('footer-section-claimToken-threeOfAKind'));
 
   expect(screen.queryByTestId('game-header')).toBeNull();
-  expect(screen.queryByTestId('start-header')).toBeNull();
   expect(screen.getByTestId('win-header')).toHaveTextContent('Congratulations to Player 5');
   expect(screen.getByTestId('win-header')).toHaveTextContent('Congratulations to Player 5');
   expect(screen.getByTestId('win-startNewGame')).toHaveTextContent('Start a new Game');
 
   userEvent.click(screen.getByTestId('win-startNewGame'));
-  expect(screen.queryByTestId('game-header')).not.toBeNull();
+  expect(screen.getAllByTestId('hand').length).toBe(2);
+  expect(screen.queryByTestId('middle-section')).toBeInTheDocument();
+  expect(screen.queryByTestId('middle-section-deck')).toBeInTheDocument();
+  expect(screen.queryByTestId('middle-section-discard')).toBeInTheDocument();
+  expect(screen.getByTestId('footer-section')).toBeInTheDocument();
+  
 });
 
 function startGame() {

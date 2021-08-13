@@ -9,8 +9,7 @@ class Hand extends Component {
     this.TableCanvas = React.createRef();
     this.render.bind(this);
   }
-  //TODO Hide turn-faceup if all cards are faceup
-
+  
   ShowCardActions = () => {
     return ["CardDrawn", "DiscardChosen", "CardDiscarded", "SwapChosen", "SwapInProgress"].includes(this.props.moveState)
   }

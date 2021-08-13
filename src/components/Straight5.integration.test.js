@@ -20,14 +20,12 @@ beforeEach(() => {
 
 test('render Start Section', () => {
   const straight5 = render(<Straight5 gameService={gameService} playerService={playerService} />);
-  expect(screen.getByTestId('start-header')).toHaveTextContent('Welcome to Straight 5');
-  expect(screen.queryByTestId('game-header')).toBeNull();
+  expect(screen.getByTestId('start-header')).toHaveTextContent('Straight 5');
   expect(screen.queryByTestId('win-header')).toBeNull();expect(screen.getByRole('button')).toHaveTextContent('Start New Game');
 
   userEvent.click(screen.getByRole('button'));
-  expect(screen.queryByTestId('start-header')).toBeNull();
+  expect(screen.queryByTestId('start-header')).toBeInTheDocument();
   expect(screen.queryByTestId('win-header')).toBeNull();
-  expect(screen.getByTestId('game-header')).toHaveTextContent('Straight 5');
   expect(screen.getAllByTestId('hand').length).toBe(2);
   expect(screen.getAllByTestId('hand')[0]).toHaveTextContent('Tokens?????');
   expect(screen.getAllByTestId('hand')[1]).toHaveTextContent('Tokens?????');

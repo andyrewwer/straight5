@@ -1,9 +1,21 @@
+h2 {
+  margin: 0 0 0 10px ;
+}
+
+.startHeader {
+  text-align: center;
+}
 .CardTable {
   display:  grid;
-  text-align: center;
-  grid-template-rows: auto 1fr 1fr 1fr auto;
   background: var(--secondary-background);
-  border-radius: 8px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+
+}
+
+.CardTableGame {
+  grid-template-rows: auto 1fr 1fr 1fr auto;
 }
 
 .CardTableFooter .PlayerCard {
@@ -27,11 +39,12 @@
 button {
   border: 1px solid rgb(256, 256, 256, 0.5);
   padding: 5px;
+  margin: 10px;
   background: var(--button-background);
   color: #ffffff;
   width: 80%;
   border-radius: 7px;
-  box-shadow: 1px 1px 1px rgb(256, 256, 256, 0.5);
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
 }
 
 button:hover{

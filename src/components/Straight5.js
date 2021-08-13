@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Hand from './game/Hand.js';
 import MiddleSection from './game/MiddleSection.js';
 import FooterSection from './game/FooterSection.js';
+import RulesSection from './RulesSection.js';
 import './Straight5.css';
 
 class Straight5 extends Component {
@@ -182,20 +183,21 @@ class Straight5 extends Component {
 
   render = () => {
     return (
-  <div className="CardTable">
+  <div className={this.state.AppMode === 'StartState' ? 'CardTable' : 'CardTable CardTableGame'}>
+    <h2 className="startHeader" data-testid="start-header">
+      Straight 5
+    </h2>
     {this.state.AppMode === 'StartState' &&
     <React.Fragment>
-        <div className="mb-4" data-testid="start-header">
-        Welcome to Straight 5
-        <button className="mt-2" onClick={this.StartNewGame}>Start New Game</button>
+        <RulesSection/>
+        <div className="mb-4 mt-2">
+          <button onClick={this.StartNewGame}>Start New Game</button>
         </div>
+
     </React.Fragment>}
 
     {this.state.AppMode  === 'Game' &&
     <React.Fragment>
-      <div data-testid="game-header">
-        Straight 5
-      </div>
       <Hand playerService={this.playerService} id={0} cardPressedCallback={this.handlePlayerCardPressed} />
       <MiddleSection gameService={this.gameService} drawCallback={this.DrawCard}/>
       <Hand playerService={this.playerService} id={1} cardPressedCallback={this.handlePlayerCardPressed} />
