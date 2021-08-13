@@ -27,8 +27,8 @@ test('render Start Section', () => {
   expect(screen.queryByTestId('start-header')).toBeInTheDocument();
   expect(screen.queryByTestId('win-header')).toBeNull();
   expect(screen.getAllByTestId('hand').length).toBe(2);
-  expect(screen.getAllByTestId('hand')[0]).toHaveTextContent('Tokens?????');
-  expect(screen.getAllByTestId('hand')[1]).toHaveTextContent('Tokens?????');
+  expect(screen.getAllByTestId('hand')[0]).toHaveTextContent('Tokens[0/4]?????');
+  expect(screen.getAllByTestId('hand')[1]).toHaveTextContent('Tokens[0/4]?????');
   expect(screen.getByTestId('middle-section')).toHaveTextContent(/Discard\dDeck\?/);
   expect(screen.getByTestId('footer-section')).toBeInTheDocument();
 

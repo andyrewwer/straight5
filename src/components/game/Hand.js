@@ -13,7 +13,7 @@ class Hand extends Component {
   }
 
   // TODO maybe add this for claimToken logic. Think too much
-
+// TODO the 0/4 win tracking should be done dynamically and pass in rather than hard-coded
   canDrawCard() {
     return [MoveState.CARD_DRAWN, MoveState.DISCARD_CHOSEN, MoveState.CARD_DISCARDED, MoveState.SWAP_CHOSEN, MoveState.SWAP_IN_PROGRESS,  MoveState.CLAIMING_TOKEN].includes(this.props.moveState)  &&
       this.props.id === this.props.gameService.getActivePlayerIndex();
@@ -27,7 +27,7 @@ class Hand extends Component {
           <p className="playerTag">Player {this.props.id+1}</p>
         </div>
         <div className="PlayerTokenHeader">
-          <p className="playerTag">Tokens</p>
+          <p className="playerTag">Tokens [{this.tokens.length}/4]</p>
         </div>
         {this.deck.map((card, index) => (
           <div className={classNames('PlayerCard', {"PlayerCardIsActive" : this.canDrawCard()})} role='playerCard' key={index} onClick={() => this.props.cardPressedCallback(this.props.id, index)}>
