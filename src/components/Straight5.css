@@ -38,10 +38,11 @@ h2 {
 
 button {
   border: 1px solid rgb(256, 256, 256, 0.5);
-  padding: 5px;
+  padding: 7px 25px;
   margin: 10px;
   background: var(--button-background);
   color: #ffffff;
+  /* width: 100%; */
   width: 80%;
   border-radius: 7px;
   box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
@@ -51,14 +52,29 @@ button:hover{
   background: #0053ba;
 }
 
-.mt-2 {
-  margin-top: 10px;
+.small-width-button {
+  width: initial;
 }
 
-.mb-2 {
-  margin-bottom: 5px;
+.PlayerCard {
+  border: 1px solid rgb(256, 256, 256, 0.5);
+  border-radius: 10%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
+  width: 72px;
+  background: var(--card-background);
+  box-shadow: rgba(0, 0, 0, 0.15) 2.4px 2.4px 3.2px;
 }
 
-.mb-4 {
-  margin-bottom: 15px;
+
+/* TODO only hover on cards that can be clicked  */
+.PlayerCard:hover, .PlayerCardMini:hover{
+  background: #0053ba;
+}
+.PlayerCardMini {
+  height: 70% ;
+  width: 70%;
+  transform: translateX(50%);
 }

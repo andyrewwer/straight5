@@ -191,7 +191,7 @@ class Straight5 extends Component {
     <React.Fragment>
         <RulesSection/>
         <div className="mb-4 mt-2">
-          <button onClick={this.StartNewGame}>Start New Game</button>
+          <button className="small-width-button" onClick={this.StartNewGame}>Start New Game</button>
         </div>
 
     </React.Fragment>}

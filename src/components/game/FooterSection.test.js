@@ -47,12 +47,12 @@ test('render PreEndState shows end actions with all tokens are', () => {
   render(<FooterSection gameService={gameService} moveState={'PreEndState'}  />)
   expect(screen.getByRole('header')).toHaveTextContent('Please select a token to claim or pass');
   expect(screen.queryAllByRole('button').length).toBe(6);
-  expect(screen.queryAllByRole('button')[0]).toHaveTextContent('Pass');
-  expect(screen.queryAllByRole('button')[1]).toHaveTextContent('THREE IN A ROW');
-  expect(screen.queryAllByRole('button')[2]).toHaveTextContent('FOUR IN A ROW');
-  expect(screen.queryAllByRole('button')[3]).toHaveTextContent('FIVE IN A ROW');
-  expect(screen.queryAllByRole('button')[4]).toHaveTextContent('THREE OF A KIND');
-  expect(screen.queryAllByRole('button')[5]).toHaveTextContent('FULL HOUSE');
+  expect(screen.queryAllByRole('button')[0]).toHaveTextContent('THREE IN A ROW');
+  expect(screen.queryAllByRole('button')[1]).toHaveTextContent('FOUR IN A ROW');
+  expect(screen.queryAllByRole('button')[2]).toHaveTextContent('FIVE IN A ROW');
+  expect(screen.queryAllByRole('button')[3]).toHaveTextContent('THREE OF A KIND');
+  expect(screen.queryAllByRole('button')[4]).toHaveTextContent('FULL HOUSE');
+  expect(screen.queryAllByRole('button')[5]).toHaveTextContent('Pass');
   expect(screen.queryByRole('activeCard')).not.toBeInTheDocument();
   expect(mockSwapCardIndex.mock.calls.length).toBe(1);
   expect(mockCanClaimToken.mock.calls.length).toBe(5);
@@ -68,11 +68,11 @@ test('render PreEndState shows end actions with some Tokens', () => {
   render(<FooterSection gameService={gameService} moveState={'PreEndState'}  />)
   expect(screen.getByRole('header')).toHaveTextContent('Please select a token to claim or pass');
   expect(screen.queryAllByRole('button').length).toBe(5);
-  expect(screen.queryAllByRole('button')[0]).toHaveTextContent('Pass');
-  expect(screen.queryAllByRole('button')[1]).toHaveTextContent('FOUR IN A ROW');
-  expect(screen.queryAllByRole('button')[2]).toHaveTextContent('FIVE IN A ROW');
-  expect(screen.queryAllByRole('button')[3]).toHaveTextContent('THREE OF A KIND');
-  expect(screen.queryAllByRole('button')[4]).toHaveTextContent('FULL HOUSE');
+  expect(screen.queryAllByRole('button')[0]).toHaveTextContent('FOUR IN A ROW');
+  expect(screen.queryAllByRole('button')[1]).toHaveTextContent('FIVE IN A ROW');
+  expect(screen.queryAllByRole('button')[2]).toHaveTextContent('THREE OF A KIND');
+  expect(screen.queryAllByRole('button')[3]).toHaveTextContent('FULL HOUSE');
+  expect(screen.queryAllByRole('button')[4]).toHaveTextContent('Pass');
   expect(screen.queryByRole('activeCard')).not.toBeInTheDocument();
   expect(mockSwapCardIndex.mock.calls.length).toBe(1);
   expect(mockCanClaimToken.mock.calls.length).toBe(5);
@@ -85,9 +85,9 @@ test('render CardDrawn activeCard and options', () => {
   render(<FooterSection gameService={gameService} moveState={'CardDrawn'}  />)
   expect(screen.getByRole('header')).toHaveTextContent('Replace card in your hand or choose a discard option');
   expect(screen.queryAllByRole('button').length).toBe(3);
-  expect(screen.queryAllByRole('button')[0]).toHaveTextContent('Pass');
-  expect(screen.queryAllByRole('button')[1]).toHaveTextContent('Discard to turn two face up');
-  expect(screen.queryAllByRole('button')[2]).toHaveTextContent('Discard to swap two');
+  expect(screen.queryAllByRole('button')[0]).toHaveTextContent('Discard to turn two face up');
+  expect(screen.queryAllByRole('button')[1]).toHaveTextContent('Discard to swap two');
+  expect(screen.queryAllByRole('button')[2]).toHaveTextContent('Pass');
   expect(screen.queryByRole('activeCard')).toHaveTextContent('10');
   expect(mockSwapCardIndex.mock.calls.length).toBe(1);
   expect(mockCanClaimToken).not.toHaveBeenCalled()
@@ -99,8 +99,8 @@ test('render givenAllCardsFaceUp shouldHideTurnFaceUp', () => {
   mockGetActiveCard.mockReturnValue({value: 10})
   render(<FooterSection gameService={gameService} moveState={'CardDrawn'}  />)
   expect(screen.queryAllByRole('button').length).toBe(2);
-  expect(screen.queryAllByRole('button')[0]).toHaveTextContent('Pass');
-  expect(screen.queryAllByRole('button')[1]).toHaveTextContent('Discard to swap two');
+  expect(screen.queryAllByRole('button')[0]).toHaveTextContent('Discard to swap two');
+  expect(screen.queryAllByRole('button')[1]).toHaveTextContent('Pass');
 });
 
 test('activeCard callbacks', () => {
@@ -111,19 +111,20 @@ test('activeCard callbacks', () => {
   buttonPressedCallback={mockCallback} />)
 
   expect(screen.queryAllByRole('button').length).toBe(3);
-  userEvent.click(screen.getAllByRole('button')[0]);
-  expect(mockCallback.mock.calls.length).toBe(1);
-  expect(mockCallback.mock.calls[0][0]).toBe('pass');
-  mockCallback.mockClear();
 
-  userEvent.click(screen.getAllByRole('button')[1]);
+  userEvent.click(screen.getAllByRole('button')[0]);
   expect(mockCallback.mock.calls.length).toBe(1);
   expect(mockCallback.mock.calls[0][0]).toBe('turnFaceUp');
   mockCallback.mockClear();
 
-  userEvent.click(screen.getAllByRole('button')[2]);
+  userEvent.click(screen.getAllByRole('button')[1]);
   expect(mockCallback.mock.calls.length).toBe(1);
   expect(mockCallback.mock.calls[0][0]).toBe('swap');
+  mockCallback.mockClear();
+
+  userEvent.click(screen.getAllByRole('button')[2]);
+  expect(mockCallback.mock.calls.length).toBe(1);
+  expect(mockCallback.mock.calls[0][0]).toBe('pass');
 
 });
 
@@ -137,31 +138,32 @@ test('claimToken callbacks', () => {
 
   userEvent.click(screen.getAllByRole('button')[0]);
   expect(mockCallback.mock.calls.length).toBe(1);
-  expect(mockCallback.mock.calls[0][0]).toBe('changeTurn');
-  mockCallback.mockClear();
-
-  userEvent.click(screen.getAllByRole('button')[1]);
-  expect(mockCallback.mock.calls.length).toBe(1);
   expect(mockCallback.mock.calls[0][0]).toBe('claimToken');
   expect(mockCallback.mock.calls[0][1]).toBe('THREE_IN_A_ROW');
 
-  userEvent.click(screen.getAllByRole('button')[2]);
+  userEvent.click(screen.getAllByRole('button')[1]);
   expect(mockCallback.mock.calls.length).toBe(2);
   expect(mockCallback.mock.calls[1][0]).toBe('claimToken');
   expect(mockCallback.mock.calls[1][1]).toBe('FOUR_IN_A_ROW');
 
-  userEvent.click(screen.getAllByRole('button')[3]);
+  userEvent.click(screen.getAllByRole('button')[2]);
   expect(mockCallback.mock.calls.length).toBe(3);
   expect(mockCallback.mock.calls[2][0]).toBe('claimToken');
   expect(mockCallback.mock.calls[2][1]).toBe('FIVE_IN_A_ROW');
 
-  userEvent.click(screen.getAllByRole('button')[4]);
+  userEvent.click(screen.getAllByRole('button')[3]);
   expect(mockCallback.mock.calls.length).toBe(4);
   expect(mockCallback.mock.calls[3][0]).toBe('claimToken');
   expect(mockCallback.mock.calls[3][1]).toBe('THREE_OF_A_KIND');
 
-  userEvent.click(screen.getAllByRole('button')[5]);
+  userEvent.click(screen.getAllByRole('button')[4]);
   expect(mockCallback.mock.calls.length).toBe(5);
   expect(mockCallback.mock.calls[4][0]).toBe('claimToken');
   expect(mockCallback.mock.calls[4][1]).toBe('FULL_HOUSE');
+
+  mockCallback.mockClear();
+  userEvent.click(screen.getAllByRole('button')[5]);
+  expect(mockCallback.mock.calls.length).toBe(1);
+  expect(mockCallback.mock.calls[0][0]).toBe('changeTurn');
+
 });
