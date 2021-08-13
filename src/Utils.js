@@ -1,3 +1,5 @@
+const {MoveState} = require('./model/Enums.js')
+
 function shuffleArray(array) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -8,21 +10,21 @@ function shuffleArray(array) {
 
 function getPlayerTextForMoveState(moveState, cardIndex) {
   switch (moveState) {
-    case "StartState":
+    case MoveState.START_STATE:
       return 'Please draw a card from Deck or Discard'
-    case "CardDrawn":
+    case MoveState.CARD_DRAWN:
       return 'Replace card in your hand or choose a discard option';
-    case "DiscardChosen":
+    case MoveState.DISCARD_CHOSEN:
       return 'Select the first card to discard or pass'
-    case "CardDiscarded":
+    case MoveState.CARD_DISCARDED:
       return 'Select the second card to discard or pass'
-    case "SwapChosen":
+    case MoveState.SWAP_CHOSEN:
       return 'Select the first card you\'d like  to swap'
-    case "SwapInProgress":
+    case MoveState.SWAP_IN_PROGRESS:
       return 'Selected ' + cardIndex + '. Please select a second card to swap'
-    case "PreEndState":
+    case MoveState.PRE_END_STATE:
       return 'Please select a token to claim or pass'
-    case "ClaimingToken":
+    case MoveState.CLAIMING_TOKEN:
       return 'Please select the first card of your run';
     default:
       return 'UNKONWN STATE DETECTED'

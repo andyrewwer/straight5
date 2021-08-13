@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './FooterSection.css';
+const {MoveState} = require('../../model/Enums.js')
 const { getPlayerTextForMoveState} = require('../../Utils.js')
 
 class Hand extends Component {
@@ -11,7 +12,7 @@ class Hand extends Component {
   }
 
   ShowCardActions = () => {
-    return ["CardDrawn", "DiscardChosen", "CardDiscarded", "SwapChosen", "SwapInProgress"].includes(this.props.moveState)
+    return [MoveState.CARD_DRAWN, MoveState.DISCARD_CHOSEN, MoveState.CARD_DISCARDED, MoveState.SWAP_CHOSEN, MoveState.SWAP_IN_PROGRESS].includes(this.props.moveState)
   }
 
   ShowTurnUpAction = () => {
@@ -19,7 +20,7 @@ class Hand extends Component {
   }
 
   ShowEndActions = () => {
-    return this.props.moveState === "PreEndState";
+    return this.props.moveState === MoveState.PRE_END_STATE;
   }
 
   ShowToken = token => {

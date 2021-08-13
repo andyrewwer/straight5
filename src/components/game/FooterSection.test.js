@@ -3,12 +3,13 @@
  */
 
 import React from 'react';
-import '@testing-library/jest-dom'
+import '@testing-library/jest-dom';
 import {cleanup, fireEvent, render, screen} from '@testing-library/react';
-import userEvent from '@testing-library/user-event'
-import FooterSection from './FooterSection.js'
-const {PlayerService} = require('../../service/PlayerService.js')
-const GameService = require('../../service/GameService.js')
+import userEvent from '@testing-library/user-event';
+import FooterSection from './FooterSection.js';
+const {PlayerService} = require('../../service/PlayerService.js');
+const GameService = require('../../service/GameService.js');
+const {MoveState} = require('../../model/Enums.js')
 
 jest.mock('../../service/GameService', () => jest.fn());
 
@@ -33,7 +34,7 @@ beforeEach(() => {
 });
 
 test('render given basic state hides all subsections and displays right text', () => {
-  render(<FooterSection gameService={gameService} moveState={'StartState'}  />)
+  render(<FooterSection gameService={gameService} moveState={MoveState.START_STATE}  />)
 
   expect(screen.getByRole('header')).toHaveTextContent('Please draw a card from Deck or Discard');
   expect(screen.queryByRole('button')).not.toBeInTheDocument();
@@ -44,7 +45,7 @@ test('render given basic state hides all subsections and displays right text', (
 
 test('render PreEndState shows end actions with all tokens are', () => {
   mockCanClaimToken.mockReturnValue(true);
-  render(<FooterSection gameService={gameService} moveState={'PreEndState'}  />)
+  render(<FooterSection gameService={gameService} moveState={MoveState.PRE_END_STATE}  />)
   expect(screen.getByRole('header')).toHaveTextContent('Please select a token to claim or pass');
   expect(screen.queryAllByRole('button').length).toBe(6);
   expect(screen.queryAllByRole('button')[0]).toHaveTextContent('THREE IN A ROW');
@@ -65,7 +66,7 @@ test('render PreEndState shows end actions with all tokens are', () => {
 
 test('render PreEndState shows end actions with some Tokens', () => {
   mockCanClaimToken.mockReturnValueOnce(false).mockReturnValue(true);
-  render(<FooterSection gameService={gameService} moveState={'PreEndState'}  />)
+  render(<FooterSection gameService={gameService} moveState={MoveState.PRE_END_STATE}  />)
   expect(screen.getByRole('header')).toHaveTextContent('Please select a token to claim or pass');
   expect(screen.queryAllByRole('button').length).toBe(5);
   expect(screen.queryAllByRole('button')[0]).toHaveTextContent('FOUR IN A ROW');
@@ -82,7 +83,7 @@ test('render PreEndState shows end actions with some Tokens', () => {
 test('render CardDrawn activeCard and options', () => {
   mockAllCardsFaceUp.mockReturnValue(false);
   mockGetActiveCard.mockReturnValue({value: 10})
-  render(<FooterSection gameService={gameService} moveState={'CardDrawn'}  />)
+  render(<FooterSection gameService={gameService} moveState={MoveState.CARD_DRAWN}  />)
   expect(screen.getByRole('header')).toHaveTextContent('Replace card in your hand or choose a discard option');
   expect(screen.queryAllByRole('button').length).toBe(3);
   expect(screen.queryAllByRole('button')[0]).toHaveTextContent('Discard to turn two face up');
@@ -97,7 +98,7 @@ test('render CardDrawn activeCard and options', () => {
 test('render givenAllCardsFaceUp shouldHideTurnFaceUp', () => {
   mockAllCardsFaceUp.mockReturnValue(true);
   mockGetActiveCard.mockReturnValue({value: 10})
-  render(<FooterSection gameService={gameService} moveState={'CardDrawn'}  />)
+  render(<FooterSection gameService={gameService} moveState={MoveState.CARD_DRAWN}  />)
   expect(screen.queryAllByRole('button').length).toBe(2);
   expect(screen.queryAllByRole('button')[0]).toHaveTextContent('Discard to swap two');
   expect(screen.queryAllByRole('button')[1]).toHaveTextContent('Pass');
@@ -107,7 +108,7 @@ test('activeCard callbacks', () => {
   mockAllCardsFaceUp.mockReturnValue(false);
   mockGetActiveCard.mockReturnValue({value: 10})
   const mockCallback = jest.fn();
-  render(<FooterSection gameService={gameService} moveState={'CardDrawn'}
+  render(<FooterSection gameService={gameService} moveState={MoveState.CARD_DRAWN}
   buttonPressedCallback={mockCallback} />)
 
   expect(screen.queryAllByRole('button').length).toBe(3);
@@ -132,7 +133,7 @@ test('claimToken callbacks', () => {
   mockCanClaimToken.mockReturnValue(true);
   const mockCallback = jest.fn();
 
-  render(<FooterSection gameService={gameService} moveState={'PreEndState'}
+  render(<FooterSection gameService={gameService} moveState={MoveState.PRE_END_STATE}
   buttonPressedCallback={mockCallback}  />)
   expect(screen.queryAllByRole('button').length).toBe(6);
 

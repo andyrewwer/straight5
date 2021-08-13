@@ -135,7 +135,7 @@ test('renderGameMode sets up screen as expected', () => {
   expect(mockFooterSection).toHaveBeenCalledTimes(1);
   expect(mockFooterSection.mock.calls[0].length).toBe(1);
   expect(mockFooterSection.mock.calls[0][0]['gameService']).toBe(gameService);
-  expect(mockFooterSection.mock.calls[0][0]['moveState']).toBe('StartState');
+  expect(mockFooterSection.mock.calls[0][0]['moveState']).toBe('START_STATE');
 });
 
 test('renderGameMode replaceCard drawDeck', () => {
@@ -288,7 +288,7 @@ test('renderGameMode winner and renderPlayerWin', () => {
   expect(screen.queryByTestId('middle-section-deck')).toBeInTheDocument();
   expect(screen.queryByTestId('middle-section-discard')).toBeInTheDocument();
   expect(screen.getByTestId('footer-section')).toBeInTheDocument();
-  
+
 });
 
 function startGame() {
