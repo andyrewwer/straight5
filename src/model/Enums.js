@@ -1,3 +1,22 @@
+export const ActionType = {
+  PASS: 'PASS',
+  SWAP: 'SWAP',
+  CHANGE_TURN: 'CHANGE_TURN',
+  TURN_FACE_UP: 'TURN_FACE_UP',
+  CLAIM_TOKEN: 'CLAIM_TOKEN'
+}
+
+export const AppMode = {
+  START_STATE: 'START_STATE',
+  GAME: 'GAME',
+  PLAYER_WIN: 'PLAYER_WIN'
+}
+
+export const DrawType = {
+  DECK: 'DECK',
+  DISCARD: 'DISCARD'
+}
+
 export const MoveState = {
   START_STATE:  'START_STATE',
   CARD_DRAWN: 'CARD_DRAWN',
@@ -9,8 +28,10 @@ export const MoveState = {
   CLAIMING_TOKEN: 'CLAIMING_TOKEN'
 }
 
-export const AppMode = {
-  START_STATE: 'START_STATE',
-  GAME: 'GAME',
-  PLAYER_WIN: 'PLAYER_WIN'
+export const TokenType = {
+  THREE_IN_A_ROW: 'THREE_IN_A_ROW',
+  FOUR_IN_A_ROW: 'FOUR_IN_A_ROW',
+  FIVE_IN_A_ROW: 'FIVE_IN_A_ROW',
+  THREE_OF_A_KIND: 'THREE_OF_A_KIND',
+  FULL_HOUSE: 'FULL_HOUSE'
 }

@@ -9,6 +9,7 @@ import userEvent from '@testing-library/user-event'
 import Hand from './Hand.js'
 const {PlayerService} = require('../../service/PlayerService.js')
 const {GameService} = require('../../service/GameService.js')
+const {TokenType} = require('../../model/Enums.js')
 
 let playerService = new PlayerService(3);
 
@@ -32,7 +33,7 @@ test('render new component has 5 face down cards and no tokens', () => {
 
 test('render new component has 5 face up cards and tokens', () => {
   playerService.getPlayers()[1].setDeck([{value:0, seen:true},{value:5, seen:true},{value:0, seen:false},{value:2, seen:true},{value:9, seen:true}])
-  playerService.getPlayers()[1].setTokens(['THREE_IN_A_ROW', 'FULL_HOUSE']);
+  playerService.getPlayers()[1].setTokens([TokenType.THREE_IN_A_ROW, TokenType.FULL_HOUSE]);
   render(<Hand playerService={playerService} id={1} />);
   expect(screen.getByRole('header')).toHaveTextContent('Player 2');
   expect(screen.getAllByRole('playerCard').length).toEqual(5);
@@ -42,8 +43,8 @@ test('render new component has 5 face up cards and tokens', () => {
   expect(screen.getAllByRole('playerCard')[3]).toHaveTextContent('2');
   expect(screen.getAllByRole('playerCard')[4]).toHaveTextContent('9');
   expect(screen.getAllByRole('playerToken').length).toEqual(2);
-  expect(screen.getAllByRole('playerToken')[0]).toHaveTextContent('THREE_IN_A_ROW');
-  expect(screen.getAllByRole('playerToken')[1]).toHaveTextContent('FULL_HOUSE');
+  expect(screen.getAllByRole('playerToken')[0]).toHaveTextContent(TokenType.THREE_IN_A_ROW);
+  expect(screen.getAllByRole('playerToken')[1]).toHaveTextContent(TokenType.FULL_HOUSE);
 });
 
 test('render callbackWorks as expected', () => {

@@ -9,7 +9,7 @@ import userEvent from '@testing-library/user-event';
 import FooterSection from './FooterSection.js';
 const {PlayerService} = require('../../service/PlayerService.js');
 const GameService = require('../../service/GameService.js');
-const {MoveState} = require('../../model/Enums.js')
+const { ActionType, MoveState, TokenType } = require('../../model/Enums.js')
 
 jest.mock('../../service/GameService', () => jest.fn());
 
@@ -57,11 +57,11 @@ test('render PreEndState shows end actions with all tokens are', () => {
   expect(screen.queryByRole('activeCard')).not.toBeInTheDocument();
   expect(mockSwapCardIndex.mock.calls.length).toBe(1);
   expect(mockCanClaimToken.mock.calls.length).toBe(5);
-  expect(mockCanClaimToken.mock.calls[0][0]).toBe('THREE_IN_A_ROW');
-  expect(mockCanClaimToken.mock.calls[1][0]).toBe('FOUR_IN_A_ROW');
-  expect(mockCanClaimToken.mock.calls[2][0]).toBe('FIVE_IN_A_ROW');
-  expect(mockCanClaimToken.mock.calls[3][0]).toBe('THREE_OF_A_KIND');
-  expect(mockCanClaimToken.mock.calls[4][0]).toBe('FULL_HOUSE');
+  expect(mockCanClaimToken.mock.calls[0][0]).toBe(TokenType.THREE_IN_A_ROW);
+  expect(mockCanClaimToken.mock.calls[1][0]).toBe(TokenType.FOUR_IN_A_ROW);
+  expect(mockCanClaimToken.mock.calls[2][0]).toBe(TokenType.FIVE_IN_A_ROW);
+  expect(mockCanClaimToken.mock.calls[3][0]).toBe(TokenType.THREE_OF_A_KIND);
+  expect(mockCanClaimToken.mock.calls[4][0]).toBe(TokenType.FULL_HOUSE);
 });
 
 test('render PreEndState shows end actions with some Tokens', () => {
@@ -115,17 +115,17 @@ test('activeCard callbacks', () => {
 
   userEvent.click(screen.getAllByRole('button')[0]);
   expect(mockCallback.mock.calls.length).toBe(1);
-  expect(mockCallback.mock.calls[0][0]).toBe('turnFaceUp');
+  expect(mockCallback.mock.calls[0][0]).toBe(ActionType.TURN_FACE_UP);
   mockCallback.mockClear();
 
   userEvent.click(screen.getAllByRole('button')[1]);
   expect(mockCallback.mock.calls.length).toBe(1);
-  expect(mockCallback.mock.calls[0][0]).toBe('swap');
+  expect(mockCallback.mock.calls[0][0]).toBe(ActionType.SWAP);
   mockCallback.mockClear();
 
   userEvent.click(screen.getAllByRole('button')[2]);
   expect(mockCallback.mock.calls.length).toBe(1);
-  expect(mockCallback.mock.calls[0][0]).toBe('pass');
+  expect(mockCallback.mock.calls[0][0]).toBe(ActionType.PASS);
 
 });
 
@@ -139,32 +139,32 @@ test('claimToken callbacks', () => {
 
   userEvent.click(screen.getAllByRole('button')[0]);
   expect(mockCallback.mock.calls.length).toBe(1);
-  expect(mockCallback.mock.calls[0][0]).toBe('claimToken');
-  expect(mockCallback.mock.calls[0][1]).toBe('THREE_IN_A_ROW');
+  expect(mockCallback.mock.calls[0][0]).toBe(ActionType.CLAIM_TOKEN);
+  expect(mockCallback.mock.calls[0][1]).toBe(TokenType.THREE_IN_A_ROW);
 
   userEvent.click(screen.getAllByRole('button')[1]);
   expect(mockCallback.mock.calls.length).toBe(2);
-  expect(mockCallback.mock.calls[1][0]).toBe('claimToken');
-  expect(mockCallback.mock.calls[1][1]).toBe('FOUR_IN_A_ROW');
+  expect(mockCallback.mock.calls[1][0]).toBe(ActionType.CLAIM_TOKEN);
+  expect(mockCallback.mock.calls[1][1]).toBe(TokenType.FOUR_IN_A_ROW);
 
   userEvent.click(screen.getAllByRole('button')[2]);
   expect(mockCallback.mock.calls.length).toBe(3);
-  expect(mockCallback.mock.calls[2][0]).toBe('claimToken');
-  expect(mockCallback.mock.calls[2][1]).toBe('FIVE_IN_A_ROW');
+  expect(mockCallback.mock.calls[2][0]).toBe(ActionType.CLAIM_TOKEN);
+  expect(mockCallback.mock.calls[2][1]).toBe(TokenType.FIVE_IN_A_ROW);
 
   userEvent.click(screen.getAllByRole('button')[3]);
   expect(mockCallback.mock.calls.length).toBe(4);
-  expect(mockCallback.mock.calls[3][0]).toBe('claimToken');
-  expect(mockCallback.mock.calls[3][1]).toBe('THREE_OF_A_KIND');
+  expect(mockCallback.mock.calls[3][0]).toBe(ActionType.CLAIM_TOKEN);
+  expect(mockCallback.mock.calls[3][1]).toBe(TokenType.THREE_OF_A_KIND);
 
   userEvent.click(screen.getAllByRole('button')[4]);
   expect(mockCallback.mock.calls.length).toBe(5);
-  expect(mockCallback.mock.calls[4][0]).toBe('claimToken');
-  expect(mockCallback.mock.calls[4][1]).toBe('FULL_HOUSE');
+  expect(mockCallback.mock.calls[4][0]).toBe(ActionType.CLAIM_TOKEN);
+  expect(mockCallback.mock.calls[4][1]).toBe(TokenType.FULL_HOUSE);
 
   mockCallback.mockClear();
   userEvent.click(screen.getAllByRole('button')[5]);
   expect(mockCallback.mock.calls.length).toBe(1);
-  expect(mockCallback.mock.calls[0][0]).toBe('changeTurn');
+  expect(mockCallback.mock.calls[0][0]).toBe(ActionType.CHANGE_TURN);
 
 });

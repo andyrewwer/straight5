@@ -1,5 +1,5 @@
 const { shuffleArray } = require('../Utils.js')
-
+const { TokenType } = require('../model/Enums.js')
 class GameService {
 
   constructor(playerService) {
@@ -91,11 +91,11 @@ class GameService {
   }
 
   activePlayerCanClaimToken() {
-    return this.canClaimToken('THREE_IN_A_ROW') ||
-     this.canClaimToken('FOUR_IN_A_ROW') ||
-     this.canClaimToken('FIVE_IN_A_ROW') ||
-     this.canClaimToken('THREE_OF_A_KIND') ||
-     this.canClaimToken('FULL_HOUSE');
+    return this.canClaimToken(TokenType.THREE_IN_A_ROW) ||
+     this.canClaimToken(TokenType.FOUR_IN_A_ROW) ||
+     this.canClaimToken(TokenType.FIVE_IN_A_ROW) ||
+     this.canClaimToken(TokenType.THREE_OF_A_KIND) ||
+     this.canClaimToken(TokenType.FULL_HOUSE);
   }
 
   canClaimToken(token) {
@@ -106,7 +106,7 @@ class GameService {
     }
 
     switch (token) {
-      case 'THREE_IN_A_ROW':
+      case TokenType.THREE_IN_A_ROW:
         for (let j = 0; j < 3; j ++) {
           let won = true;
           if (!deck[j].seen) {
@@ -123,7 +123,7 @@ class GameService {
           }
         }
         return false;
-      case 'FOUR_IN_A_ROW':
+      case TokenType.FOUR_IN_A_ROW:
         for (let j = 0; j < 2; j ++) {
           let won = true;
           if (!deck[j].seen) {
@@ -140,7 +140,7 @@ class GameService {
           }
         }
         return false;
-      case 'FIVE_IN_A_ROW':
+      case TokenType.FIVE_IN_A_ROW:
         if (!deck[0].seen) {
           return false
         }
@@ -150,7 +150,7 @@ class GameService {
           }
         }
         return true;
-      case 'THREE_OF_A_KIND':
+      case TokenType.THREE_OF_A_KIND:
         let three_map = {};
         for (let i = 0; i < 5; i++) {
           if (!deck[i].seen) {
@@ -168,7 +168,7 @@ class GameService {
           }
         }
         return false;
-      case 'FULL_HOUSE':
+      case TokenType.FULL_HOUSE:
         let fh_map = {};
         for (let i = 0; i < 5; i++) {
           if (!deck[i].seen) {
@@ -194,10 +194,10 @@ class GameService {
 
   isValidIndexForToken(index) {
     const deck = this.getActivePlayersDeck();
-    if (["THREE_OF_A_KIND", "FULL_HOUSE", "FIVE_IN_A_ROW"].includes(this.getTokenToClaim())) {
+    if ([TokenType.THREE_OF_A_KIND, TokenType.FULL_HOUSE, TokenType.FIVE_IN_A_ROW].includes(this.getTokenToClaim())) {
       return this.canClaimToken(deck, this.getTokenToClaim(), this.getActivePlayersTokens());
     }
-    if (this.getTokenToClaim() === 'THREE_IN_A_ROW') {
+    if (this.getTokenToClaim() === TokenType.THREE_IN_A_ROW) {
       // if index is 3 that is 4th card. 3+4 not enough cards for THREE_IN_A_ROW
       if (!deck[index].seen || index >= 3) {
         return false;
@@ -211,7 +211,7 @@ class GameService {
       }
       return true;
     }
-    if (this.getTokenToClaim() === 'FOUR_IN_A_ROW') {
+    if (this.getTokenToClaim() === TokenType.FOUR_IN_A_ROW) {
       // if index is 2 that is 3rd card. 2+3+4 not enough cards for THREE_IN_A_ROW
       if (!deck[index].seen || index >= 2) {
         return false;
@@ -231,14 +231,14 @@ class GameService {
   claimToken(index) {
     const deck = this.getActivePlayersDeck();
     switch (this.getTokenToClaim()) {
-      case 'FIVE_IN_A_ROW':
-      case 'FULL_HOUSE':
+      case TokenType.FIVE_IN_A_ROW:
+      case TokenType.FULL_HOUSE:
         for (let i = 0; i < deck.length; i ++) {
           this.getDiscard().push(deck[i]);
           deck[i] = this.getTopCardFromDeck();
         }
         break;
-      case 'THREE_OF_A_KIND':
+      case TokenType.THREE_OF_A_KIND:
         let three_map = {};
         for (let i = 0; i < 5; i++) {
           if (!deck[i].seen) {
@@ -258,14 +258,14 @@ class GameService {
           }
         }
         break;
-      case 'THREE_IN_A_ROW':
+      case TokenType.THREE_IN_A_ROW:
       for (let i = index; i < index + 3; i++) {
         this.getDiscard().push(deck[i]);
         deck[i] = this.getTopCardFromDeck();
         deck[i].seen = false;
       }
         break;
-      case 'FOUR_IN_A_ROW':
+      case TokenType.FOUR_IN_A_ROW:
       for (let i = index; i < index + 4; i++) {
         this.getDiscard().push(deck[i]);
         deck[i] = this.getTopCardFromDeck();

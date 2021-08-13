@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './MiddleSection.css';
+const {DrawType} = require('../../model/Enums.js')
 
 class Hand extends Component {
   constructor(props) {
@@ -22,7 +23,7 @@ class Hand extends Component {
           <div className="FullWidth" role="header">
             Discard
           </div>
-          <div className="PlayerCard" data-testid="middle-section-discard" onClick={() => {this.props.drawCallback('discard')}}>
+          <div className="PlayerCard" data-testid="middle-section-discard" onClick={() => {this.props.drawCallback(DrawType.DISCARD)}}>
             {this.getTopDiscardValue()}
           </div>
         </div>
@@ -30,7 +31,7 @@ class Hand extends Component {
           <div className="FullWidth" role="header">
             Deck
           </div>
-          <div className="PlayerCard Card" data-testid="middle-section-deck" onClick={() => {this.props.drawCallback('deck')}}>
+          <div className="PlayerCard Card" data-testid="middle-section-deck" onClick={() => {this.props.drawCallback(DrawType.DECK)}}>
             ?
           </div>
         </div>

@@ -9,6 +9,7 @@ import userEvent from '@testing-library/user-event'
 import Straight5 from './Straight5.js'
 const GameService = require('../service/GameService.js')
 const PlayerService = require('../service/PlayerService.js')
+const {TokenType} = require('../model/Enums.js')
 
 const mockHandComponent = jest.fn();
 const mockMiddleSection = jest.fn();
@@ -21,20 +22,22 @@ jest.mock('./game/Hand.js', () => (props) => {
   return  <div data-testid="hand" onClick={() => props.cardPressedCallback(0,0)}/>;
 });
 jest.mock('./game/MiddleSection.js', () => (props) => {
+  const {DrawType} = require('../model/Enums.js')
   mockMiddleSection(props)
   return  <div data-testid="middle-section">
-            <div data-testid="middle-section-deck" onClick={() => props.drawCallback('deck')}/>
-            <div data-testid="middle-section-discard" onClick={() => props.drawCallback('discard')}/>
+            <div data-testid="middle-section-deck" onClick={() => props.drawCallback(DrawType.DECK)}/>
+            <div data-testid="middle-section-discard" onClick={() => props.drawCallback(DrawType.DISCARD)}/>
           </div>;
 });
 jest.mock('./game/FooterSection.js', () => (props) => {
+  const {ActionType, TokenType} = require('../model/Enums.js')
   mockFooterSection(props)
   return  <div data-testid="footer-section">
-            <div data-testid="footer-section-pass" onClick={() => {props.buttonPressedCallback('pass')}}/>
-            <div data-testid="footer-section-faceup" onClick={() => {props.buttonPressedCallback('turnFaceUp')}}/>
-            <div data-testid="footer-section-swap" onClick={() => {props.buttonPressedCallback('swap')}}/>
-            <div data-testid="footer-section-claimToken-threeOfAKind" onClick={() => {props.buttonPressedCallback('claimToken', 'THREE_OF_A_KIND')}}/>
-            <div data-testid="footer-section-claimToken-threeInARow" onClick={() => {props.buttonPressedCallback('claimToken', 'THREE_IN_A_ROW')}}/>
+            <div data-testid="footer-section-pass" onClick={() => {props.buttonPressedCallback(ActionType.PASS)}}/>
+            <div data-testid="footer-section-faceup" onClick={() => {props.buttonPressedCallback(ActionType.TURN_FACE_UP)}}/>
+            <div data-testid="footer-section-swap" onClick={() => {props.buttonPressedCallback(ActionType.SWAP)}}/>
+            <div data-testid="footer-section-claimToken-threeOfAKind" onClick={() => {props.buttonPressedCallback(ActionType.CLAIM_TOKEN, TokenType.THREE_OF_A_KIND)}}/>
+            <div data-testid="footer-section-claimToken-threeInARow" onClick={() => {props.buttonPressedCallback(ActionType.CLAIM_TOKEN, TokenType.THREE_IN_A_ROW)}}/>
           </div>;
 });
 
@@ -226,7 +229,7 @@ test('renderGameMode claimToken threeOfAKind', () => {
 
   userEvent.click(screen.getByTestId('footer-section-claimToken-threeOfAKind'));
   expect(mockSetTokenToClaim).toHaveBeenCalledTimes(1);
-  expect(mockSetTokenToClaim.mock.calls[0][0]).toBe('THREE_OF_A_KIND');
+  expect(mockSetTokenToClaim.mock.calls[0][0]).toBe(TokenType.THREE_OF_A_KIND);
   expect(mockClaimToken).toHaveBeenCalledTimes(1);
   expect(mockNextPlayer).toHaveBeenCalledTimes(1);
 });
@@ -244,7 +247,7 @@ test('renderGameMode changeTurn', () => {
 
   userEvent.click(screen.getByTestId('footer-section-claimToken-threeInARow'));
   expect(mockSetTokenToClaim).toHaveBeenCalledTimes(1);
-  expect(mockSetTokenToClaim.mock.calls[0][0]).toBe('THREE_IN_A_ROW');
+  expect(mockSetTokenToClaim.mock.calls[0][0]).toBe(TokenType.THREE_IN_A_ROW);
   expect(mockClaimToken).toHaveBeenCalledTimes(0);
   expect(mockActivePlayerCanClaimToken).toHaveBeenCalledTimes(1);
 
@@ -269,7 +272,7 @@ test('renderGameMode clickPlayerCard in StartState should do nothing', () => {
 
 test('renderGameMode winner and renderPlayerWin', () => {
   mockActivePlayerCanClaimToken.mockReturnValue(true);
-  mockGetActivePlayersTokens.mockReturnValue(['THREE_IN_A_ROW', 'FOUR_IN_A_ROW', 'FIVE_IN_A_ROW', 'THREE_OF_A_KIND', 'FULL_HOUSE']);
+  mockGetActivePlayersTokens.mockReturnValue([TokenType.THREE_IN_A_ROW, TokenType.FOUR_IN_A_ROW, TokenType.FIVE_IN_A_ROW, TokenType.THREE_OF_A_KIND, TokenType.FULL_HOUSE]);
   mockGetActivePlayerIndex.mockReturnValue(4);
 
   startGame();

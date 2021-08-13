@@ -9,6 +9,7 @@ import userEvent from '@testing-library/user-event'
 import MiddleSection from './MiddleSection.js'
 const {GameService} = require('../../service/GameService.js')
 const {PlayerService} = require('../../service/PlayerService.js')
+const {DrawType, TokenType} = require('../../model/Enums.js')
 
 
 let gameService;
@@ -43,10 +44,10 @@ test('render buttons fire as expected', () => {
 
   userEvent.click(screen.getByTestId('middle-section-discard'));
   expect(mockCallback.mock.calls.length).toBe(1);
-  expect(mockCallback.mock.calls[0][0]).toBe('discard');
+  expect(mockCallback.mock.calls[0][0]).toBe(DrawType.DISCARD);
 
   mockCallback.mockClear();
   userEvent.click(screen.getByTestId('middle-section-deck'));
   expect(mockCallback.mock.calls.length).toBe(1);
-  expect(mockCallback.mock.calls[0][0]).toBe('deck');
+  expect(mockCallback.mock.calls[0][0]).toBe(DrawType.DECK);
 });

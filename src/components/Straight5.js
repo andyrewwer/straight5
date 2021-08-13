@@ -4,7 +4,7 @@ import MiddleSection from './game/MiddleSection.js';
 import FooterSection from './game/FooterSection.js';
 import RulesSection from './RulesSection.js';
 import './Straight5.css';
-const {MoveState, AppMode} = require('../model/Enums.js')
+const {ActionType, AppMode, DrawType, MoveState, TokenType} = require('../model/Enums.js')
 
 class Straight5 extends Component {
   constructor(props) {
@@ -32,9 +32,9 @@ class Straight5 extends Component {
       //TODO animation?
       return;
     }
-    if (type === 'deck') {
+    if (type === DrawType.DECK) {
       this.gameService.drawCardFromDeck();
-    } else if (type === 'discard') {
+    } else if (type === DrawType.DISCARD) {
 
       this.gameService.drawCardFromDiscard();
     } else {
@@ -119,26 +119,26 @@ class Straight5 extends Component {
   }
 
   handleActionButtonPressed = (action, token) => {
-    if (action === 'pass') {
+    if (action === ActionType.PASS) {
       if (this.state.MoveState === MoveState.CARD_DRAWN) {
         this.DiscardCard()
       }
       return this.EndMove();
     }
-    if (action === 'swap') {
+    if (action === ActionType.SWAP) {
       this.setState({MoveState: MoveState.SWAP_CHOSEN})
       return this.DiscardCard()
     }
-    if (action === 'changeTurn') {
+    if (action === ActionType.CHANGE_TURN) {
       return this.ChangeTurn()
     }
-    if (action === 'turnFaceUp') {
+    if (action === ActionType.TURN_FACE_UP) {
       this.setState({MoveState: MoveState.DISCARD_CHOSEN})
       return this.DiscardCard()
     }
-    if (action === 'claimToken') {
+    if (action === ActionType.CLAIM_TOKEN) {
       this.gameService.setTokenToClaim(token);
-      if(['THREE_OF_A_KIND', 'FULL_HOUSE', 'FIVE_IN_A_ROW'].includes(token)) {
+      if([TokenType.THREE_OF_A_KIND, TokenType.FULL_HOUSE, TokenType.FIVE_IN_A_ROW].includes(token)) {
         // this could be smarter if only one option for three / four in a row
         this.gameService.claimToken();
         if (!this.checkIfWinner()) {
