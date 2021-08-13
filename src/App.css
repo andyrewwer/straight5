@@ -1,15 +1,6 @@
-body {
-  font-size: 18px;
-  color: var(--text-color);
-}
-
 .Container {
   margin: 20px 0 20px 50%;
   min-width: 510px;
   width: 80vw;
   transform: translateX(-50%);
-}
-
-ul, ol, li {
-  font-size: 14px;
 }

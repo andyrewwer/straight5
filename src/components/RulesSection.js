@@ -15,15 +15,15 @@ class Hand extends Component {
   render = () => {
     return (
       <div className="rulesSection" data-testid="rules-section">
-        <div className="odd">
+        <div className="secondary-background">
           <h3 className="rules-header">Rules</h3>
         </div>
-        <div className="odd">
+        <div className="secondary-background">
           <h4 className="rules-header">Introduction</h4>
           <p className="rules-p">Welcome to Straight 5, a rummy-like, yahtzee-like card game! This is the (work-in-progress) digitial version of the (hopefully future) Straight 5 game. </p>
         </div>
 
-        <div className="even">
+        <div className="primary-background">
           <h4 className="rules-header">Winning</h4>
           <p className="rules-p">
           The first player to claim {this.targetTokens} out of {this.maxTokens} tokens below wins.</p>
@@ -35,12 +35,12 @@ class Hand extends Component {
             <li>Full House</li>
           </ul>
         </div>
-        <div className="odd">
+        <div className="secondary-background">
           <h4 className="rules-header">Set up</h4>
           <p className="rules-p">Each player begins with 5 cards face-down in front of them.
           The top card of the deck will be turned over as a discard</p>
         </div>
-        <div className="even">
+        <div className="primary-background">
           <h4 className="rules-header">Turn Order</h4>
           <p className="rules-p">Each consists of three phases:</p>
           <ol>
@@ -54,7 +54,7 @@ class Hand extends Component {
             <li><h4 className="phaseHeader">Token Phase</h4>: if you have the cards face-up you may choose to discard them to claim a token.</li>
           </ol>
         </div>
-        <div className="odd">
+        <div className="secondary-background">
           <h4 className="rules-header">Rule Clarifications</h4>
           <p className="rules-p">Here are some clarifications on rules above:</p>
           <ol>
@@ -64,7 +64,7 @@ class Hand extends Component {
             <li>The cards to claim the tokens for three of a kind and full house can be anywhere</li>
           </ol>
         </div>
-        <div className="even">
+        <div className="primary-background">
           <h4 className="rules-header">Final notes</h4>
           <p className="rules-p">If you find any bugs or issues with Straight 5 please submit an issue by <a href="https://github.com/andyrewwer/straight5/issues">clicking here</a> or you can email me at <a href="mailto:a.andyrewwer@gmail.com?subject = Feedback on Straight 5">a.andyrewwer@gmail.com.</a> Also feel free to email me with other thoughts/feedback/concerns (about the game or otherwise)!</p>
         </div>

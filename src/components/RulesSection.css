@@ -23,12 +23,3 @@ a {
   text-decoration: none;
   color: var(--text-color)
 }
-
-.even {
-  /* background-color: var(--player-background); */
-}
-
-.odd {
-  background-color: var(--primary-background);
-  padding: 1px 0px;
-}

@@ -7,7 +7,7 @@ h2 {
 }
 .CardTable {
   display:  grid;
-  background: var(--secondary-background);
+  background: var(--primary-background);
   border-radius: 10px;
   text-align: center;
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
@@ -32,7 +32,7 @@ h2 {
   grid-template-columns: 1fr 1fr;
   grid-gap: 2px;
   justify-content: center;
-  background-color: var(--secondary-background);
+  /* background-color: var(--secondary-background); */
   margin-bottom: 20px;
 }
 
@@ -41,7 +41,7 @@ button {
   padding: 7px 25px;
   margin: 10px;
   background: var(--button-background);
-  color: #ffffff;
+  color: var(--button-text-color);
   /* width: 100%; */
   width: 80%;
   border-radius: 7px;
@@ -49,7 +49,7 @@ button {
 }
 
 button:hover{
-  background: #0053ba;
+  background: var(--button-hover-background);
 }
 
 .small-width-button {
@@ -57,19 +57,25 @@ button:hover{
 }
 
 .PlayerCard {
-  border: 1px solid rgb(256, 256, 256, 0.5);
+  /* border: 10px solid gold; */
   border-radius: 10%;
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100px;
   width: 72px;
-  background: var(--card-background);
   box-shadow: rgba(0, 0, 0, 0.15) 2.4px 2.4px 3.2px;
 }
 
-.PlayerCardIsActive:hover {
-  background: #0053ba;
+.PlayerCardFront {
+  background: var(--card-face-up-color);
+}
+
+.PlayerCardBack {
+  background: var(--card-face-down-color);
+}
+.PlayerCardIsActive {
+  border: 3px solid var(--card-active-border-color);
 }
 
 .PlayerCardMini {

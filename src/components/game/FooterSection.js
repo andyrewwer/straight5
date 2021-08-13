@@ -27,6 +27,8 @@ class Hand extends Component {
     return this.gameService.canClaimToken(token);
   }
 
+  // TODO MUM color palette here so the buttons are less identical.
+
   render = () => {
     return (
       <div className="CardTableFooter" data-testid="footer-section">
@@ -37,7 +39,7 @@ class Hand extends Component {
           <React.Fragment>
               {(!!this.gameService.getActiveCard() && !!this.gameService.getActiveCard().value) &&
               <React.Fragment>
-                <div className="PlayerCard" role="activeCard">
+                <div className="PlayerCard PlayerCardFront" role="activeCard">
                   {this.gameService.getActiveCard().value}
                 </div>
                 <div>

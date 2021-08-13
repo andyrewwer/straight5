@@ -28,7 +28,8 @@ test('render with Discard shows value', () => {
   expect(screen.getByTestId('middle-section-discard')).toHaveTextContent('2');
   expect(screen.getByTestId('middle-section-discard')).toHaveClass('PlayerCard');
   expect(screen.getByTestId('middle-section-discard')).toHaveClass('PlayerCardIsActive');
-  expect(screen.getByTestId('middle-section-deck')).toHaveTextContent('?');
+  // TODO  test for SVG
+  expect(screen.getByTestId('middle-section-deck')).toBeInTheDocument();
   expect(screen.getByTestId('middle-section-deck')).toHaveClass('PlayerCard');
   expect(screen.getByTestId('middle-section-deck')).toHaveClass('PlayerCardIsActive');
 });
@@ -41,7 +42,8 @@ test('render without Discard shows question  mark', () => {
   expect(screen.getByTestId('middle-section-discard')).toHaveTextContent('');
   expect(screen.getByTestId('middle-section-discard')).toHaveClass('PlayerCard');
   expect(screen.getByTestId('middle-section-discard')).not.toHaveClass('PlayerCardIsActive');
-  expect(screen.getByTestId('middle-section-deck')).toHaveTextContent('?');
+  // TODO  test for SVG
+  expect(screen.getByTestId('middle-section-deck')).toBeInTheDocument();
   expect(screen.getByTestId('middle-section-deck')).toHaveClass('PlayerCard');
   expect(screen.getByTestId('middle-section-deck')).not.toHaveClass('PlayerCardIsActive');
 });

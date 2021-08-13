@@ -15,9 +15,9 @@ function getPlayerTextForMoveState(moveState, cardIndex) {
     case MoveState.CARD_DRAWN:
       return 'Replace card in your hand or choose a discard option';
     case MoveState.DISCARD_CHOSEN:
-      return 'Select the first card to discard or pass'
+      return 'Select the first card to turn face up'
     case MoveState.CARD_DISCARDED:
-      return 'Select the second card to discard or pass'
+      return 'Select the second card to turn face up or pass'
     case MoveState.SWAP_CHOSEN:
       return 'Select the first card you\'d like  to swap'
     case MoveState.SWAP_IN_PROGRESS:

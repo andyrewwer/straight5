@@ -182,7 +182,7 @@ class Straight5 extends Component {
   // TODO ADD AI
   // TODO  state service instead of this.state
 
-
+  // TODO MUM gap between hands and footer sectoin. Maybe footsection has constant size.
   render = () => {
     return (
   <div className={this.state.AppMode === AppMode.START_STATE ? 'CardTable' : 'CardTable CardTableGame'}>
