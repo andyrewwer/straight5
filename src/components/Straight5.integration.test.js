@@ -27,8 +27,8 @@ test('render Start Section', () => {
   expect(screen.queryByTestId('start-header')).toBeInTheDocument();
   expect(screen.queryByTestId('win-header')).toBeNull();
   expect(screen.getAllByTestId('hand').length).toBe(2);
-  expect(screen.getAllByTestId('hand')[0]).toHaveTextContent('Tokens[0/4]?????');
-  expect(screen.getAllByTestId('hand')[1]).toHaveTextContent('Tokens[0/4]?????');
+  expect(screen.getAllByTestId('hand')[0]).toHaveTextContent('Tokens [0/4]?????');
+  expect(screen.getAllByTestId('hand')[1]).toHaveTextContent('Tokens [0/4]?????');
   expect(screen.getByTestId('middle-section')).toHaveTextContent(/Discard\dDeck\?/);
   expect(screen.getByTestId('footer-section')).toBeInTheDocument();
 
@@ -40,7 +40,7 @@ test('render Start Section', () => {
   userEvent.click(screen.getAllByRole('playerCard')[0]);
   userEvent.click(screen.getAllByRole('playerCard')[1]);
   expect(screen.getByTestId('footer-section')).toHaveTextContent('Please draw a card from Deck or Discard');
-  expect(screen.getAllByTestId('hand')[0]).toHaveTextContent(/Tokens\d{2}\?{3}/);
+  expect(screen.getAllByTestId('hand')[0]).toHaveTextContent(/Tokens \[0\/4\]\d{2}\?{3}/);
 
   userEvent.click(screen.getByTestId('middle-section-deck'));
   userEvent.click(screen.getByTestId('turn-face-up-button'));
@@ -48,5 +48,5 @@ test('render Start Section', () => {
   userEvent.click(screen.getAllByRole('playerCard')[9]);
 
   expect(screen.getByTestId('footer-section')).toHaveTextContent('Please draw a card from Deck or Discard');
-  expect(screen.getAllByTestId('hand')[1]).toHaveTextContent(/Tokens\?\d\?{2}\d/);
+  expect(screen.getAllByTestId('hand')[1]).toHaveTextContent(/Tokens \[0\/4\]\?\d\?{2}\d/);
 });
