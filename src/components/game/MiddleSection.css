@@ -6,13 +6,18 @@
 }
 
 .DiscardSection .PlayerCard, .DeckSection .PlayerCard {
-  grid-column: 2;
   /* transform: translateX(50%); */
+}
+
+.DeckSection {
+  grid-column-start: -2;
 }
 
 .DeckSection, .DiscardSection {
   display: grid;
-  grid-template-rows: 30px 100px;
-  grid-template-columns: 1fr 72px 1fr;
+
+  grid-gap: 5px;
   justify-content: center;
+  align-content: center;
+
 }

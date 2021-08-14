@@ -56,6 +56,12 @@ button:hover{
   width: initial;
 }
 
+.PlayerCardWrapper {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+}
+
 .PlayerCard {
   /* border: 10px solid gold; */
   border-radius: 10%;
@@ -67,6 +73,12 @@ button:hover{
   box-shadow: rgba(0, 0, 0, 0.15) 2.4px 2.4px 3.2px;
 }
 
+.PlayerCardMini {
+  height: 70% ;
+  width: 70%;
+  transform: translateX(50%);
+}
+
 .PlayerCardFront {
   background: var(--card-face-up-color);
 }
@@ -76,10 +88,4 @@ button:hover{
 }
 .PlayerCardIsActive {
   border: 2px solid var(--card-active-border-color);
-}
-
-.PlayerCardMini {
-  height: 70% ;
-  width: 70%;
-  transform: translateX(50%);
 }

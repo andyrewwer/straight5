@@ -1,17 +1,16 @@
 .PlayerHand {
   grid-column: 1 / -1;
   display: grid;
-  grid-template-columns: repeat(5, minmax(72px, 2fr)) 3fr;
+  grid-template-columns: repeat(5, minmax(72px, 2fr)) minmax(100px, 3fr);
   grid-gap: 5px;
-  justify-content: space-around;
   background-color: var(--player-background);
   grid-template-rows: auto 100px;
   padding-bottom: 10px;
-  padding-left: 5px
 }
 
 .PlayerTokens {
   font-size: 10px;
+  text-align: left;
 }
 
 .PlayerHeader {
