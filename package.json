@@ -17,7 +17,8 @@
     "test": "jest",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d build",
+    "prepare": "husky install"
   },
   "homepage": "http://andyrewwer.github.io/straight5",
   "eslintConfig": {
@@ -45,6 +46,7 @@
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/user-event": "^13.2.1",
     "gh-pages": "^3.2.3",
+    "husky": "^7.0.1",
     "identity-obj-proxy": "^3.0.0",
     "jest-environment-jsdom": "^27.0.6",
     "react-test-renderer": "^17.0.2",
