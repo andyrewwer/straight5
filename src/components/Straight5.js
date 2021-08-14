@@ -59,8 +59,11 @@ class Straight5 extends Component {
     if (!this.gameService.turnCardFaceUp(index)) {
       return;
     }
-    // TODO if all face-up should skip this step
     if (this.state.MoveState === MoveState.CARD_DISCARDED) {
+      this.EndMove();
+      return;
+    }
+    if (this.gameService.activePlayerHasAllCardsFaceUp()) {
       this.EndMove();
       return;
     }

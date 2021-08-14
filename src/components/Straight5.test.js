@@ -61,6 +61,7 @@ const mockSetTokenToClaim = jest.fn()
 const mockClaimToken = jest.fn()
 const mockGetActivePlayersTokens = jest.fn()
 const mockIsValidIndexForToken = jest.fn()
+const mockActivePlayerHasAllCardsFaceUp = jest.fn()
 
 beforeEach(() => {
   GameService.mockImplementation(() => {
@@ -80,7 +81,8 @@ beforeEach(() => {
       setTokenToClaim: mockSetTokenToClaim,
       claimToken: mockClaimToken,
       getActivePlayersTokens: mockGetActivePlayersTokens,
-      isValidIndexForToken: mockIsValidIndexForToken
+      isValidIndexForToken: mockIsValidIndexForToken,
+      activePlayerHasAllCardsFaceUp: mockActivePlayerHasAllCardsFaceUp
     }
   })
 
@@ -172,6 +174,7 @@ test('renderGameMode turnCardFaceUp drawDiscard', () => {
   mockGetActivePlayerIndex.mockReturnValue(0);
   mockActivePlayerCanClaimToken.mockReturnValue(false);
   mockTurnCardFaceUp.mockReturnValue(true);
+  mockActivePlayerHasAllCardsFaceUp.mockReturnValue(false);
 
   startGame();
 
@@ -192,6 +195,28 @@ test('renderGameMode turnCardFaceUp drawDiscard', () => {
   expect(mockActivePlayerCanClaimToken).toHaveBeenCalledTimes(1);
   expect(mockNextPlayer).toHaveBeenCalledTimes(1);
 });
+
+test('renderGameMode turnCardFaceUp end when all face-up', () => {
+  mockGetActivePlayerIndex.mockReturnValue(0);
+  mockActivePlayerCanClaimToken.mockReturnValue(false);
+  mockTurnCardFaceUp.mockReturnValue(true);
+  mockActivePlayerHasAllCardsFaceUp.mockReturnValue(true);
+
+  startGame();
+
+  userEvent.click(screen.getByTestId('middle-section-discard'));
+  expect(mockDrawCardFromDiscard).toHaveBeenCalledTimes(1);
+
+  userEvent.click(screen.getByTestId('footer-section-faceup'));
+  expect(mockDiscardActiveCard).toHaveBeenCalledTimes(1);
+
+  userEvent.click(screen.getAllByTestId('hand')[0]);
+  expect(mockTurnCardFaceUp).toHaveBeenCalledTimes(1);
+  expect(mockTurnCardFaceUp.mock.calls[0][0]).toBe(0);
+  expect(mockActivePlayerCanClaimToken).toHaveBeenCalledTimes(1);
+  expect(mockNextPlayer).toHaveBeenCalledTimes(1);
+});
+
 
 test('renderGameMode swapCards', () => {
   mockGetActivePlayerIndex.mockReturnValue(0);

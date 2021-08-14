@@ -21,7 +21,7 @@ class Hand extends Component {
 
   // TODO - move this.state.MoveState to a dedicated service.
   // Now MOVE STATE IS HERE DO WE WANT TO MOVE THE DRAW LOGIC DOWN OR  KEEP IT HIGHER?
-
+  // TODO mobile playable
   render = () => {
     return (
       <div className="MiddleSection" data-testid="middle-section">
