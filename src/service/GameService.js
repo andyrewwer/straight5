@@ -6,7 +6,7 @@ class GameService {
       this.playerService = playerService;
 
       this.deck = [];
-      this.discard = [];
+      this.discard = [[]];
       this.swapCardIndex = -1;
       this.activeCard = {};
       this.activePlayerIndex = 0;
@@ -25,7 +25,11 @@ class GameService {
 
   getTopCardFromDeck() {
     if (this.getDeck().length === 0) {
-      this.setDeck(shuffleArray(this.getDiscard().splice(0, this.getDiscard().length - 1)));
+      this.setDeck([]);
+      for(let i = 0; i < this.getDiscard().length; i ++) {
+        this.getDeck().push(...this.getDiscard()[i].splice(0, this.getDiscard()[i].length - 1));
+      }
+      shuffleArray(this.getDeck());
     }
     const card = this.getDeck().pop();
     card.seen = false;
@@ -36,15 +40,15 @@ class GameService {
     this.setActiveCard(this.getTopCardFromDeck());
   }
 
-  drawCardFromDiscard() {
-    if (this.getDiscard().length === 0) {
-      console.error('SOMETHING went wrong,  discard length = 0')
+  drawCardFromDiscard(index) {
+    if (this.getDiscard()[index].length === 0) {
+      console.error('SOMETHING went wrong, discard length = 0')
     }
-    this.setActiveCard(this.getDiscard().pop());
+    this.setActiveCard(this.getDiscard()[index].pop());
   }
 
   initializeDiscard() {
-    this.discard.push(this.deck.pop());
+    this.getDiscard()[0].push(this.getDeck().pop());
   }
 
   swapIsValid(index) {
@@ -61,7 +65,8 @@ class GameService {
 
   replaceCard(index) {
     this.getActiveCard().seen = true;
-    this.getDiscard().push(this.getActivePlayersDeck()[index])
+    //TODO come back to this to pick discard
+    this.getDiscard()[0].push(this.getActivePlayersDeck()[index])
     this.getActivePlayersDeck()[index] = this.getActiveCard();
     this.setActiveCard({});
   }
@@ -76,7 +81,8 @@ class GameService {
   }
 
   discardActiveCard() {
-    this.getDiscard().push(this.getActiveCard());
+    //TODO come back to this to pick discard
+    this.getDiscard()[0].push(this.getActiveCard());
     this.setActiveCard({});
   }
 
@@ -234,7 +240,8 @@ class GameService {
       case TokenType.FIVE_IN_A_ROW:
       case TokenType.FULL_HOUSE:
         for (let i = 0; i < deck.length; i ++) {
-          this.getDiscard().push(deck[i]);
+          //TODO come back to this to pick discard
+          this.getDiscard()[0].push(deck[i]);
           deck[i] = this.getTopCardFromDeck();
         }
         break;
@@ -251,7 +258,8 @@ class GameService {
           if (three_map[deck[i].value].length >= 3) {
             const list = three_map[deck[i].value];
             for (let j = 0; j < list.length; j ++) {
-              this.getDiscard().push(deck[list[j]]);
+              //TODO come back to this to pick discard
+              this.getDiscard()[0].push(deck[list[j]]);
               deck[list[j]] = this.getTopCardFromDeck();
             }
             break;
@@ -260,14 +268,16 @@ class GameService {
         break;
       case TokenType.THREE_IN_A_ROW:
       for (let i = index; i < index + 3; i++) {
-        this.getDiscard().push(deck[i]);
+        //TODO come back to this to pick discard
+        this.getDiscard()[0].push(deck[i]);
         deck[i] = this.getTopCardFromDeck();
         deck[i].seen = false;
       }
         break;
       case TokenType.FOUR_IN_A_ROW:
       for (let i = index; i < index + 4; i++) {
-        this.getDiscard().push(deck[i]);
+        //TODO come back to this to pick discard
+        this.getDiscard()[0].push(deck[i]);
         deck[i] = this.getTopCardFromDeck();
       }
         break;

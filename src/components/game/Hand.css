@@ -6,6 +6,7 @@
   background-color: var(--player-background);
   grid-template-rows: auto 100px;
   padding-bottom: 10px;
+  padding-left: 5px;
 }
 
 .PlayerTokens {

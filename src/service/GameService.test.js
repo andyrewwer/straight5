@@ -28,15 +28,15 @@ test('getTopCardFromDeck given full deck returns top card', () => {
   const result = gameService.getTopCardFromDeck()
   expect(result).toEqual({value:2, seen:false});
   expect(gameService.getDeck()).toEqual([{value:0, seen:true},{value:1, seen:true}]);
-  expect(gameService.getDiscard()).toEqual([]);
+  expect(gameService.getDiscard()).toEqual([[]]);
 });
 
 test('getTopCardFromDeck given empty deck shuffles and returns top card', () => {
-  gameService.setDiscard([{value:0, seen:true},{value:1, seen:true},{value:2,seen:true}]);
+  gameService.setDiscard([[{value:0, seen:true},{value:1, seen:true},{value:2,seen:true}]]);
   const result = gameService.getTopCardFromDeck()
   expect(result).toEqual({value:1, seen:false});
   expect(gameService.getDeck()).toEqual([{value:0, seen:true}]);
-  expect(gameService.getDiscard()).toEqual([{value:2,seen:true}]);
+  expect(gameService.getDiscard()).toEqual([[{value:2,seen:true}]]);
 });
 
 test('drawCardFromDeck given full deck returns top card', () => {
@@ -44,29 +44,29 @@ test('drawCardFromDeck given full deck returns top card', () => {
   gameService.drawCardFromDeck()
   expect(gameService.getActiveCard()).toEqual({value:2, seen:false});
   expect(gameService.getDeck()).toEqual([{value:0, seen:true},{value:1, seen:true}]);
-  expect(gameService.getDiscard()).toEqual([]);
+  expect(gameService.getDiscard()).toEqual([[]]);
 });
 
 test('drawCardFromDeck given empty deck shuffles and returns top card', () => {
-  gameService.setDiscard([{value:0, seen:true},{value:1, seen:true},{value:2,seen:true}]);
+  gameService.setDiscard([[{value:0, seen:true},{value:1, seen:true},{value:2,seen:true}]]);
   gameService.drawCardFromDeck()
   expect(gameService.getActiveCard()).toEqual({value:1, seen:false});
   expect(gameService.getDeck()).toEqual([{value:0, seen:true}]);
-  expect(gameService.getDiscard()).toEqual([{value:2,seen:true}]);
+  expect(gameService.getDiscard()).toEqual([[{value:2,seen:true}]]);
 });
 
 test('drawCardFromDiscard', () => {
-  gameService.setDiscard([0,1,2]);
-  gameService.drawCardFromDiscard()
+  gameService.setDiscard([[0,1,2]]);
+  gameService.drawCardFromDiscard(0)
   expect(gameService.getActiveCard()).toBe(2);
   expect(gameService.getDeck()).toEqual([]);
-  expect(gameService.getDiscard()).toEqual([0,1]);
+  expect(gameService.getDiscard()).toEqual([[0,1]]);
 });
 
 test('initializeDiscard', () => {
   gameService.setDeck([0,1,2]);
   gameService.initializeDiscard()
-  expect(gameService.getDiscard()).toEqual([2]);
+  expect(gameService.getDiscard()).toEqual([[2]]);
 });
 
 test('swapIsValid', () => {
@@ -92,7 +92,7 @@ test('replaceCard', () => {
   playerService.setPlayers([new Player([{seen:false, value: 2}, {seen:false, value: 3}], [])]);
   gameService.replaceCard(1, 0);
   expect(playerService.getPlayers()[0].getDeck()).toEqual([{seen:false, value: 2}, {seen:true, value: 1}]);
-  expect(gameService.getDiscard()).toEqual([{seen:false, value: 3}]);
+  expect(gameService.getDiscard()).toEqual([[{seen:false, value: 3}]]);
   expect(gameService.getActiveCard()).toEqual({});
 });
 
@@ -109,7 +109,7 @@ test('turnCardFaceUp', () => {
 test('discardActiveCard', () => {
   gameService.setActiveCard('card');
   gameService.discardActiveCard();
-  expect(gameService.getDiscard()).toEqual(['card']);
+  expect(gameService.getDiscard()).toEqual([['card']]);
   expect(gameService.getActiveCard()).toEqual({});
 });
 
@@ -195,7 +195,7 @@ test('claimToken FIVE_IN_A_ROW', () => {
   expect(gameService.getActivePlayersDeck()[2].seen).toEqual(false);
   expect(gameService.getActivePlayersDeck()[3].seen).toEqual(false);
   expect(gameService.getActivePlayersDeck()[4].seen).toEqual(false);
-  expect(gameService.getDiscard()).toEqual([{seen:true, value:1},{seen:true, value:2},{seen:true, value:3},{seen:true, value:4},{seen:true, value:5}]);
+  expect(gameService.getDiscard()).toEqual([[{seen:true, value:1},{seen:true, value:2},{seen:true, value:3},{seen:true, value:4},{seen:true, value:5}]]);
 });
 
 test('claimToken FULL_HOUSE', () => {
@@ -210,7 +210,7 @@ test('claimToken FULL_HOUSE', () => {
   expect(gameService.getActivePlayersDeck()[2].seen).toEqual(false);
   expect(gameService.getActivePlayersDeck()[3].seen).toEqual(false);
   expect(gameService.getActivePlayersDeck()[4].seen).toEqual(false);
-  expect(gameService.getDiscard()).toEqual([{seen:true, value:1},{seen:true, value:1},{seen:true, value:1},{seen:true, value:5},{seen:true, value:5}]);
+  expect(gameService.getDiscard()).toEqual([[{seen:true, value:1},{seen:true, value:1},{seen:true, value:1},{seen:true, value:5},{seen:true, value:5}]]);
   expect(gameService.getTokenToClaim()).toEqual('');
 });
 
@@ -226,7 +226,7 @@ test('claimToken THREE_OF_A_KIND', () => {
   expect(gameService.getActivePlayersDeck()[2].seen).toEqual(false);
   expect(gameService.getActivePlayersDeck()[3].seen).toEqual(false);
   expect(gameService.getActivePlayersDeck()[4]).toEqual({seen:true, value:1});
-  expect(gameService.getDiscard()).toEqual([{seen:true, value:1},{seen:true, value:1},{seen:true, value:1}]);
+  expect(gameService.getDiscard()).toEqual([[{seen:true, value:1},{seen:true, value:1},{seen:true, value:1}]]);
 });
 
 test('claimToken THREE_IN_A_ROW[0]', () => {
@@ -241,7 +241,7 @@ test('claimToken THREE_IN_A_ROW[0]', () => {
   expect(gameService.getActivePlayersDeck()[2].seen).toEqual(false);
   expect(gameService.getActivePlayersDeck()[3].seen).toEqual(true);
   expect(gameService.getActivePlayersDeck()[4].seen).toEqual(true);
-  expect(gameService.getDiscard()).toEqual([{seen:true, value:1},{seen:true, value:2},{seen:true, value:3}]);
+  expect(gameService.getDiscard()).toEqual([[{seen:true, value:1},{seen:true, value:2},{seen:true, value:3}]]);
 });
 
 test('claimToken THREE_IN_A_ROW[1]', () => {
@@ -256,7 +256,7 @@ test('claimToken THREE_IN_A_ROW[1]', () => {
   expect(gameService.getActivePlayersDeck()[2].seen).toEqual(false);
   expect(gameService.getActivePlayersDeck()[3].seen).toEqual(false);
   expect(gameService.getActivePlayersDeck()[4].seen).toEqual(true);
-  expect(gameService.getDiscard()).toEqual([{seen:true, value:2},{seen:true, value:3},{seen:true, value:4}]);
+  expect(gameService.getDiscard()).toEqual([[{seen:true, value:2},{seen:true, value:3},{seen:true, value:4}]]);
 });
 
 test('claimToken THREE_IN_A_ROW[2]', () => {
@@ -271,7 +271,7 @@ test('claimToken THREE_IN_A_ROW[2]', () => {
   expect(gameService.getActivePlayersDeck()[2].seen).toEqual(false);
   expect(gameService.getActivePlayersDeck()[3].seen).toEqual(false);
   expect(gameService.getActivePlayersDeck()[4].seen).toEqual(false);
-  expect(gameService.getDiscard()).toEqual([{seen:true, value:3},{seen:true, value:4},{seen:true, value:5}]);
+  expect(gameService.getDiscard()).toEqual([[{seen:true, value:3},{seen:true, value:4},{seen:true, value:5}]]);
 
 });
 
@@ -287,7 +287,7 @@ test('claimToken FOUR_IN_A_ROW[0]', () => {
   expect(gameService.getActivePlayersDeck()[2].seen).toEqual(false);
   expect(gameService.getActivePlayersDeck()[3].seen).toEqual(false);
   expect(gameService.getActivePlayersDeck()[4].seen).toEqual(true);
-  expect(gameService.getDiscard()).toEqual([{seen:true, value:1},{seen:true, value:2},{seen:true, value:3},{seen:true, value:4}]);
+  expect(gameService.getDiscard()).toEqual([[{seen:true, value:1},{seen:true, value:2},{seen:true, value:3},{seen:true, value:4}]]);
 });
 
 test('claimToken FOUR_IN_A_ROW[1]', () => {
@@ -302,7 +302,7 @@ test('claimToken FOUR_IN_A_ROW[1]', () => {
   expect(gameService.getActivePlayersDeck()[2].seen).toEqual(false);
   expect(gameService.getActivePlayersDeck()[3].seen).toEqual(false);
   expect(gameService.getActivePlayersDeck()[4].seen).toEqual(false);
-  expect(gameService.getDiscard()).toEqual([{seen:true, value:2},{seen:true, value:3},{seen:true, value:4},{seen:true, value:5}]);
+  expect(gameService.getDiscard()).toEqual([[{seen:true, value:2},{seen:true, value:3},{seen:true, value:4},{seen:true, value:5}]]);
 });
 
 test('canClaimToken THREE_IN_A_ROW basics pass', () => {

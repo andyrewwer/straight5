@@ -11,8 +11,9 @@ class Hand extends Component {
     this.gameService = props.gameService;
   }
 
-  getTopDiscardValue() {
-    return this.gameService.getDiscard().length > 0 ? this.gameService.getDiscard()[this.gameService.getDiscard().length-1].value : '';
+  getTopDiscardValue(index) {
+    const discard = this.gameService.getDiscard()[index];
+    return discard.length > 0 ? discard[discard.length-1].value : '';
   }
 
   canDrawCard() {
@@ -25,16 +26,18 @@ class Hand extends Component {
   render = () => {
     return (
       <div className="MiddleSection" data-testid="middle-section">
-        <div className="DiscardSection">
+      {this.gameService.getDiscard().map((discard, index) => (
+        <div className="DiscardSection" key={index}>
           <div className="FullWidth" role="header">
-            Discard
+            Discard {index + 1}
           </div>
           <div className="PlayerCardWrapper">
-            <div className={classNames('PlayerCard', 'PlayerCardFront', {"PlayerCardIsActive" : this.canDrawCard()})} data-testid="middle-section-discard" onClick={() => {this.props.drawCallback(DrawType.DISCARD)}}>
-              {this.getTopDiscardValue()}
+            <div className={classNames('PlayerCard', 'PlayerCardFront', {"PlayerCardIsActive" : this.canDrawCard()})} data-testid={'middle-section-discard-' + index} onClick={() => {this.props.drawCallback(DrawType.DISCARD, index)}}>
+              {this.getTopDiscardValue(index)}
             </div>
           </div>
         </div>
+      ))}
         <div className="DeckSection">
           <div className="FullWidth" role="header">
             Deck

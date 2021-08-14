@@ -27,7 +27,7 @@ class Straight5 extends Component {
     });
   }
 
-  DrawCard = type => {
+  DrawCard = (type, index) => {
     if (this.state.MoveState !== MoveState.START_STATE) {
       //TODO animation?
       return;
@@ -36,7 +36,7 @@ class Straight5 extends Component {
       this.gameService.drawCardFromDeck();
     } else if (type === DrawType.DISCARD) {
 
-      this.gameService.drawCardFromDiscard();
+      this.gameService.drawCardFromDiscard(index);
     } else {
       console.error('draw card failed', type);
     }

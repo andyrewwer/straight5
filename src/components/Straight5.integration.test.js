@@ -29,7 +29,7 @@ test('render Start Section', () => {
   expect(screen.getAllByTestId('hand').length).toBe(2);
   expect(screen.getAllByTestId('hand')[0]).toHaveTextContent('Tokens [0/4]');
   expect(screen.getAllByTestId('hand')[1]).toHaveTextContent('Tokens [0/4]');
-  expect(screen.getByTestId('middle-section')).toHaveTextContent(/Discard\dDeck/);
+  expect(screen.getByTestId('middle-section')).toHaveTextContent(/Discard 1\dDeck/);
   expect(screen.getByTestId('footer-section')).toBeInTheDocument();
 
   userEvent.click(screen.getByTestId('middle-section-deck'));

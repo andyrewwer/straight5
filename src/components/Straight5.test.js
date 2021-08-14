@@ -26,7 +26,7 @@ jest.mock('./game/MiddleSection.js', () => (props) => {
   mockMiddleSection(props)
   return  <div data-testid="middle-section">
             <div data-testid="middle-section-deck" onClick={() => props.drawCallback(DrawType.DECK)}/>
-            <div data-testid="middle-section-discard" onClick={() => props.drawCallback(DrawType.DISCARD)}/>
+            <div data-testid="middle-section-discard-0" onClick={() => props.drawCallback(DrawType.DISCARD)}/>
           </div>;
 });
 jest.mock('./game/FooterSection.js', () => (props) => {
@@ -116,7 +116,7 @@ test('renderGameMode sets up screen as expected', () => {
   expect(screen.getAllByTestId('hand').length).toBe(2);
   expect(screen.queryByTestId('middle-section')).toBeInTheDocument();
   expect(screen.queryByTestId('middle-section-deck')).toBeInTheDocument();
-  expect(screen.queryByTestId('middle-section-discard')).toBeInTheDocument();
+  expect(screen.queryByTestId('middle-section-discard-0')).toBeInTheDocument();
   expect(screen.getByTestId('footer-section')).toBeInTheDocument();
   expect(mockSetNumberOfPlayers).toHaveBeenCalledTimes(1);
   expect(mockSetNumberOfPlayers.mock.calls[0].length).toBe(1);
@@ -160,7 +160,7 @@ test('renderGameMode replaceCard drawDeck', () => {
 
 test('renderGameMode pass', () => {
   startGame();
-  userEvent.click(screen.getByTestId('middle-section-discard'));
+  userEvent.click(screen.getByTestId('middle-section-discard-0'));
   userEvent.click(screen.getByTestId('footer-section-pass'));
   expect(mockDiscardActiveCard).toHaveBeenCalledTimes(1);
   expect(mockActivePlayerCanClaimToken).toHaveBeenCalledTimes(1);
@@ -178,7 +178,7 @@ test('renderGameMode turnCardFaceUp drawDiscard', () => {
 
   startGame();
 
-  userEvent.click(screen.getByTestId('middle-section-discard'));
+  userEvent.click(screen.getByTestId('middle-section-discard-0'));
   expect(mockDrawCardFromDiscard).toHaveBeenCalledTimes(1);
 
   userEvent.click(screen.getByTestId('footer-section-faceup'));
@@ -204,7 +204,7 @@ test('renderGameMode turnCardFaceUp end when all face-up', () => {
 
   startGame();
 
-  userEvent.click(screen.getByTestId('middle-section-discard'));
+  userEvent.click(screen.getByTestId('middle-section-discard-0'));
   expect(mockDrawCardFromDiscard).toHaveBeenCalledTimes(1);
 
   userEvent.click(screen.getByTestId('footer-section-faceup'));
@@ -225,7 +225,7 @@ test('renderGameMode swapCards', () => {
 
   startGame();
 
-  userEvent.click(screen.getByTestId('middle-section-discard'));
+  userEvent.click(screen.getByTestId('middle-section-discard-0'));
   userEvent.click(screen.getByTestId('footer-section-swap'))
   expect(mockDiscardActiveCard).toHaveBeenCalledTimes(1);
 
@@ -247,7 +247,7 @@ test('renderGameMode claimToken threeOfAKind', () => {
   mockGetActivePlayersTokens.mockReturnValue(0);
 
   startGame();
-  userEvent.click(screen.getByTestId('middle-section-discard'));
+  userEvent.click(screen.getByTestId('middle-section-discard-0'));
   userEvent.click(screen.getByTestId('footer-section-pass'));
   expect(mockActivePlayerCanClaimToken).toHaveBeenCalledTimes(1);
   expect(mockNextPlayer).toHaveBeenCalledTimes(0);
@@ -265,7 +265,7 @@ test('renderGameMode changeTurn', () => {
   mockIsValidIndexForToken.mockReturnValue(true);
 
   startGame();
-  userEvent.click(screen.getByTestId('middle-section-discard'));
+  userEvent.click(screen.getByTestId('middle-section-discard-0'));
   userEvent.click(screen.getByTestId('footer-section-pass'));
   expect(mockActivePlayerCanClaimToken).toHaveBeenCalledTimes(1);
   expect(mockNextPlayer).toHaveBeenCalledTimes(0);
@@ -301,7 +301,7 @@ test('renderGameMode winner and renderPlayerWin', () => {
   mockGetActivePlayerIndex.mockReturnValue(4);
 
   startGame();
-  userEvent.click(screen.getByTestId('middle-section-discard'));
+  userEvent.click(screen.getByTestId('middle-section-discard-0'));
   userEvent.click(screen.getByTestId('footer-section-pass'));
   userEvent.click(screen.getByTestId('footer-section-claimToken-threeOfAKind'));
 
@@ -314,7 +314,7 @@ test('renderGameMode winner and renderPlayerWin', () => {
   expect(screen.getAllByTestId('hand').length).toBe(2);
   expect(screen.queryByTestId('middle-section')).toBeInTheDocument();
   expect(screen.queryByTestId('middle-section-deck')).toBeInTheDocument();
-  expect(screen.queryByTestId('middle-section-discard')).toBeInTheDocument();
+  expect(screen.queryByTestId('middle-section-discard-0')).toBeInTheDocument();
   expect(screen.getByTestId('footer-section')).toBeInTheDocument();
 
 });
