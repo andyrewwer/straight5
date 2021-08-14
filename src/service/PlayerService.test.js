@@ -1,26 +1,21 @@
 const {shuffleArray} = require('../Utils');
 const {PlayerService} = require('./PlayerService.js')
+const {ConfigService} = require('./ConfigService.js')
 
-let playerService = new PlayerService(2);
+let playerService;
 
 beforeEach(() => {
-  playerService = new PlayerService(2);
+  playerService = new PlayerService(new ConfigService(6, 9, 2, 2));
 });
 
 test('playerService can create multiple players', ()  =>  {
-  expect(playerService.getNumberOfPlayers()).toBe(2);
   expect(playerService.getPlayers().length).toBe(2);
   expect(playerService.getPlayers()).toEqual([{deck: [], tokens: []}, {deck: [], tokens: []}]);
-  playerService.setNumberOfPlayers(5);
-  playerService.resetPlayers();
-  expect(playerService.getPlayers().length).toBe(5);
-  expect(playerService.getPlayers()).toEqual([{deck: [], tokens: []}, {deck: [], tokens: []}, {deck: [], tokens: []},{deck: [], tokens: []},{deck: [], tokens: []}]);
 });
 
 test('playerService can create empty', ()  =>  {
-  playerService = new PlayerService(0);
-  expect(playerService.getNumberOfPlayers()).toBe(0);
-  expect(playerService.getPlayers().length).toBe(0);
+  playerService = new PlayerService(new ConfigService(6, 9, 1, 2));
+  expect(playerService.getPlayers().length).toBe(1);
 });
 
 test('dealCardsToPlayers', () => {

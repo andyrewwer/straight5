@@ -8,6 +8,7 @@ import {cleanup, fireEvent, render, screen} from '@testing-library/react';
 import userEvent from '@testing-library/user-event'
 import Hand from './Hand.js'
 const {PlayerService} = require('../../service/PlayerService.js')
+const {ConfigService} = require('../../service/ConfigService.js');
 const {GameService} = require('../../service/GameService.js')
 const {TokenType, MoveState} = require('../../model/Enums.js')
 
@@ -15,8 +16,9 @@ let playerService;
 let gameService;
 
 beforeEach(() => {
-  playerService = new PlayerService(3);
-  gameService = new GameService(playerService);
+  const configService = new ConfigService(6, 9, 2, 2);
+  playerService = new PlayerService(configService);
+  gameService = new GameService(playerService, configService);
   gameService.startNewGame(6, 9);
 })
 

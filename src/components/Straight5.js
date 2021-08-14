@@ -15,12 +15,12 @@ class Straight5 extends Component {
     };
     this.playerService = props.playerService;
     this.gameService = props.gameService;
+    this.configService = props.configService;
   }
 
   StartNewGame = () => {
-    this.playerService.setNumberOfPlayers(2);
     this.playerService.resetPlayers();
-    this.gameService.startNewGame(6, 9);
+    this.gameService.startNewGame();
     this.setState({
       MoveState: MoveState.START_STATE,
       AppMode: AppMode.GAME

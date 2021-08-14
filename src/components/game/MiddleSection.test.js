@@ -8,6 +8,7 @@ import {cleanup, render, screen} from '@testing-library/react';
 import userEvent from '@testing-library/user-event'
 import MiddleSection from './MiddleSection.js'
 const {GameService} = require('../../service/GameService.js')
+const {ConfigService} = require('../../service/ConfigService.js');
 const {PlayerService} = require('../../service/PlayerService.js')
 const {DrawType, MoveState, TokenType} = require('../../model/Enums.js')
 
@@ -15,8 +16,9 @@ const {DrawType, MoveState, TokenType} = require('../../model/Enums.js')
 let gameService;
 
 beforeEach(() => {
- const playerService = new PlayerService(3);
- gameService = new GameService(playerService)
+  const configService = new ConfigService(6, 9, 2, 2);
+  const playerService = new PlayerService(configService);
+  gameService = new GameService(playerService, configService)
 })
 
 test('render with Discard shows value', () => {

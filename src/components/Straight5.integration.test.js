@@ -8,18 +8,15 @@ import {cleanup, render, screen} from '@testing-library/react';
 import userEvent from '@testing-library/user-event'
 import Straight5 from './Straight5.js'
 const { GameService } = require('../service/GameService.js')
+const {ConfigService} = require('../service/ConfigService.js');
 const { PlayerService } = require('../service/PlayerService.js')
 
-let gameService;
-let playerService;
-
-beforeEach(() => {
-  playerService = new PlayerService(2);
-  gameService = new GameService(playerService);
-});
+const configService = new ConfigService(6, 9, 2, 2);
+const playerService = new PlayerService(configService);
+const gameService = new GameService(playerService, configService);
 
 test('render Start Section', () => {
-  const straight5 = render(<Straight5 gameService={gameService} playerService={playerService} />);
+  render(<Straight5 gameService={gameService} playerService={playerService} configService={configService}/>);
   expect(screen.getByTestId('start-header')).toHaveTextContent('Straight 5');
   expect(screen.queryByTestId('win-header')).toBeNull();expect(screen.getByRole('button')).toHaveTextContent('Start New Game');
 

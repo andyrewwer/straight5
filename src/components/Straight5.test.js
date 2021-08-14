@@ -9,6 +9,7 @@ import userEvent from '@testing-library/user-event'
 import Straight5 from './Straight5.js'
 const GameService = require('../service/GameService.js')
 const PlayerService = require('../service/PlayerService.js')
+const {ConfigService} = require('../service/ConfigService.js')
 const {TokenType} = require('../model/Enums.js')
 
 const mockHandComponent = jest.fn();
@@ -43,12 +44,12 @@ jest.mock('./game/FooterSection.js', () => (props) => {
 
 let gameService;
 let playerService;
+const configService = new ConfigService(6, 9, 2, 2);
 const mockStartNewGame = jest.fn()
 const mockGetActivePlayerIndex = jest.fn()
 const mockDrawCardFromDeck = jest.fn()
 const mockDrawCardFromDiscard = jest.fn()
 const mockReplaceCard = jest.fn()
-const mockSetNumberOfPlayers = jest.fn()
 const mockResetPlayers = jest.fn()
 const mockActivePlayerCanClaimToken = jest.fn()
 const mockNextPlayer = jest.fn()
@@ -88,18 +89,15 @@ beforeEach(() => {
 
   PlayerService.mockImplementation(() => {
     return {
-      setNumberOfPlayers: mockSetNumberOfPlayers,
       resetPlayers: mockResetPlayers,
-
     }
   })
-
-  playerService = new PlayerService(2);
-  gameService = new GameService(playerService);
+  playerService = new PlayerService(configService);
+  gameService = new GameService(playerService, configService);
 });
 
 test('render Start Section', () => {
-  const straight5 = render(<Straight5 gameService={gameService} playerService={playerService} />);
+  const straight5 = render(<Straight5 gameService={gameService} playerService={playerService} configService={configService} />);
   expect(screen.getByTestId('start-header')).toBeInTheDocument();
   expect(screen.getByRole('button')).toHaveTextContent('Start New Game');
   expect(screen.getByTestId('rules-section')).toBeInTheDocument();
@@ -118,14 +116,9 @@ test('renderGameMode sets up screen as expected', () => {
   expect(screen.queryByTestId('middle-section-deck')).toBeInTheDocument();
   expect(screen.queryByTestId('middle-section-discard-0')).toBeInTheDocument();
   expect(screen.getByTestId('footer-section')).toBeInTheDocument();
-  expect(mockSetNumberOfPlayers).toHaveBeenCalledTimes(1);
-  expect(mockSetNumberOfPlayers.mock.calls[0].length).toBe(1);
-  expect(mockSetNumberOfPlayers.mock.calls[0][0]).toBe(2);
   expect(mockResetPlayers).toHaveBeenCalledTimes(1);
   expect(mockStartNewGame).toHaveBeenCalledTimes(1);
-  expect(mockStartNewGame.mock.calls[0].length).toBe(2);
-  expect(mockStartNewGame.mock.calls[0][0]).toBe(6);
-  expect(mockStartNewGame.mock.calls[0][1]).toBe(9);
+  expect(mockStartNewGame.mock.calls[0].length).toBe(0);
 
   expect(mockHandComponent).toHaveBeenCalledTimes(2);
   expect(mockHandComponent.mock.calls[0][0]['id']).toEqual(0);
@@ -320,6 +313,6 @@ test('renderGameMode winner and renderPlayerWin', () => {
 });
 
 function startGame() {
-  render(<Straight5 gameService={gameService} playerService={playerService} />);
+  render(<Straight5 gameService={gameService} playerService={playerService} configService={configService}/>);
   userEvent.click(screen.getByRole('button'));
 }

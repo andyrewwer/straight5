@@ -8,6 +8,7 @@ import {cleanup, fireEvent, render, screen} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import FooterSection from './FooterSection.js';
 const {PlayerService} = require('../../service/PlayerService.js');
+const {ConfigService} = require('../../service/ConfigService.js');
 const GameService = require('../../service/GameService.js');
 const { ActionType, MoveState, TokenType } = require('../../model/Enums.js')
 
@@ -28,9 +29,9 @@ beforeEach(() => {
       activePlayerHasAllCardsFaceUp: mockAllCardsFaceUp
     }
   })
-
-  const playerService = new PlayerService(2);
-  gameService = new GameService(playerService);
+  const configService = new ConfigService(6, 9, 2, 2);
+  const playerService = new PlayerService(configService);
+  gameService = new GameService(playerService, configService);
 });
 
 test('render given basic state hides all subsections and displays right text', () => {

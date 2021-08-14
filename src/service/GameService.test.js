@@ -1,6 +1,7 @@
 const {shuffleArray} = require('../Utils');
 const {GameService} = require('./GameService.js')
 const {PlayerService} = require('./PlayerService.js')
+const {ConfigService} = require('./ConfigService.js')
 const {Player} = require('../model/Player.js');
 const {TokenType} = require('../model/Enums.js')
 let playerService;
@@ -13,12 +14,16 @@ jest.mock('../Utils', () => ({
 ));
 
 beforeEach(() => {
-  playerService = new PlayerService(2);
-  gameService = new GameService(playerService);
+  const configService = new ConfigService(6, 9, 2, 2);
+  playerService = new PlayerService(configService);
+  gameService = new GameService(playerService, configService);
 });
 
 test('createDeck creates and calls shuffle', () => {
-  gameService.createDeck(2,2);
+  const configService = new ConfigService(2, 2, 2, 2);
+  playerService = new PlayerService(configService);
+  gameService = new GameService(playerService, configService);
+  gameService.createDeck();
   expect(gameService.getDeck()).toEqual([{value: 1, seen: false}, {value: 2, seen: false},{value: 1, seen: false}, {value: 2, seen: false}]);
   // TODO check if mock was called
 });

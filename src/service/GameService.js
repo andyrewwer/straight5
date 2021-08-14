@@ -2,8 +2,9 @@ const { shuffleArray } = require('../Utils.js')
 const { TokenType } = require('../model/Enums.js')
 class GameService {
 
-  constructor(playerService) {
+  constructor(playerService, configService) {
       this.playerService = playerService;
+      this.configService = configService;
 
       this.deck = [];
       this.discard = [[]];
@@ -13,7 +14,9 @@ class GameService {
       this.tokenToClaim = '';
   }
 
-  createDeck(repeats, max) {
+  createDeck() {
+    const repeats = this.configService.getRepeatsPerNumber();
+    const max = this.configService.getMaxNumberInDeck();
     this.deck = [];
     for (let i = 0; i < repeats; i++) {
       for (let j = 0; j < max; j++) {
@@ -86,8 +89,8 @@ class GameService {
     this.setActiveCard({});
   }
 
-  startNewGame(repeats, max) {
-    this.createDeck(repeats, max);
+  startNewGame() {
+    this.createDeck();
     this.playerService.dealCardsToPlayers(this.getDeck());
     this.initializeDiscard();
     this.setSwapCardIndex(-1);
@@ -195,7 +198,7 @@ class GameService {
   }
 
   nextPlayer() {
-    this.setActivePlayerIndex(this.getActivePlayerIndex() + 1 === this.playerService.getNumberOfPlayers() ? 0 : this.getActivePlayerIndex() + 1);
+    this.setActivePlayerIndex(this.getActivePlayerIndex() + 1 === this.configService.getNumberOfPlayers() ? 0 : this.getActivePlayerIndex() + 1);
   }
 
   isValidIndexForToken(index) {
