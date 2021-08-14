@@ -3,8 +3,10 @@ import Hand from './game/Hand.js';
 import MiddleSection from './game/MiddleSection.js';
 import FooterSection from './game/FooterSection.js';
 import RulesSection from './RulesSection.js';
+import NewstickerSection from './game/NewstickerSection.js';
 import './Straight5.css';
 const {ActionType, AppMode, DrawType, MoveState, TokenType} = require('../model/Enums.js')
+const classNames = require('classnames');
 
 class Straight5 extends Component {
   constructor(props) {
@@ -207,7 +209,8 @@ class Straight5 extends Component {
   // TODO MUM gap between hands and footer sectoin. Maybe footsection has constant size.
   render = () => {
     return (
-  <div className={this.state.AppMode === AppMode.START_STATE ? 'CardTable' : 'CardTable CardTableGame'}>
+      <React.Fragment>
+  <div className={classNames('CardTable', {'CardTableGame': this.state.AppMode !== AppMode.START_STATE})}>
     <h2 className="startHeader" data-testid="start-header">
       Straight 5
     </h2>
@@ -225,7 +228,6 @@ class Straight5 extends Component {
       <Hand gameService={this.gameService} moveState={this.state.MoveState} playerService={this.playerService} id={0} cardPressedCallback={this.handlePlayerCardPressed} />
       <MiddleSection gameService={this.gameService} drawCallback={this.deckAndDiscardPressed} moveState={this.state.MoveState}/>
       <Hand gameService={this.gameService} moveState={this.state.MoveState} playerService={this.playerService} id={1} cardPressedCallback={this.handlePlayerCardPressed} />
-      <FooterSection gameService={this.gameService} moveState={this.state.MoveState} buttonPressedCallback={this.handleActionButtonPressed} />
     </React.Fragment>}
 
     {this.state.AppMode === AppMode.PLAYER_WIN &&
@@ -236,6 +238,9 @@ class Straight5 extends Component {
         </div>
     </React.Fragment>}
   </div>
+    {this.state.AppMode  === AppMode.GAME && <NewstickerSection gameService={this.gameService} moveState={this.state.MoveState}/>}
+    {this.state.AppMode  === AppMode.GAME && <FooterSection gameService={this.gameService} moveState={this.state.MoveState} buttonPressedCallback={this.handleActionButtonPressed} />}
+  </React.Fragment>
   )}
 }
 

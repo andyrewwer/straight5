@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import './FooterSection.css';
 const { ActionType, MoveState, TokenType } = require('../../model/Enums.js')
-const { getPlayerTextForMoveState } = require('../../Utils.js')
 
-class Hand extends Component {
+class FooterSection extends Component {
   constructor(props) {
     super(props);
     this.gameService = props.gameService;
@@ -30,13 +29,10 @@ class Hand extends Component {
     return this.props.moveState !== MoveState.DISCARD_CHOSEN;
   }
 
-  // TODO MUM color palette here so the buttons are less identical.
   render = () => {
     return (
+      <React.Fragment>
       <div className="CardTableFooter" data-testid="footer-section">
-        <div className="FullWidth" role='header'>
-          {getPlayerTextForMoveState(this.props.moveState, this.gameService.getSwapCardIndex() + 1)}
-        </div>
         {this.ShowCardActions() &&
           <React.Fragment>
               {(!!this.gameService.getActiveCard() && !!this.gameService.getActiveCard().value) &&
@@ -46,8 +42,8 @@ class Hand extends Component {
                 </div>
                 {this.showInitialActions() &&
                 <div>
-                  {this.ShowTurnUpAction() && <button data-testid='turn-face-up-button' onClick={() => {this.props.buttonPressedCallback(ActionType.TURN_FACE_UP)}}> Discard to turn two face up </button>}
-                  <button onClick={() => {this.props.buttonPressedCallback(ActionType.SWAP)}}> Discard to swap two </button>
+                <button className="swapButton" onClick={() => {this.props.buttonPressedCallback(ActionType.SWAP)}}> Discard to swap two </button>
+                {this.ShowTurnUpAction() && <button className="turnFaceUpButton" data-testid='turn-face-up-button' onClick={() => {this.props.buttonPressedCallback(ActionType.TURN_FACE_UP)}}> Discard to turn two face up </button>}
                 </div>}
             </React.Fragment>}
         {this.showInitialActions() &&  <div className="FullWidth"><button className="mb-2 FullWidth" onClick={() => {this.props.buttonPressedCallback(ActionType.PASS)}}> Pass </button></div>}
@@ -64,7 +60,8 @@ class Hand extends Component {
                 <div className="FullWidth"><button className="mb-2 FullWidth" onClick={() => {this.props.buttonPressedCallback(ActionType.CHANGE_TURN)}}> Pass </button></div>
             </React.Fragment>}
       </div>
+      </React.Fragment>
   )}
 }
 
-export default Hand;
+export default FooterSection;

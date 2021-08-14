@@ -1,0 +1,29 @@
+.newsTicker {
+  grid-column: 1/-1;
+  display: grid;
+  grid-template-columns: 15px 1fr 15px;
+  background-color: var(--primary-background);
+  border: 3px  solid var(--secondary-background);
+  margin-bottom: 10px;
+  max-height:40px;
+  border-radius: 0;
+}
+
+.newsTickerTriangleLeft {
+  border-radius: 0;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+  border-left: 15px solid var(--secondary-background);
+}
+
+.newsTickerTriangleRight {
+  border-radius: 0;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+  border-right: 15px solid var(--secondary-background);
+}
+
+.newsTickerMain {
+  display: flex;
+  justify-content: center;
+}

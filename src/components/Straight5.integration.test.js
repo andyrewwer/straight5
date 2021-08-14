@@ -34,12 +34,12 @@ test('render Start Section', () => {
   userEvent.click(screen.getByTestId('turn-face-up-button'));
   expect(screen.queryByTestId('turn-face-up-button')).not.toBeInTheDocument();
 
-  expect(screen.getByTestId('footer-section')).toHaveTextContent('Please select the discard pile you would like to discard the card to');
+  expect(screen.getByTestId('newsticker')).toHaveTextContent('Please select the discard pile you would like to discard the card to');
   userEvent.click(screen.getByTestId('middle-section-discard-0'));
   userEvent.click(screen.getAllByRole('playerCard')[0]);
   userEvent.click(screen.getAllByRole('playerCard')[1]);
 
-  expect(screen.getByTestId('footer-section')).toHaveTextContent('Please draw a card from Deck or Discard');
+  expect(screen.getByTestId('newsticker')).toHaveTextContent('Please draw a card from Deck or Discard');
   expect(screen.getAllByTestId('hand')[0]).toHaveTextContent(/Tokens \[0\/4\]\d{2}/);
 
   userEvent.click(screen.getByTestId('middle-section-deck'));
@@ -48,6 +48,6 @@ test('render Start Section', () => {
   userEvent.click(screen.getAllByRole('playerCard')[6]);
   userEvent.click(screen.getAllByRole('playerCard')[9]);
 
-  expect(screen.getByTestId('footer-section')).toHaveTextContent('Please draw a card from Deck or Discard');
+  expect(screen.getByTestId('newsticker')).toHaveTextContent('Please draw a card from Deck or Discard');
   expect(screen.getAllByTestId('hand')[1]).toHaveTextContent(/Tokens \[0\/4\]\d\d/);
 });

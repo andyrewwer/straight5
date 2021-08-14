@@ -12,6 +12,9 @@
 }
 
 /* TODO change bg to one Tracey approves of */
+* {
+  border-radius: 7px;
+}
 body {
   font-size: 18px;
   color: var(--text-color);

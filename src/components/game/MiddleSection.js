@@ -3,7 +3,7 @@ import './MiddleSection.css';
 const {DrawType, MoveState} = require('../../model/Enums.js')
 const classNames = require('classnames');
 
-class Hand extends Component {
+class MiddleSection extends Component {
   constructor(props) {
     super(props);
     this.TableCanvas = React.createRef();
@@ -54,4 +54,4 @@ class Hand extends Component {
   )}
 }
 
-export default Hand;
+export default MiddleSection;

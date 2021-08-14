@@ -56,6 +56,7 @@ const mockNextPlayer = jest.fn()
 const mockDiscardCard = jest.fn()
 const mockTurnCardFaceUp = jest.fn()
 const mockSwapIsValid = jest.fn()
+const mockGetSwapCardIndex = jest.fn()
 const mockSetSwapCardIndex = jest.fn()
 const mockSwapCards = jest.fn()
 const mockSetTokenToClaim = jest.fn()
@@ -79,6 +80,7 @@ beforeEach(() => {
       discardCard: mockDiscardCard,
       turnCardFaceUp: mockTurnCardFaceUp,
       swapIsValid: mockSwapIsValid,
+      getSwapCardIndex:  mockGetSwapCardIndex,
       setSwapCardIndex:  mockSetSwapCardIndex,
       swapCards: mockSwapCards,
       setTokenToClaim: mockSetTokenToClaim,
