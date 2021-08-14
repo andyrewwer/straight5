@@ -89,10 +89,10 @@ test('render callbackWorks as expected', () => {
   expect(mockCallback.mock.calls[0][1]).toEqual(2);
 });
 
-test('render with DISCARD_CHOSEN Highlights face-up', () => {
+test('render with TURN_FACE_UP_CHOSEN Highlights face-up', () => {
   gameService.setActivePlayerIndex(0);
   playerService.getPlayers()[0].setDeck([{value:0, seen:true},{value:5, seen:false},{value:0, seen:false},{value:2, seen:false},{value:9, seen:false}])
-  render(<Hand playerService={playerService} id={0} gameService={gameService} moveState={MoveState.DISCARD_CHOSEN} />);
+  render(<Hand playerService={playerService} id={0} gameService={gameService} moveState={MoveState.TURN_FACE_UP_CHOSEN} />);
   expect(screen.getAllByRole('playerCard').length).toEqual(5);
   expect(screen.getAllByRole('playerCard')[0]).not.toHaveClass('PlayerCardIsActive');
   expect(screen.getAllByRole('playerCard')[1]).toHaveClass('PlayerCardIsActive');
@@ -101,10 +101,10 @@ test('render with DISCARD_CHOSEN Highlights face-up', () => {
   expect(screen.getAllByRole('playerCard')[4]).toHaveClass('PlayerCardIsActive');
 });
 
-test('render with CARD_DISCARDED Highlights face-up', () => {
+test('render with TURN_FACE_UP_IN_PROGRESS Highlights face-up', () => {
   gameService.setActivePlayerIndex(0);
   playerService.getPlayers()[0].setDeck([{value:0, seen:false},{value:5, seen:true},{value:0, seen:true},{value:2, seen:false},{value:9, seen:false}])
-  render(<Hand playerService={playerService} id={0} gameService={gameService} moveState={MoveState.DISCARD_CHOSEN} />);
+  render(<Hand playerService={playerService} id={0} gameService={gameService} moveState={MoveState.TURN_FACE_UP_CHOSEN} />);
   expect(screen.getAllByRole('playerCard').length).toEqual(5);
   expect(screen.getAllByRole('playerCard')[0]).toHaveClass('PlayerCardIsActive');
   expect(screen.getAllByRole('playerCard')[1]).not.toHaveClass('PlayerCardIsActive');

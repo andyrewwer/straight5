@@ -14,9 +14,9 @@ function getPlayerTextForMoveState(moveState, cardIndex) {
       return 'Please draw a card from Deck or Discard'
     case MoveState.CARD_DRAWN:
       return 'Replace card in your hand or choose a discard option';
-    case MoveState.DISCARD_CHOSEN:
+    case MoveState.TURN_FACE_UP_CHOSEN:
       return 'Select the first card to turn face up'
-    case MoveState.CARD_DISCARDED:
+    case MoveState.TURN_FACE_UP_IN_PROGRESS:
       return 'Select the second card to turn face up or pass'
     case MoveState.SWAP_CHOSEN:
       return 'Select the first card you\'d like  to swap'
@@ -26,6 +26,8 @@ function getPlayerTextForMoveState(moveState, cardIndex) {
       return 'Please select a token to claim or pass'
     case MoveState.CLAIMING_TOKEN:
       return 'Please select the first card of your run';
+    case MoveState.DISCARD_CHOSEN:
+      return 'Please select the discard pile you would like to discard the card to';
     default:
       return 'UNKONWN STATE DETECTED'
   }

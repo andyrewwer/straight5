@@ -6,7 +6,7 @@ const { PlayerService } = require('./service/PlayerService.js')
 const { ConfigService } = require('./service/ConfigService.js')
 
 function App() {
-  const configService = new ConfigService(6, 9, 2, 2);
+  const configService = new ConfigService(6, 9, 2, 3);
   const playerService = new PlayerService(configService)
   const gameService = new GameService(playerService, configService);
   return (

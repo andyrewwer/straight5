@@ -27,7 +27,7 @@ jest.mock('./game/MiddleSection.js', () => (props) => {
   mockMiddleSection(props)
   return  <div data-testid="middle-section">
             <div data-testid="middle-section-deck" onClick={() => props.drawCallback(DrawType.DECK)}/>
-            <div data-testid="middle-section-discard-0" onClick={() => props.drawCallback(DrawType.DISCARD)}/>
+            <div data-testid="middle-section-discard-0" onClick={() => props.drawCallback(DrawType.DISCARD, 1)}/>
           </div>;
 });
 jest.mock('./game/FooterSection.js', () => (props) => {
@@ -53,7 +53,7 @@ const mockReplaceCard = jest.fn()
 const mockResetPlayers = jest.fn()
 const mockActivePlayerCanClaimToken = jest.fn()
 const mockNextPlayer = jest.fn()
-const mockDiscardActiveCard = jest.fn()
+const mockDiscardCard = jest.fn()
 const mockTurnCardFaceUp = jest.fn()
 const mockSwapIsValid = jest.fn()
 const mockSetSwapCardIndex = jest.fn()
@@ -63,7 +63,9 @@ const mockClaimToken = jest.fn()
 const mockGetActivePlayersTokens = jest.fn()
 const mockIsValidIndexForToken = jest.fn()
 const mockActivePlayerHasAllCardsFaceUp = jest.fn()
+const mockDiscardPileHas0Cards = jest.fn()
 
+mockDiscardPileHas0Cards.mockReturnValue(-1);
 beforeEach(() => {
   GameService.mockImplementation(() => {
     return {
@@ -74,7 +76,7 @@ beforeEach(() => {
       replaceCard: mockReplaceCard,
       activePlayerCanClaimToken: mockActivePlayerCanClaimToken,
       nextPlayer: mockNextPlayer,
-      discardActiveCard: mockDiscardActiveCard,
+      discardCard: mockDiscardCard,
       turnCardFaceUp: mockTurnCardFaceUp,
       swapIsValid: mockSwapIsValid,
       setSwapCardIndex:  mockSetSwapCardIndex,
@@ -83,7 +85,9 @@ beforeEach(() => {
       claimToken: mockClaimToken,
       getActivePlayersTokens: mockGetActivePlayersTokens,
       isValidIndexForToken: mockIsValidIndexForToken,
-      activePlayerHasAllCardsFaceUp: mockActivePlayerHasAllCardsFaceUp
+      activePlayerHasAllCardsFaceUp: mockActivePlayerHasAllCardsFaceUp,
+      discardPileHas0Cards: mockDiscardPileHas0Cards
+
     }
   })
 
@@ -145,8 +149,11 @@ test('renderGameMode replaceCard drawDeck', () => {
   expect(mockDrawCardFromDeck).toHaveBeenCalledTimes(1);
 
   userEvent.click(screen.getAllByTestId('hand')[0]);
+  expect(mockDiscardPileHas0Cards).toHaveBeenCalledTimes(1);
   expect(mockReplaceCard).toHaveBeenCalledTimes(1);
   expect(mockReplaceCard.mock.calls[0][0]).toBe(0);
+
+  userEvent.click(screen.getByTestId('middle-section-discard-0'));
   expect(mockActivePlayerCanClaimToken).toHaveBeenCalledTimes(1);
   expect(mockNextPlayer).toHaveBeenCalledTimes(1);
 });
@@ -155,11 +162,24 @@ test('renderGameMode pass', () => {
   startGame();
   userEvent.click(screen.getByTestId('middle-section-discard-0'));
   userEvent.click(screen.getByTestId('footer-section-pass'));
-  expect(mockDiscardActiveCard).toHaveBeenCalledTimes(1);
+  expect(mockDiscardPileHas0Cards).toHaveBeenCalledTimes(1);
+
+  userEvent.click(screen.getByTestId('middle-section-discard-0'));
+  expect(mockDiscardCard).toHaveBeenCalledTimes(1);
   expect(mockActivePlayerCanClaimToken).toHaveBeenCalledTimes(1);
   expect(mockNextPlayer).toHaveBeenCalledTimes(1);
   expect(mockTurnCardFaceUp).toHaveBeenCalledTimes(0);
   expect(mockSwapCards).toHaveBeenCalledTimes(0);
+
+});
+
+test('renderGameMode discardsToEmptyDiscard', () => {
+  mockDiscardPileHas0Cards.mockReturnValue(0);
+  startGame();
+  userEvent.click(screen.getByTestId('middle-section-discard-0'));
+  userEvent.click(screen.getByTestId('footer-section-pass'));
+  expect(mockDiscardPileHas0Cards).toHaveBeenCalledTimes(1);
+  expect(mockDiscardCard).toHaveBeenCalledTimes(1);
 
 });
 
@@ -175,7 +195,8 @@ test('renderGameMode turnCardFaceUp drawDiscard', () => {
   expect(mockDrawCardFromDiscard).toHaveBeenCalledTimes(1);
 
   userEvent.click(screen.getByTestId('footer-section-faceup'));
-  expect(mockDiscardActiveCard).toHaveBeenCalledTimes(1);
+  userEvent.click(screen.getByTestId('middle-section-discard-0'));
+  expect(mockDiscardCard).toHaveBeenCalledTimes(1);
 
   userEvent.click(screen.getAllByTestId('hand')[0]);
   expect(mockTurnCardFaceUp).toHaveBeenCalledTimes(1);
@@ -201,7 +222,8 @@ test('renderGameMode turnCardFaceUp end when all face-up', () => {
   expect(mockDrawCardFromDiscard).toHaveBeenCalledTimes(1);
 
   userEvent.click(screen.getByTestId('footer-section-faceup'));
-  expect(mockDiscardActiveCard).toHaveBeenCalledTimes(1);
+  userEvent.click(screen.getByTestId('middle-section-discard-0'));
+  expect(mockDiscardCard).toHaveBeenCalledTimes(1);
 
   userEvent.click(screen.getAllByTestId('hand')[0]);
   expect(mockTurnCardFaceUp).toHaveBeenCalledTimes(1);
@@ -219,8 +241,10 @@ test('renderGameMode swapCards', () => {
   startGame();
 
   userEvent.click(screen.getByTestId('middle-section-discard-0'));
-  userEvent.click(screen.getByTestId('footer-section-swap'))
-  expect(mockDiscardActiveCard).toHaveBeenCalledTimes(1);
+  userEvent.click(screen.getByTestId('footer-section-swap'));
+  userEvent.click(screen.getByTestId('middle-section-discard-0'));
+
+  expect(mockDiscardCard).toHaveBeenCalledTimes(1);
 
   userEvent.click(screen.getAllByTestId('hand')[0]);
   expect(mockSetSwapCardIndex).toHaveBeenCalledTimes(1);
@@ -242,6 +266,7 @@ test('renderGameMode claimToken threeOfAKind', () => {
   startGame();
   userEvent.click(screen.getByTestId('middle-section-discard-0'));
   userEvent.click(screen.getByTestId('footer-section-pass'));
+  userEvent.click(screen.getByTestId('middle-section-discard-0'));
   expect(mockActivePlayerCanClaimToken).toHaveBeenCalledTimes(1);
   expect(mockNextPlayer).toHaveBeenCalledTimes(0);
 
@@ -260,6 +285,7 @@ test('renderGameMode changeTurn', () => {
   startGame();
   userEvent.click(screen.getByTestId('middle-section-discard-0'));
   userEvent.click(screen.getByTestId('footer-section-pass'));
+  userEvent.click(screen.getByTestId('middle-section-discard-0'));
   expect(mockActivePlayerCanClaimToken).toHaveBeenCalledTimes(1);
   expect(mockNextPlayer).toHaveBeenCalledTimes(0);
 

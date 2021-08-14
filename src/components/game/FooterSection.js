@@ -12,7 +12,7 @@ class Hand extends Component {
   }
 
   ShowCardActions = () => {
-    return [MoveState.CARD_DRAWN, MoveState.DISCARD_CHOSEN, MoveState.CARD_DISCARDED, MoveState.SWAP_CHOSEN, MoveState.SWAP_IN_PROGRESS].includes(this.props.moveState)
+    return [MoveState.CARD_DRAWN, MoveState.TURN_FACE_UP_CHOSEN, MoveState.TURN_FACE_UP_IN_PROGRESS, MoveState.SWAP_CHOSEN, MoveState.SWAP_IN_PROGRESS, MoveState.DISCARD_CHOSEN].includes(this.props.moveState)
   }
 
   ShowTurnUpAction = () => {
@@ -26,9 +26,11 @@ class Hand extends Component {
   ShowToken = token => {
     return this.gameService.canClaimToken(token);
   }
+  showInitialActions = () => {
+    return this.props.moveState !== MoveState.DISCARD_CHOSEN;
+  }
 
   // TODO MUM color palette here so the buttons are less identical.
-
   render = () => {
     return (
       <div className="CardTableFooter" data-testid="footer-section">
@@ -42,12 +44,13 @@ class Hand extends Component {
                 <div className="PlayerCard PlayerCardFront" role="activeCard">
                   {this.gameService.getActiveCard().value}
                 </div>
+                {this.showInitialActions() &&
                 <div>
                   {this.ShowTurnUpAction() && <button data-testid='turn-face-up-button' onClick={() => {this.props.buttonPressedCallback(ActionType.TURN_FACE_UP)}}> Discard to turn two face up </button>}
                   <button onClick={() => {this.props.buttonPressedCallback(ActionType.SWAP)}}> Discard to swap two </button>
-                </div>
+                </div>}
             </React.Fragment>}
-            <div className="FullWidth"><button className="mb-2 FullWidth" onClick={() => {this.props.buttonPressedCallback(ActionType.PASS)}}> Pass </button></div>
+        {this.showInitialActions() &&  <div className="FullWidth"><button className="mb-2 FullWidth" onClick={() => {this.props.buttonPressedCallback(ActionType.PASS)}}> Pass </button></div>}
 
           </React.Fragment>}
 

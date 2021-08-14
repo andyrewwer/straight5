@@ -1,6 +1,6 @@
 {
   "name": "straight5",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "private": true,
   "dependencies": {
     "@testing-library/react": "^11.2.7",

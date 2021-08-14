@@ -27,9 +27,26 @@ class Straight5 extends Component {
     });
   }
 
-  DrawCard = (type, index) => {
+
+  handleDiscard(index, action) {
+    this.gameService.discardCard(index);
+    if (action === ActionType.PASS) {
+      return this.EndMove();
+    } else if (action === ActionType.SWAP) {
+      return this.setState({MoveState: MoveState.SWAP_CHOSEN});
+    } else if (action ===  ActionType.TURN_FACE_UP) {
+      return this.setState({MoveState: MoveState.TURN_FACE_UP_CHOSEN});
+    } else if (action === ActionType.REPLACE_CARD) {
+      this.EndMove();
+    }
+  }
+  //TODO animation
+  deckAndDiscardPressed = (type, index) => {
     if (this.state.MoveState !== MoveState.START_STATE) {
-      //TODO animation?
+      if (this.state.MoveState === MoveState.DISCARD_CHOSEN &&
+           type === DrawType.DISCARD) {
+             this.handleDiscard(index, this.state.InterruptedActionType);
+      }
       return;
     }
     if (type === DrawType.DECK) {
@@ -48,18 +65,13 @@ class Straight5 extends Component {
 
   ReplaceCard = index => {
     this.gameService.replaceCard(index);
-    this.EndMove();
-  }
-
-  DiscardCard = () => {
-    this.gameService.discardActiveCard();
   }
 
   TurnCardFaceUp = index => {
     if (!this.gameService.turnCardFaceUp(index)) {
       return;
     }
-    if (this.state.MoveState === MoveState.CARD_DISCARDED) {
+    if (this.state.MoveState === MoveState.TURN_FACE_UP_IN_PROGRESS) {
       this.EndMove();
       return;
     }
@@ -68,7 +80,7 @@ class Straight5 extends Component {
       return;
     }
     this.setState({
-      MoveState: MoveState.CARD_DISCARDED,
+      MoveState: MoveState.TURN_FACE_UP_IN_PROGRESS,
     });
   }
 
@@ -121,23 +133,30 @@ class Straight5 extends Component {
     });
   }
 
+  setDiscardChosenState(action) {
+    const index = this.gameService.discardPileHas0Cards();
+    if (index >= 0) {
+      this.handleDiscard(index, action);
+      return
+    }
+    this.setState({
+      MoveState: MoveState.DISCARD_CHOSEN,
+      InterruptedActionType: action
+    });
+  }
+
   handleActionButtonPressed = (action, token) => {
     if (action === ActionType.PASS) {
       if (this.state.MoveState === MoveState.CARD_DRAWN) {
-        this.DiscardCard()
+        return this.setDiscardChosenState(action);
       }
       return this.EndMove();
     }
-    if (action === ActionType.SWAP) {
-      this.setState({MoveState: MoveState.SWAP_CHOSEN})
-      return this.DiscardCard()
+    if ([ActionType.SWAP, ActionType.TURN_FACE_UP].includes(action)) {
+        return this.setDiscardChosenState(action);
     }
     if (action === ActionType.CHANGE_TURN) {
       return this.ChangeTurn()
-    }
-    if (action === ActionType.TURN_FACE_UP) {
-      this.setState({MoveState: MoveState.DISCARD_CHOSEN})
-      return this.DiscardCard()
     }
     if (action === ActionType.CLAIM_TOKEN) {
       this.gameService.setTokenToClaim(token);
@@ -163,10 +182,10 @@ class Straight5 extends Component {
     }
     switch (this.state.MoveState) {
       case MoveState.CARD_DRAWN:
-        this.ReplaceCard(index)
-        break;
-      case MoveState.DISCARD_CHOSEN:
-      case MoveState.CARD_DISCARDED:
+        this.ReplaceCard(index);
+        return this.setDiscardChosenState(ActionType.REPLACE_CARD);
+      case MoveState.TURN_FACE_UP_CHOSEN:
+      case MoveState.TURN_FACE_UP_IN_PROGRESS:
         this.TurnCardFaceUp(index);
         break
       case MoveState.SWAP_CHOSEN:
@@ -204,7 +223,7 @@ class Straight5 extends Component {
     {this.state.AppMode  === AppMode.GAME &&
     <React.Fragment>
       <Hand gameService={this.gameService} moveState={this.state.MoveState} playerService={this.playerService} id={0} cardPressedCallback={this.handlePlayerCardPressed} />
-      <MiddleSection gameService={this.gameService} drawCallback={this.DrawCard} moveState={this.state.MoveState}/>
+      <MiddleSection gameService={this.gameService} drawCallback={this.deckAndDiscardPressed} moveState={this.state.MoveState}/>
       <Hand gameService={this.gameService} moveState={this.state.MoveState} playerService={this.playerService} id={1} cardPressedCallback={this.handlePlayerCardPressed} />
       <FooterSection gameService={this.gameService} moveState={this.state.MoveState} buttonPressedCallback={this.handleActionButtonPressed} />
     </React.Fragment>}

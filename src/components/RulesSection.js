@@ -45,13 +45,17 @@ class Hand extends Component {
           <p className="rules-p">Each consists of three phases:</p>
           <ol>
             <li><h4 className="phaseHeader">Draw Phase:</h4> draw the top card of the deck or discard piles</li>
-            <li><h4 className="phaseHeader">Play Phase:</h4> in this phase you can either place the card you drew in front or discard your to:
+            <li><h4 className="phaseHeader">Play Phase:</h4>
               <ul>
-                <li> Turn up to two cards face-up</li>
-                <li> Swap any two cards </li>
+                <li> Place card in front of you (and discard existing card), or; </li>
+                <li> Discard the drawn card (to any discard pile) and:  </li>
+                <ul>
+                  <li> Turn up to two cards face-up</li>
+                  <li> Swap any two cards </li>
+                </ul>
               </ul>
             </li>
-            <li><h4 className="phaseHeader">Token Phase</h4>: if you have the cards face-up you may choose to discard them to claim a token.</li>
+            <li><h4 className="phaseHeader">Claim Token Phase</h4>: Claim a token by discarding the required cards (e.g. 1 2 3 4 for Four In a Row).</li>
           </ol>
         </div>
         <div className="secondary-background">
@@ -59,7 +63,10 @@ class Hand extends Component {
           <p className="rules-p">Here are some clarifications on rules above:</p>
           <ol>
             <li>When you place the drawn card in front of you, you do not get to take another action</li>
+            <li>When you discard a card, you get to choose which discard pile it goes into <b>UNLESS</b> a discard pile has 0 cards, in which case you must discard it there (and the app will do this automatically)</li>
+            <li>If you have only one card face-up and choose to take the "turn up to two cards face up" action. You only get to turn one card face up. </li>
             <li>You can only claim each token once</li>
+            <li>You can only claim one token per turn</li>
             <li>The cards to claim the tokens for the straights (3/4/5 in a row) must be adjacent and in ascending order (e.g. 1 2 3 not 3 2 1 or 1 3 2)</li>
             <li>The cards to claim the tokens for three of a kind and full house can be anywhere</li>
           </ol>

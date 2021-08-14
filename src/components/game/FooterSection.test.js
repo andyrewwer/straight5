@@ -105,6 +105,13 @@ test('render givenAllCardsFaceUp shouldHideTurnFaceUp', () => {
   expect(screen.queryAllByRole('button')[1]).toHaveTextContent('Pass');
 });
 
+test('render DISCARD CHOSEN', () => {
+  mockAllCardsFaceUp.mockReturnValue(false);
+  mockGetActiveCard.mockReturnValue({value: 10})
+  render(<FooterSection gameService={gameService} moveState={MoveState.DISCARD_CHOSEN}  />)
+  expect(screen.queryAllByRole('button').length).toBe(0);
+});
+
 test('activeCard callbacks', () => {
   mockAllCardsFaceUp.mockReturnValue(false);
   mockGetActiveCard.mockReturnValue({value: 10})

@@ -4,23 +4,26 @@ const {PlayerService} = require('./PlayerService.js')
 const {ConfigService} = require('./ConfigService.js')
 const {Player} = require('../model/Player.js');
 const {TokenType} = require('../model/Enums.js')
+let configService = new ConfigService(6, 9, 2, 2);
 let playerService;
 let gameService;
 
+
 jest.mock('../Utils', () => ({
   shuffleArray(array) {
-    return array }
+    return array
+  }
 }
 ));
-
+//TODO Test for multiple discard piles! Then implement it
 beforeEach(() => {
-  const configService = new ConfigService(6, 9, 2, 2);
+  configService = new ConfigService(6, 9, 2, 2);
   playerService = new PlayerService(configService);
   gameService = new GameService(playerService, configService);
 });
 
 test('createDeck creates and calls shuffle', () => {
-  const configService = new ConfigService(2, 2, 2, 2);
+  configService = new ConfigService(2, 2, 2, 2);
   playerService = new PlayerService(configService);
   gameService = new GameService(playerService, configService);
   gameService.createDeck();
@@ -69,9 +72,18 @@ test('drawCardFromDiscard', () => {
 });
 
 test('initializeDiscard', () => {
+  configService = new ConfigService(0,0,0,1);
+  gameService = new GameService(playerService, configService)
   gameService.setDeck([0,1,2]);
   gameService.initializeDiscard()
   expect(gameService.getDiscard()).toEqual([[2]]);
+
+  configService = new ConfigService(0,0,0,2);
+  gameService = new GameService(playerService, configService)
+  gameService.setDeck([0,1,2]);
+  gameService.initializeDiscard()
+  expect(gameService.getDiscard()).toEqual([[2], [1]]);
+
 });
 
 test('swapIsValid', () => {
@@ -92,13 +104,18 @@ test('swapCards', () => {
   expect(playerService.getPlayers()[0].getDeck()[2]).toBe(2);
 });
 
-test('replaceCard', () => {
+test('replaceCard and discardCard', () => {
+  gameService.setDiscard([[],[]])
   gameService.setActiveCard({seen:false, value: 1});
   playerService.setPlayers([new Player([{seen:false, value: 2}, {seen:false, value: 3}], [])]);
-  gameService.replaceCard(1, 0);
+  gameService.replaceCard(1);
   expect(playerService.getPlayers()[0].getDeck()).toEqual([{seen:false, value: 2}, {seen:true, value: 1}]);
-  expect(gameService.getDiscard()).toEqual([[{seen:false, value: 3}]]);
+  expect(gameService.getDiscard()).toEqual([[], []]);
+  expect(gameService.getActiveCard()).toEqual({seen:false, value: 3});
+
+  gameService.discardCard(1);
   expect(gameService.getActiveCard()).toEqual({});
+  expect(gameService.getDiscard()).toEqual([[], [{seen:false, value: 3}]]);
 });
 
 test('turnCardFaceUp', () => {
@@ -111,10 +128,10 @@ test('turnCardFaceUp', () => {
   expect(gameService.turnCardFaceUp(0)).toBe(false);
 });
 
-test('discardActiveCard', () => {
+test('discardCard', () => {
   gameService.setActiveCard('card');
-  gameService.discardActiveCard();
-  expect(gameService.getDiscard()).toEqual([['card']]);
+  gameService.discardCard(0);
+  expect(gameService.getDiscard()[0]).toEqual(['card']);
   expect(gameService.getActiveCard()).toEqual({});
 });
 
@@ -125,14 +142,18 @@ test('startNewGame', () => {
   gameService.setTokenToClaim(TokenType.THREE_IN_A_ROW);
   gameService.setSwapCardIndex(2);
   gameService.startNewGame(6, 9);
-  expect(gameService.getDeck().length).toBe(43);
+  expect(gameService.getDeck().length).toBe(42);
   expect(playerService.getPlayers().length).toBe(2);
   expect(playerService.getPlayers()[0].getDeck().length).toBe(5);
   expect(playerService.getPlayers()[1].getDeck().length).toBe(5);
-  expect(gameService.getDiscard().length).toBe(1);
+  expect(gameService.getDiscard().length).toBe(2);
+  expect(gameService.getDiscard()[0].length).toBe(1);
+  expect(gameService.getDiscard()[1].length).toBe(1);
   expect(playerService.getPlayers()[0].getTokens()).toEqual([]);
   expect(playerService.getPlayers()[1].getTokens()).toEqual([]);
-  expect(gameService.getDiscard().length).toBe(1);
+  expect(gameService.getDiscard().length).toBe(2);
+  expect(gameService.getDiscard()[0].length).toBe(1);
+  expect(gameService.getDiscard()[1].length).toBe(1);
   expect(gameService.getSwapCardIndex()).toBe(-1);
   expect(gameService.getActiveCard()).toEqual({});
   expect(gameService.getActivePlayerIndex()).toBe(0);
@@ -438,4 +459,16 @@ test('allCardsFaceUp', () => {
 
   playerService.getPlayers()[0].setDeck([{seen: true, value:0}, {seen: true, value:1}, {seen: true, value:2}, {seen: false, value:0}, {seen: true, value:0}]);
   expect(gameService.activePlayerHasAllCardsFaceUp()).toBe(false);
+});
+
+test('discardPileHas0Cards', () => {
+  gameService.setDiscard([['not-empty'], []]);
+  expect(gameService.discardPileHas0Cards()).toBe(1);
+
+  gameService.setDiscard([[], ['not-empty']]);
+  expect(gameService.discardPileHas0Cards()).toBe(0);
+
+  gameService.setDiscard([['not-empty'], ['not-empty']]);
+  expect(gameService.discardPileHas0Cards()).toBe(-1);
+
 });

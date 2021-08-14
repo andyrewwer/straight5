@@ -18,7 +18,7 @@ class Hand extends Component {
   cardCanBePressed(card, index) {
     return this.props.id === this.props.gameService.getActivePlayerIndex()
      && (
-       ([MoveState.DISCARD_CHOSEN, MoveState.CARD_DISCARDED].includes(this.props.moveState) && !card.seen)
+       ([MoveState.TURN_FACE_UP_CHOSEN, MoveState.TURN_FACE_UP_IN_PROGRESS].includes(this.props.moveState) && !card.seen)
            ||
        (MoveState.SWAP_IN_PROGRESS === this.props.moveState && this.props.gameService.getSwapCardIndex() !== index)
            ||

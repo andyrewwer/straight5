@@ -50,8 +50,21 @@ class GameService {
     this.setActiveCard(this.getDiscard()[index].pop());
   }
 
+  discardPileHas0Cards() {
+    for (let i = 0; i < this.configService.getNumberOfDiscards(); i ++) {
+      if (this.getDiscard()[i].length === 0) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
   initializeDiscard() {
-    this.getDiscard()[0].push(this.getDeck().pop());
+    this.setDiscard([]);
+    for (let i = 0; i < this.configService.getNumberOfDiscards(); i ++) {
+      this.getDiscard().push([]);
+      this.getDiscard()[i].push(this.getDeck().pop());
+    }
   }
 
   swapIsValid(index) {
@@ -67,10 +80,14 @@ class GameService {
   }
 
   replaceCard(index) {
+    const temp = this.getActivePlayersDeck()[index];
     this.getActiveCard().seen = true;
-    //TODO come back to this to pick discard
-    this.getDiscard()[0].push(this.getActivePlayersDeck()[index])
     this.getActivePlayersDeck()[index] = this.getActiveCard();
+    this.setActiveCard(temp);
+  }
+
+  discardCard(discardIndex) {
+    this.getDiscard()[discardIndex].push(this.getActiveCard());
     this.setActiveCard({});
   }
 
@@ -81,12 +98,6 @@ class GameService {
     }
     card.seen = true;
     return true;
-  }
-
-  discardActiveCard() {
-    //TODO come back to this to pick discard
-    this.getDiscard()[0].push(this.getActiveCard());
-    this.setActiveCard({});
   }
 
   startNewGame() {
