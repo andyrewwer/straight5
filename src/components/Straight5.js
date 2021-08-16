@@ -11,58 +11,54 @@ const classNames = require('classnames');
 class Straight5 extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      AppMode: AppMode.START_STATE,
-      MoveState: MoveState.START_STATE,
-    };
+    // this.state = {
+    //   AppMode: AppMode.START_STATE,
+    //   MoveState: MoveState.START_STATE,
+    // };
     this.playerService = props.playerService;
     this.gameService = props.gameService;
     this.configService = props.configService;
+    this.stateService = props.stateService;
   }
 
   StartNewGame = () => {
     this.playerService.resetPlayers();
     this.gameService.startNewGame();
-    this.setState({
-      MoveState: MoveState.START_STATE,
-      AppMode: AppMode.GAME
-    });
+    this.props.stateService.setMoveState(MoveState.START_STATE);
+    this.props.stateService.setAppMode(AppMode.GAME);
   }
 
-
-  handleDiscard(index, action) {
+  handleDiscard(index) {
+    const action = this.stateService.getInterruptedActionType();
     this.gameService.discardCard(index);
     if (action === ActionType.PASS) {
       return this.EndMove();
     } else if (action === ActionType.SWAP) {
-      return this.setState({MoveState: MoveState.SWAP_CHOSEN});
+      return this.stateService.setMoveState(MoveState.SWAP_CHOSEN);
     } else if (action ===  ActionType.TURN_FACE_UP) {
-      return this.setState({MoveState: MoveState.TURN_FACE_UP_CHOSEN});
+      return this.stateService.setMoveState(MoveState.TURN_FACE_UP_CHOSEN);
     } else if (action === ActionType.REPLACE_CARD) {
       this.EndMove();
     }
   }
+
   //TODO animation
   deckAndDiscardPressed = (type, index) => {
-    if (this.state.MoveState !== MoveState.START_STATE) {
-      if (this.state.MoveState === MoveState.DISCARD_CHOSEN &&
-           type === DrawType.DISCARD) {
-             this.handleDiscard(index, this.state.InterruptedActionType);
-      }
+    if (this.stateService.getMoveState() !== MoveState.START_STATE) {
+      return;
+    }
+    if (this.stateService.getMoveState() === MoveState.DISCARD_CHOSEN && type === DrawType.DISCARD) {
+      this.handleDiscard(index);
       return;
     }
     if (type === DrawType.DECK) {
       this.gameService.drawCardFromDeck();
     } else if (type === DrawType.DISCARD) {
-
       this.gameService.drawCardFromDiscard(index);
     } else {
       console.error('draw card failed', type);
     }
-    this.setState({
-      MoveState: MoveState.CARD_DRAWN
-    });
-
+    this.stateService.setMoveState(MoveState.CARD_DRAWN);
   }
 
   ReplaceCard = index => {
@@ -73,7 +69,7 @@ class Straight5 extends Component {
     if (!this.gameService.turnCardFaceUp(index)) {
       return;
     }
-    if (this.state.MoveState === MoveState.TURN_FACE_UP_IN_PROGRESS) {
+    if (this.stateService.getMoveState() === MoveState.TURN_FACE_UP_IN_PROGRESS) {
       this.EndMove();
       return;
     }
@@ -81,9 +77,7 @@ class Straight5 extends Component {
       this.EndMove();
       return;
     }
-    this.setState({
-      MoveState: MoveState.TURN_FACE_UP_IN_PROGRESS,
-    });
+    this.stateService.setMoveState(MoveState.TURN_FACE_UP_IN_PROGRESS);
   }
 
   SwapCards = index => {
@@ -93,14 +87,12 @@ class Straight5 extends Component {
       return
     }
     this.gameService.setSwapCardIndex(index);
-    this.setState({
-      MoveState: MoveState.SWAP_IN_PROGRESS
-    })
+    this.stateService.setMoveState(MoveState.SWAP_IN_PROGRESS);
   }
 
   EndMove = () => {
     if (this.gameService.activePlayerCanClaimToken()) {
-      this.setState({MoveState: MoveState.PRE_END_STATE});
+      this.stateService.setMoveState(MoveState.PRE_END_STATE);
       return;
     }
     this.ChangeTurn();
@@ -109,9 +101,8 @@ class Straight5 extends Component {
 
   checkIfWinner() {
     if (this.gameService.getActivePlayersTokens().length >= 4) {
-      this.setState({
-        AppMode: AppMode.PLAYER_WIN
-      });
+      this.stateService.setAppMode(AppMode.PLAYER_WIN);
+      this.forceUpdate();
       return true;
     }
     return false;
@@ -130,9 +121,7 @@ class Straight5 extends Component {
 
   ChangeTurn = () => {
     this.gameService.nextPlayer();
-    return this.setState({
-      MoveState: MoveState.START_STATE
-    });
+    this.stateService.setMoveState(MoveState.START_STATE);
   }
 
   setDiscardChosenState(action) {
@@ -141,15 +130,13 @@ class Straight5 extends Component {
       this.handleDiscard(index, action);
       return
     }
-    this.setState({
-      MoveState: MoveState.DISCARD_CHOSEN,
-      InterruptedActionType: action
-    });
+    this.stateService.setMoveState(MoveState.DISCARD_CHOSEN);
+    this.stateService.setInterruptedActionType(action);
   }
 
   handleActionButtonPressed = (action, token) => {
     if (action === ActionType.PASS) {
-      if (this.state.MoveState === MoveState.CARD_DRAWN) {
+      if (this.stateService.getMoveState() === MoveState.CARD_DRAWN) {
         return this.setDiscardChosenState(action);
       }
       return this.EndMove();
@@ -171,9 +158,7 @@ class Straight5 extends Component {
       }
       // TODO COME BACK TO THIS LATER, would like more auto-claim for 3/4 in a row
       // TODO Less autoclaim if multiple options for three of a
-      this.setState({
-        MoveState: MoveState.CLAIMING_TOKEN
-      });
+      this.stateService.setMoveState(MoveState.CLAIMING_TOKEN);
     }
   }
 
@@ -182,7 +167,7 @@ class Straight5 extends Component {
       console.log('card from wrong player clicked')
       return;
     }
-    switch (this.state.MoveState) {
+    switch (this.stateService.getMoveState()) {
       case MoveState.CARD_DRAWN:
         this.ReplaceCard(index);
         return this.setDiscardChosenState(ActionType.REPLACE_CARD);
@@ -197,8 +182,6 @@ class Straight5 extends Component {
       case MoveState.CLAIMING_TOKEN:
         this.ClaimTokenCardPress(index);
         break;
-      default:
-        console.log('No action for this status', this.state.MoveState)
     }
   }
   // TODO SHOW ACTIVE PLAYER
@@ -210,11 +193,11 @@ class Straight5 extends Component {
   render = () => {
     return (
       <React.Fragment>
-  <div className={classNames('CardTable', {'CardTableGame': this.state.AppMode !== AppMode.START_STATE})}>
+  <div className={classNames('CardTable', {'CardTableGame': this.stateService.getAppMode() !== AppMode.START_STATE})}>
     <h2 className="startHeader" data-testid="start-header">
       Straight 5
     </h2>
-    {this.state.AppMode === AppMode.START_STATE &&
+    {this.stateService.getAppMode() === AppMode.START_STATE &&
     <React.Fragment>
         <RulesSection/>
         <div className="mb-4 mt-2">
@@ -223,14 +206,14 @@ class Straight5 extends Component {
 
     </React.Fragment>}
 
-    {this.state.AppMode  === AppMode.GAME &&
+    {this.stateService.getAppMode()  === AppMode.GAME &&
     <React.Fragment>
-      <Hand gameService={this.gameService} moveState={this.state.MoveState} playerService={this.playerService} id={0} cardPressedCallback={this.handlePlayerCardPressed} />
-      <MiddleSection gameService={this.gameService} drawCallback={this.deckAndDiscardPressed} moveState={this.state.MoveState}/>
-      <Hand gameService={this.gameService} moveState={this.state.MoveState} playerService={this.playerService} id={1} cardPressedCallback={this.handlePlayerCardPressed} />
+      <Hand gameService={this.gameService} moveState={this.stateService.getMoveState()} playerService={this.playerService} id={0} cardPressedCallback={this.handlePlayerCardPressed} />
+      <MiddleSection gameService={this.gameService} drawCallback={this.deckAndDiscardPressed} moveState={this.stateService.getMoveState()}/>
+      <Hand gameService={this.gameService} moveState={this.stateService.getMoveState()} playerService={this.playerService} id={1} cardPressedCallback={this.handlePlayerCardPressed} />
     </React.Fragment>}
 
-    {this.state.AppMode === AppMode.PLAYER_WIN &&
+    {this.stateService.getAppMode() === AppMode.PLAYER_WIN &&
     <React.Fragment>
         <div className="mb-4" data-testid="win-header">
         Congratulations to Player {this.gameService.getActivePlayerIndex()+1}
@@ -238,8 +221,8 @@ class Straight5 extends Component {
         </div>
     </React.Fragment>}
   </div>
-    {this.state.AppMode  === AppMode.GAME && <NewstickerSection gameService={this.gameService} moveState={this.state.MoveState}/>}
-    {this.state.AppMode  === AppMode.GAME && <FooterSection gameService={this.gameService} moveState={this.state.MoveState} buttonPressedCallback={this.handleActionButtonPressed} />}
+    {this.stateService.getAppMode()  === AppMode.GAME && <NewstickerSection gameService={this.gameService} moveState={this.stateService.getMoveState()}/>}
+    {this.stateService.getAppMode()  === AppMode.GAME && <FooterSection gameService={this.gameService} moveState={this.stateService.getMoveState()} buttonPressedCallback={this.handleActionButtonPressed} />}
   </React.Fragment>
   )}
 }

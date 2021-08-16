@@ -10,7 +10,9 @@ import Straight5 from './Straight5.js'
 const GameService = require('../service/GameService.js')
 const PlayerService = require('../service/PlayerService.js')
 const {ConfigService} = require('../service/ConfigService.js')
+const {StateService} = require('../service/StateService.js')
 const {TokenType} = require('../model/Enums.js')
+const {ActionType, AppMode, MoveState} = require('../model/Enums.js')
 
 const mockHandComponent = jest.fn();
 const mockMiddleSection = jest.fn();
@@ -45,6 +47,7 @@ jest.mock('./game/FooterSection.js', () => (props) => {
 let gameService;
 let playerService;
 const configService = new ConfigService(6, 9, 2, 2);
+const stateService = new StateService(AppMode.START_STATE, MoveState.START_STATE, ActionType.PASS);
 const mockStartNewGame = jest.fn()
 const mockGetActivePlayerIndex = jest.fn()
 const mockDrawCardFromDeck = jest.fn()
@@ -103,7 +106,7 @@ beforeEach(() => {
 });
 
 test('render Start Section', () => {
-  const straight5 = render(<Straight5 gameService={gameService} playerService={playerService} configService={configService} />);
+  const straight5 = render(<Straight5 gameService={gameService} playerService={playerService} configService={configService} stateService={stateService} />);
   expect(screen.getByTestId('start-header')).toBeInTheDocument();
   expect(screen.getByRole('button')).toHaveTextContent('Start New Game');
   expect(screen.getByTestId('rules-section')).toBeInTheDocument();
@@ -341,6 +344,6 @@ test('renderGameMode winner and renderPlayerWin', () => {
 });
 
 function startGame() {
-  render(<Straight5 gameService={gameService} playerService={playerService} configService={configService}/>);
+  render(<Straight5 gameService={gameService} playerService={playerService} configService={configService} stateService={stateService}/>);
   userEvent.click(screen.getByRole('button'));
 }
