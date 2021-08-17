@@ -8,6 +8,9 @@ import './Straight5.css';
 const {ActionType, AppMode, DrawType, MoveState, TokenType} = require('../model/Enums.js')
 const classNames = require('classnames');
 
+// TODO should discard card at the END of your TURN instead of START
+// TODO maybe pop-up when turn changes
+// TODO only highlight options that can be clicked when claiming a token
 class Straight5 extends Component {
   constructor(props) {
     super(props);
@@ -163,14 +166,15 @@ class Straight5 extends Component {
     }
     if (action === ActionType.CLAIM_TOKEN) {
       this.gameService.setTokenToClaim(token);
-      if([TokenType.THREE_OF_A_KIND, TokenType.FULL_HOUSE, TokenType.FIVE_IN_A_ROW].includes(token)) {
-        // this could be smarter if only one option for three / four in a row
-        this.gameService.claimToken();
+
+      const indeces = this.tokenService.getAllIndecesForToken(this.gameService.getActivePlayersDeck(), token);
+      if (indeces.length === 1 || token === TokenType.FULL_HOUSE || token === TokenType.THREE_OF_A_KIND) {
+        this.gameService.claimToken(indeces[0][0]); //TODO TEST
         if (!this.checkIfWinner()) {
           return this.ChangeTurn();
         }
       }
-      // TODO COME BACK TO THIS LATER, would like more auto-claim for 3/4 in a row
+
       // TODO Less autoclaim if multiple options for three of a
       this.setState({
         MoveState: MoveState.CLAIMING_TOKEN

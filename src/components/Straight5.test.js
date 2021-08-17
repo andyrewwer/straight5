@@ -18,6 +18,8 @@ const mockHandComponent = jest.fn();
 const mockMiddleSection = jest.fn();
 const mockFooterSection = jest.fn();
 
+// TODO redo this as a unit test
+
 jest.mock('../service/GameService', () => jest.fn());
 jest.mock('../service/PlayerService', () => jest.fn());
 jest.mock('./game/Hand.js', () => (props) => {
@@ -279,8 +281,10 @@ test('renderGameMode swapCards', () => {
 });
 
 test('renderGameMode claimToken threeOfAKind', () => {
-  mockGetPlayers.mockReturnValue([new Player([{seen:true, value:0},{seen:true, value:0},{seen:true, value:0},{seen:true, value:4},{seen:true, value:6}], [])]);
-  mockGetActivePlayersTokens.mockReturnValue(0);
+  const deck = [{seen:true, value:0},{seen:true, value:0},{seen:true, value:0},{seen:true, value:4},{seen:true, value:6}]
+  mockGetPlayers.mockReturnValue([new Player(deck, [])]);
+  mockGetActivePlayersDeck.mockReturnValue(deck);
+  mockGetActivePlayersTokens.mockReturnValue([]);
 
   startGame();
   userEvent.click(screen.getByTestId('middle-section-discard-0'));
@@ -321,7 +325,7 @@ test('renderGameMode changeTurn', () => {
   expect(mockGetActivePlayerIndex).toHaveBeenCalledTimes(1);
 
   userEvent.click(screen.getAllByTestId('hand')[0]);
-  expect(mockGetActivePlayersDeck).toHaveBeenCalledTimes(1);
+  expect(mockGetActivePlayersDeck).toHaveBeenCalledTimes(2);
   expect(mockClaimToken).toHaveBeenCalledTimes(1);
   expect(mockGetTokenToClaim).toHaveBeenCalledTimes(1);
   expect(mockClaimToken.mock.calls[0][0]).toBe(0);
@@ -341,9 +345,11 @@ test('renderGameMode clickPlayerCard in StartState should do nothing', () => {
 });
 
 test('renderGameMode winner and renderPlayerWin', () => {
-  mockGetPlayers.mockReturnValue([[], [], [], [], new Player([{seen:true, value:0},{seen:true, value:0},{seen:true, value:0},{seen:true, value:4},{seen:true, value:6}], [])]);
+  const deck = [{seen:true, value:0},{seen:true, value:0},{seen:true, value:0},{seen:true, value:4},{seen:true, value:6}];
+  mockGetPlayers.mockReturnValue([[], [], [], [], new Player(deck, [])]);
   mockGetActivePlayersTokens.mockReturnValue([TokenType.THREE_IN_A_ROW, TokenType.FOUR_IN_A_ROW, TokenType.FIVE_IN_A_ROW, TokenType.THREE_OF_A_KIND, TokenType.FULL_HOUSE]);
   mockGetActivePlayerIndex.mockReturnValue(4);
+  mockGetActivePlayersDeck.mockReturnValue([{seen:true, value:0},{seen:true, value:0},{seen:true, value:0},{seen:true, value:4},{seen:true, value:6}])
 
   startGame();
   userEvent.click(screen.getByTestId('middle-section-discard-0'));
