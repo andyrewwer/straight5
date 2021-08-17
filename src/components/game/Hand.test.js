@@ -9,6 +9,7 @@ import userEvent from '@testing-library/user-event'
 import Hand from './Hand.js'
 const {PlayerService} = require('../../service/PlayerService.js')
 const {ConfigService} = require('../../service/ConfigService.js');
+const {TokenService} = require('../../service/TokenService.js');
 const {GameService} = require('../../service/GameService.js')
 const {TokenType, MoveState} = require('../../model/Enums.js')
 
@@ -17,8 +18,9 @@ let gameService;
 
 beforeEach(() => {
   const configService = new ConfigService(6, 9, 2, 2);
+  const tokenService = new TokenService();
   playerService = new PlayerService(configService);
-  gameService = new GameService(playerService, configService);
+  gameService = new GameService(playerService, tokenService, configService);
   gameService.startNewGame(6, 9);
 })
 

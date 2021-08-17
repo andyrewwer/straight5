@@ -6,6 +6,7 @@ class FooterSection extends Component {
   constructor(props) {
     super(props);
     this.gameService = props.gameService;
+    this.tokenService = props.tokenService;
     this.TableCanvas = React.createRef();
     this.render.bind(this);
   }
@@ -23,8 +24,9 @@ class FooterSection extends Component {
   }
 
   ShowToken = token => {
-    return this.gameService.canClaimToken(token);
+    return this.tokenService.canClaimToken(token, this.gameService.getActivePlayersDeck(), this.gameService.getActivePlayersTokens());
   }
+
   showInitialActions = () => {
     return this.props.moveState !== MoveState.DISCARD_CHOSEN;
   }

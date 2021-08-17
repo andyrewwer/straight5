@@ -9,87 +9,87 @@ import userEvent from '@testing-library/user-event';
 import FooterSection from './FooterSection.js';
 const {PlayerService} = require('../../service/PlayerService.js');
 const {ConfigService} = require('../../service/ConfigService.js');
+const {TokenService} = require('../../service/TokenService.js');
 const GameService = require('../../service/GameService.js');
 const { ActionType, MoveState, TokenType } = require('../../model/Enums.js')
 
 jest.mock('../../service/GameService', () => jest.fn());
 
 let gameService;
-const mockCanClaimToken = jest.fn()
+const tokenService = new TokenService();
 const mockGetActiveCard = jest.fn()
+const mockGetActivePlayersDeck = jest.fn()
+const mockGetActivePlayersTokens = jest.fn()
 const mockAllCardsFaceUp = jest.fn()
 
 beforeEach(() => {
   GameService.mockImplementation(() => {
     return {
-      canClaimToken: mockCanClaimToken,
       getActiveCard: mockGetActiveCard,
+      getActivePlayersDeck: mockGetActivePlayersDeck,
+      getActivePlayersTokens: mockGetActivePlayersTokens,
       activePlayerHasAllCardsFaceUp: mockAllCardsFaceUp
     }
-  })
+  });
   const configService = new ConfigService(6, 9, 2, 2);
   const playerService = new PlayerService(configService);
-  gameService = new GameService(playerService, configService);
+  gameService = new GameService(playerService, tokenService, configService);
 });
 
 test('render given basic state hides all subsections and displays right text', () => {
-  render(<FooterSection gameService={gameService} moveState={MoveState.START_STATE}  />)
+  render(<FooterSection gameService={gameService} tokenService={tokenService} moveState={MoveState.START_STATE}  />)
 
   expect(screen.queryByRole('button')).not.toBeInTheDocument();
   expect(screen.queryByRole('activeCard')).not.toBeInTheDocument();
-  expect(mockCanClaimToken.mock.calls.length).toBe(0);
+  expect(mockGetActivePlayersTokens.mock.calls.length).toBe(0);
+  expect(mockGetActivePlayersDeck.mock.calls.length).toBe(0);
 });
 
 test('render PreEndState shows end actions with all tokens are', () => {
-  mockCanClaimToken.mockReturnValue(true);
-  render(<FooterSection gameService={gameService} moveState={MoveState.PRE_END_STATE}  />)
-  expect(screen.queryAllByRole('button').length).toBe(6);
+  mockGetActivePlayersTokens.mockReturnValue([]);
+  mockGetActivePlayersDeck.mockReturnValue([{seen:true, value:0},{seen:true, value:0},{seen:true, value:4},{seen:true, value:4},{seen:true, value:4}])
+  render(<FooterSection gameService={gameService} tokenService={tokenService} moveState={MoveState.PRE_END_STATE}  />)
+  expect(screen.queryAllByRole('button').length).toBe(3);
+  expect(screen.queryAllByRole('button')[0]).toHaveTextContent('THREE OF A KIND');
+  expect(screen.queryAllByRole('button')[1]).toHaveTextContent('FULL HOUSE');
+  expect(screen.queryAllByRole('button')[2]).toHaveTextContent('Pass');
+  expect(screen.queryByRole('activeCard')).not.toBeInTheDocument();
+  expect(mockGetActivePlayersTokens.mock.calls.length).toBe(5);
+  expect(mockGetActivePlayersDeck.mock.calls.length).toBe(5);
+});
+
+test('render PreEndState shows end actions with all tokens are', () => {
+  mockGetActivePlayersTokens.mockReturnValue([]);
+  mockGetActivePlayersDeck.mockReturnValue([{seen:true, value:0},{seen:true, value:1},{seen:true, value:2},{seen:true, value:3},{seen:true, value:4}])
+  render(<FooterSection gameService={gameService} tokenService={tokenService} moveState={MoveState.PRE_END_STATE}  />)
+  expect(screen.queryAllByRole('button').length).toBe(4);
   expect(screen.queryAllByRole('button')[0]).toHaveTextContent('THREE IN A ROW');
   expect(screen.queryAllByRole('button')[1]).toHaveTextContent('FOUR IN A ROW');
   expect(screen.queryAllByRole('button')[2]).toHaveTextContent('FIVE IN A ROW');
-  expect(screen.queryAllByRole('button')[3]).toHaveTextContent('THREE OF A KIND');
-  expect(screen.queryAllByRole('button')[4]).toHaveTextContent('FULL HOUSE');
-  expect(screen.queryAllByRole('button')[5]).toHaveTextContent('Pass');
+  expect(screen.queryAllByRole('button')[3]).toHaveTextContent('Pass');
   expect(screen.queryByRole('activeCard')).not.toBeInTheDocument();
-  expect(mockCanClaimToken.mock.calls.length).toBe(5);
-  expect(mockCanClaimToken.mock.calls[0][0]).toBe(TokenType.THREE_IN_A_ROW);
-  expect(mockCanClaimToken.mock.calls[1][0]).toBe(TokenType.FOUR_IN_A_ROW);
-  expect(mockCanClaimToken.mock.calls[2][0]).toBe(TokenType.FIVE_IN_A_ROW);
-  expect(mockCanClaimToken.mock.calls[3][0]).toBe(TokenType.THREE_OF_A_KIND);
-  expect(mockCanClaimToken.mock.calls[4][0]).toBe(TokenType.FULL_HOUSE);
-});
-
-test('render PreEndState shows end actions with some Tokens', () => {
-  mockCanClaimToken.mockReturnValueOnce(false).mockReturnValue(true);
-  render(<FooterSection gameService={gameService} moveState={MoveState.PRE_END_STATE}  />)
-  expect(screen.queryAllByRole('button').length).toBe(5);
-  expect(screen.queryAllByRole('button')[0]).toHaveTextContent('FOUR IN A ROW');
-  expect(screen.queryAllByRole('button')[1]).toHaveTextContent('FIVE IN A ROW');
-  expect(screen.queryAllByRole('button')[2]).toHaveTextContent('THREE OF A KIND');
-  expect(screen.queryAllByRole('button')[3]).toHaveTextContent('FULL HOUSE');
-  expect(screen.queryAllByRole('button')[4]).toHaveTextContent('Pass');
-  expect(screen.queryByRole('activeCard')).not.toBeInTheDocument();
-  expect(mockCanClaimToken.mock.calls.length).toBe(5);
-  expect(mockGetActiveCard).not.toHaveBeenCalled();
+  expect(mockGetActivePlayersTokens.mock.calls.length).toBe(5);
+  expect(mockGetActivePlayersDeck.mock.calls.length).toBe(5);
 });
 
 test('render CardDrawn activeCard and options', () => {
   mockAllCardsFaceUp.mockReturnValue(false);
   mockGetActiveCard.mockReturnValue({value: 10})
-  render(<FooterSection gameService={gameService} moveState={MoveState.CARD_DRAWN}  />)
+  render(<FooterSection gameService={gameService} tokenService={tokenService} moveState={MoveState.CARD_DRAWN}  />)
   expect(screen.queryAllByRole('button').length).toBe(3);
   expect(screen.queryAllByRole('button')[0]).toHaveTextContent('Discard to swap two');
   expect(screen.queryAllByRole('button')[1]).toHaveTextContent('Discard to turn two face up');
   expect(screen.queryAllByRole('button')[2]).toHaveTextContent('Pass');
   expect(screen.queryByRole('activeCard')).toHaveTextContent('10');
-  expect(mockCanClaimToken).not.toHaveBeenCalled()
+  expect(mockGetActivePlayersTokens.mock.calls.length).toBe(0);
+  expect(mockGetActivePlayersDeck.mock.calls.length).toBe(0);
   expect(mockGetActiveCard.mock.calls.length).toBe(3);
 });
 
 test('render givenAllCardsFaceUp shouldHideTurnFaceUp', () => {
   mockAllCardsFaceUp.mockReturnValue(true);
   mockGetActiveCard.mockReturnValue({value: 10})
-  render(<FooterSection gameService={gameService} moveState={MoveState.CARD_DRAWN}  />)
+  render(<FooterSection gameService={gameService} tokenService={tokenService} moveState={MoveState.CARD_DRAWN}  />)
   expect(screen.queryAllByRole('button').length).toBe(2);
   expect(screen.queryAllByRole('button')[0]).toHaveTextContent('Discard to swap two');
   expect(screen.queryAllByRole('button')[1]).toHaveTextContent('Pass');
@@ -98,7 +98,7 @@ test('render givenAllCardsFaceUp shouldHideTurnFaceUp', () => {
 test('render DISCARD CHOSEN', () => {
   mockAllCardsFaceUp.mockReturnValue(false);
   mockGetActiveCard.mockReturnValue({value: 10})
-  render(<FooterSection gameService={gameService} moveState={MoveState.DISCARD_CHOSEN}  />)
+  render(<FooterSection gameService={gameService} tokenService={tokenService} moveState={MoveState.DISCARD_CHOSEN}  />)
   expect(screen.queryAllByRole('button').length).toBe(0);
 });
 
@@ -106,7 +106,7 @@ test('activeCard callbacks', () => {
   mockAllCardsFaceUp.mockReturnValue(false);
   mockGetActiveCard.mockReturnValue({value: 10})
   const mockCallback = jest.fn();
-  render(<FooterSection gameService={gameService} moveState={MoveState.CARD_DRAWN}
+  render(<FooterSection gameService={gameService} tokenService={tokenService} moveState={MoveState.CARD_DRAWN}
   buttonPressedCallback={mockCallback} />)
 
   expect(screen.queryAllByRole('button').length).toBe(3);
@@ -128,12 +128,13 @@ test('activeCard callbacks', () => {
 });
 
 test('claimToken callbacks', () => {
-  mockCanClaimToken.mockReturnValue(true);
+  mockGetActivePlayersTokens.mockReturnValue([]);
+  mockGetActivePlayersDeck.mockReturnValue([{seen:true, value:0},{seen:true, value:1},{seen:true, value:2},{seen:true, value:3},{seen:true, value:4}])
   const mockCallback = jest.fn();
 
-  render(<FooterSection gameService={gameService} moveState={MoveState.PRE_END_STATE}
+  render(<FooterSection gameService={gameService} tokenService={tokenService} moveState={MoveState.PRE_END_STATE}
   buttonPressedCallback={mockCallback}  />)
-  expect(screen.queryAllByRole('button').length).toBe(6);
+  expect(screen.queryAllByRole('button').length).toBe(4);
 
   userEvent.click(screen.getAllByRole('button')[0]);
   expect(mockCallback.mock.calls.length).toBe(1);
@@ -150,19 +151,33 @@ test('claimToken callbacks', () => {
   expect(mockCallback.mock.calls[2][0]).toBe(ActionType.CLAIM_TOKEN);
   expect(mockCallback.mock.calls[2][1]).toBe(TokenType.FIVE_IN_A_ROW);
 
-  userEvent.click(screen.getAllByRole('button')[3]);
-  expect(mockCallback.mock.calls.length).toBe(4);
-  expect(mockCallback.mock.calls[3][0]).toBe(ActionType.CLAIM_TOKEN);
-  expect(mockCallback.mock.calls[3][1]).toBe(TokenType.THREE_OF_A_KIND);
-
-  userEvent.click(screen.getAllByRole('button')[4]);
-  expect(mockCallback.mock.calls.length).toBe(5);
-  expect(mockCallback.mock.calls[4][0]).toBe(ActionType.CLAIM_TOKEN);
-  expect(mockCallback.mock.calls[4][1]).toBe(TokenType.FULL_HOUSE);
-
   mockCallback.mockClear();
-  userEvent.click(screen.getAllByRole('button')[5]);
+  userEvent.click(screen.getAllByRole('button')[3]);
   expect(mockCallback.mock.calls.length).toBe(1);
   expect(mockCallback.mock.calls[0][0]).toBe(ActionType.CHANGE_TURN);
+});
 
+test('claimToken callbacks', () => {
+  mockGetActivePlayersTokens.mockReturnValue([]);
+  mockGetActivePlayersDeck.mockReturnValue([{seen:true, value:0},{seen:true, value:0},{seen:true, value:4},{seen:true, value:4},{seen:true, value:4}])
+  const mockCallback = jest.fn();
+
+  render(<FooterSection gameService={gameService} tokenService={tokenService} moveState={MoveState.PRE_END_STATE}
+  buttonPressedCallback={mockCallback}  />)
+  expect(screen.queryAllByRole('button').length).toBe(3);
+
+  userEvent.click(screen.getAllByRole('button')[0]);
+  expect(mockCallback.mock.calls.length).toBe(1);
+  expect(mockCallback.mock.calls[0][0]).toBe(ActionType.CLAIM_TOKEN);
+  expect(mockCallback.mock.calls[0][1]).toBe(TokenType.THREE_OF_A_KIND);
+
+  userEvent.click(screen.getAllByRole('button')[1]);
+  expect(mockCallback.mock.calls.length).toBe(2);
+  expect(mockCallback.mock.calls[1][0]).toBe(ActionType.CLAIM_TOKEN);
+  expect(mockCallback.mock.calls[1][1]).toBe(TokenType.FULL_HOUSE);
+
+  mockCallback.mockClear();
+  userEvent.click(screen.getAllByRole('button')[2]);
+  expect(mockCallback.mock.calls.length).toBe(1);
+  expect(mockCallback.mock.calls[0][0]).toBe(ActionType.CHANGE_TURN);
 });

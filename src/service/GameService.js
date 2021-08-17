@@ -2,8 +2,9 @@ const { shuffleArray } = require('../Utils.js')
 const { TokenType } = require('../model/Enums.js')
 class GameService {
 
-  constructor(playerService, configService) {
+  constructor(playerService, tokenService, configService) {
       this.playerService = playerService;
+      this.tokenService = tokenService;
       this.configService = configService;
 
       this.deck = [];
@@ -110,179 +111,32 @@ class GameService {
     this.setTokenToClaim('');
   }
 
-  activePlayerCanClaimToken() {
-    return this.canClaimToken(TokenType.THREE_IN_A_ROW) ||
-     this.canClaimToken(TokenType.FOUR_IN_A_ROW) ||
-     this.canClaimToken(TokenType.FIVE_IN_A_ROW) ||
-     this.canClaimToken(TokenType.THREE_OF_A_KIND) ||
-     this.canClaimToken(TokenType.FULL_HOUSE);
-  }
-
-  canClaimToken(token) {
-    const deck = this.getActivePlayersDeck();
-    const existing_tokens = this.getActivePlayersTokens();
-    if (existing_tokens.includes(token)) {
-      return false;
-    }
-
-    switch (token) {
-      case TokenType.THREE_IN_A_ROW:
-        for (let j = 0; j < 3; j ++) {
-          let won = true;
-          if (!deck[j].seen) {
-            continue
-          }
-          for (let i = j+1; i < 3+j; i ++) {
-            if (!deck[i].seen || deck[i].value !== deck[i-1].value + 1) {
-              won = false;
-              break;
-            }
-          }
-          if (won) {
-            return true
-          }
-        }
-        return false;
-      case TokenType.FOUR_IN_A_ROW:
-        for (let j = 0; j < 2; j ++) {
-          let won = true;
-          if (!deck[j].seen) {
-            continue
-          }
-          for (let i = j+1; i < 4+j; i ++) {
-            if (!deck[i].seen || deck[i].value !== deck[i-1].value + 1) {
-              won = false;
-              break;
-            }
-          }
-          if (won) {
-            return true
-          }
-        }
-        return false;
-      case TokenType.FIVE_IN_A_ROW:
-        if (!deck[0].seen) {
-          return false
-        }
-        for (let i = 1; i < 5; i ++) {
-          if (!deck[i].seen || deck[i].value !== deck[i-1].value + 1) {
-            return false
-          }
-        }
-        return true;
-      case TokenType.THREE_OF_A_KIND:
-        let three_map = {};
-        for (let i = 0; i < 5; i++) {
-          if (!deck[i].seen) {
-            continue;
-          }
-          if (!three_map[deck[i].value]) {
-            three_map[deck[i].value] = 0
-          }
-          three_map[deck[i].value] = three_map[deck[i].value] + 1
-        }
-
-        for (let key of Object.keys(three_map)) {
-          if (three_map[key] >= 3) {
-            return true;
-          }
-        }
-        return false;
-      case TokenType.FULL_HOUSE:
-        let fh_map = {};
-        for (let i = 0; i < 5; i++) {
-          if (!deck[i].seen) {
-            continue;
-          }
-          if (!fh_map[deck[i].value]) {
-            fh_map[deck[i].value] = 0
-          }
-          fh_map[deck[i].value] = fh_map[deck[i].value] + 1
-        }
-        const keys = Object.keys(fh_map);
-        if (keys.length !== 2) {
-          return false;
-        }
-        return (fh_map[keys[0]] === 2 && fh_map[keys[1]] === 3) || (fh_map[keys[0]] === 3 && fh_map[keys[1]] === 2)
-    }
-    return false;
-  }
-
   nextPlayer() {
     this.setActivePlayerIndex(this.getActivePlayerIndex() + 1 === this.configService.getNumberOfPlayers() ? 0 : this.getActivePlayerIndex() + 1);
   }
 
-  isValidIndexForToken(index) {
-    const deck = this.getActivePlayersDeck();
-    if ([TokenType.THREE_OF_A_KIND, TokenType.FULL_HOUSE, TokenType.FIVE_IN_A_ROW].includes(this.getTokenToClaim())) {
-      return this.canClaimToken(deck, this.getTokenToClaim(), this.getActivePlayersTokens());
-    }
-    if (this.getTokenToClaim() === TokenType.THREE_IN_A_ROW) {
-      // if index is 3 that is 4th card. 3+4 not enough cards for THREE_IN_A_ROW
-      if (!deck[index].seen || index >= 3) {
-        return false;
-      }
-      let prev = deck[index].value;
-      for (let i = index + 1; i < index + 3; i++) {
-
-        if (!deck[i].seen || deck[i].value !== ++prev)  {
-          return false;
-        }
-      }
-      return true;
-    }
-    if (this.getTokenToClaim() === TokenType.FOUR_IN_A_ROW) {
-      // if index is 2 that is 3rd card. 2+3+4 not enough cards for THREE_IN_A_ROW
-      if (!deck[index].seen || index >= 2) {
-        return false;
-      }
-      let prev = deck[index].value;
-      for (let i = index + 1; i < index + 4; i++) {
-
-        if (!deck[i].seen || deck[i].value !== ++prev)  {
-          return false;
-        }
-      }
-      return true;
-    }
-    return false;
-  }
-
+//TODO call token token service directly from above?
   claimToken(index) {
+    //TODO come back to this to pick discard
+    //TODO come back to this to pick top card
     const deck = this.getActivePlayersDeck();
     switch (this.getTokenToClaim()) {
       case TokenType.FIVE_IN_A_ROW:
       case TokenType.FULL_HOUSE:
         for (let i = 0; i < deck.length; i ++) {
-          //TODO come back to this to pick discard
           this.getDiscard()[0].push(deck[i]);
           deck[i] = this.getTopCardFromDeck();
         }
         break;
       case TokenType.THREE_OF_A_KIND:
-        let three_map = {};
-        for (let i = 0; i < 5; i++) {
-          if (!deck[i].seen) {
-            continue;
+        let indeces = this.tokenService.getAllIndecesForSets(deck, 3)[0];
+        for (let i = 0; i < 3; i++) {
+            this.getDiscard()[0].push(deck[indeces[i]]);
+            deck[indeces[i]] = this.getTopCardFromDeck();
           }
-          if (!three_map[deck[i].value]) {
-            three_map[deck[i].value] = []
-          }
-          three_map[deck[i].value].push(i);
-          if (three_map[deck[i].value].length >= 3) {
-            const list = three_map[deck[i].value];
-            for (let j = 0; j < list.length; j ++) {
-              //TODO come back to this to pick discard
-              this.getDiscard()[0].push(deck[list[j]]);
-              deck[list[j]] = this.getTopCardFromDeck();
-            }
-            break;
-          }
-        }
         break;
       case TokenType.THREE_IN_A_ROW:
       for (let i = index; i < index + 3; i++) {
-        //TODO come back to this to pick discard
         this.getDiscard()[0].push(deck[i]);
         deck[i] = this.getTopCardFromDeck();
         deck[i].seen = false;
@@ -290,7 +144,6 @@ class GameService {
         break;
       case TokenType.FOUR_IN_A_ROW:
       for (let i = index; i < index + 4; i++) {
-        //TODO come back to this to pick discard
         this.getDiscard()[0].push(deck[i]);
         deck[i] = this.getTopCardFromDeck();
       }

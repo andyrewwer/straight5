@@ -18,6 +18,7 @@ class Straight5 extends Component {
     this.playerService = props.playerService;
     this.gameService = props.gameService;
     this.configService = props.configService;
+    this.tokenService = props.tokenService;
   }
 
   StartNewGame = () => {
@@ -99,7 +100,7 @@ class Straight5 extends Component {
   }
 
   EndMove = () => {
-    if (this.gameService.activePlayerCanClaimToken()) {
+    if (this.tokenService.playerCanClaimToken(this.playerService.getPlayers()[this.gameService.getActivePlayerIndex()])) {
       this.setState({MoveState: MoveState.PRE_END_STATE});
       return;
     }
@@ -118,7 +119,7 @@ class Straight5 extends Component {
   }
 
   ClaimTokenCardPress = index => {
-    if (this.gameService.isValidIndexForToken(index)) {
+    if (this.tokenService.isValidIndexForToken(this.gameService.getTokenToClaim(), this.gameService.getActivePlayersDeck(), index)) {
       this.gameService.claimToken(index);
       if (!this.checkIfWinner()) {
         return this.ChangeTurn();
@@ -185,7 +186,8 @@ class Straight5 extends Component {
     switch (this.state.MoveState) {
       case MoveState.CARD_DRAWN:
         this.ReplaceCard(index);
-        return this.setDiscardChosenState(ActionType.REPLACE_CARD);
+        this.setDiscardChosenState(ActionType.REPLACE_CARD);
+        return
       case MoveState.TURN_FACE_UP_CHOSEN:
       case MoveState.TURN_FACE_UP_IN_PROGRESS:
         this.TurnCardFaceUp(index);
@@ -204,9 +206,8 @@ class Straight5 extends Component {
   // TODO SHOW ACTIVE PLAYER
   // TODO ADD joker
   // TODO ADD AI
-  // TODO  state service instead of this.state
+  // TODO state service instead of this.state -- this is on wip-stateService but doesn't work because to update the UI you need to update the state
 
-  // TODO MUM gap between hands and footer sectoin. Maybe footsection has constant size.
   render = () => {
     return (
       <React.Fragment>
@@ -239,7 +240,7 @@ class Straight5 extends Component {
     </React.Fragment>}
   </div>
     {this.state.AppMode  === AppMode.GAME && <NewstickerSection gameService={this.gameService} moveState={this.state.MoveState}/>}
-    {this.state.AppMode  === AppMode.GAME && <FooterSection gameService={this.gameService} moveState={this.state.MoveState} buttonPressedCallback={this.handleActionButtonPressed} />}
+    {this.state.AppMode  === AppMode.GAME && <FooterSection gameService={this.gameService} moveState={this.state.MoveState} tokenService={this.tokenService} buttonPressedCallback={this.handleActionButtonPressed} />}
   </React.Fragment>
   )}
 }

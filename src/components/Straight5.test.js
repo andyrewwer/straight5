@@ -10,7 +10,9 @@ import Straight5 from './Straight5.js'
 const GameService = require('../service/GameService.js')
 const PlayerService = require('../service/PlayerService.js')
 const {ConfigService} = require('../service/ConfigService.js')
+const {TokenService} = require('../service/TokenService.js')
 const {TokenType} = require('../model/Enums.js')
+const {Player} = require('../model/Player.js')
 
 const mockHandComponent = jest.fn();
 const mockMiddleSection = jest.fn();
@@ -45,13 +47,14 @@ jest.mock('./game/FooterSection.js', () => (props) => {
 let gameService;
 let playerService;
 const configService = new ConfigService(6, 9, 2, 2);
+const tokenService = new TokenService(2);
+
 const mockStartNewGame = jest.fn()
 const mockGetActivePlayerIndex = jest.fn()
 const mockDrawCardFromDeck = jest.fn()
 const mockDrawCardFromDiscard = jest.fn()
 const mockReplaceCard = jest.fn()
 const mockResetPlayers = jest.fn()
-const mockActivePlayerCanClaimToken = jest.fn()
 const mockNextPlayer = jest.fn()
 const mockDiscardCard = jest.fn()
 const mockTurnCardFaceUp = jest.fn()
@@ -62,40 +65,42 @@ const mockSwapCards = jest.fn()
 const mockSetTokenToClaim = jest.fn()
 const mockClaimToken = jest.fn()
 const mockGetActivePlayersTokens = jest.fn()
-const mockIsValidIndexForToken = jest.fn()
 const mockActivePlayerHasAllCardsFaceUp = jest.fn()
 const mockDiscardPileHas0Cards = jest.fn()
+const mockGetPlayers = jest.fn()
+const mockGetTokenToClaim = jest.fn()
+const mockGetActivePlayersDeck = jest.fn()
 
 mockDiscardPileHas0Cards.mockReturnValue(-1);
 beforeEach(() => {
   GameService.mockImplementation(() => {
     return {
-      startNewGame: mockStartNewGame,
-      getActivePlayerIndex: mockGetActivePlayerIndex,
+      activePlayerHasAllCardsFaceUp: mockActivePlayerHasAllCardsFaceUp,
+      claimToken: mockClaimToken,
       drawCardFromDeck:  mockDrawCardFromDeck,
       drawCardFromDiscard:  mockDrawCardFromDiscard,
-      replaceCard: mockReplaceCard,
-      activePlayerCanClaimToken: mockActivePlayerCanClaimToken,
-      nextPlayer: mockNextPlayer,
       discardCard: mockDiscardCard,
-      turnCardFaceUp: mockTurnCardFaceUp,
-      swapIsValid: mockSwapIsValid,
-      getSwapCardIndex:  mockGetSwapCardIndex,
-      setSwapCardIndex:  mockSetSwapCardIndex,
-      swapCards: mockSwapCards,
-      setTokenToClaim: mockSetTokenToClaim,
-      claimToken: mockClaimToken,
+      discardPileHas0Cards: mockDiscardPileHas0Cards,
+      getActivePlayersDeck: mockGetActivePlayersDeck,
+      getActivePlayerIndex: mockGetActivePlayerIndex,
       getActivePlayersTokens: mockGetActivePlayersTokens,
-      isValidIndexForToken: mockIsValidIndexForToken,
-      activePlayerHasAllCardsFaceUp: mockActivePlayerHasAllCardsFaceUp,
-      discardPileHas0Cards: mockDiscardPileHas0Cards
-
+      getTokenToClaim: mockGetTokenToClaim,
+      getSwapCardIndex:  mockGetSwapCardIndex,
+      nextPlayer: mockNextPlayer,
+      replaceCard: mockReplaceCard,
+      setSwapCardIndex:  mockSetSwapCardIndex,
+      setTokenToClaim: mockSetTokenToClaim,
+      startNewGame: mockStartNewGame,
+      swapCards: mockSwapCards,
+      swapIsValid: mockSwapIsValid,
+      turnCardFaceUp: mockTurnCardFaceUp
     }
   })
 
   PlayerService.mockImplementation(() => {
     return {
       resetPlayers: mockResetPlayers,
+      getPlayers: mockGetPlayers
     }
   })
   playerService = new PlayerService(configService);
@@ -103,7 +108,7 @@ beforeEach(() => {
 });
 
 test('render Start Section', () => {
-  const straight5 = render(<Straight5 gameService={gameService} playerService={playerService} configService={configService} />);
+  const straight5 = render(<Straight5 gameService={gameService} playerService={playerService} configService={configService}  tokenService={tokenService}/>);
   expect(screen.getByTestId('start-header')).toBeInTheDocument();
   expect(screen.getByRole('button')).toHaveTextContent('Start New Game');
   expect(screen.getByTestId('rules-section')).toBeInTheDocument();
@@ -143,8 +148,8 @@ test('renderGameMode sets up screen as expected', () => {
 });
 
 test('renderGameMode replaceCard drawDeck', () => {
-  mockGetActivePlayerIndex.mockReturnValueOnce(0);
-  mockActivePlayerCanClaimToken.mockReturnValue(false);
+  mockGetActivePlayerIndex.mockReturnValue(0);
+  mockGetPlayers.mockReturnValue([new Player([{seen:true, value:0},{seen:true, value:2},{seen:true, value:4},{seen:true, value:4},{seen:true, value:6}], [])]);
   startGame();
 
   userEvent.click(screen.getByTestId('middle-section-deck'));
@@ -154,13 +159,19 @@ test('renderGameMode replaceCard drawDeck', () => {
   expect(mockDiscardPileHas0Cards).toHaveBeenCalledTimes(1);
   expect(mockReplaceCard).toHaveBeenCalledTimes(1);
   expect(mockReplaceCard.mock.calls[0][0]).toBe(0);
+  expect(mockGetActivePlayerIndex).toHaveBeenCalledTimes(1);
 
   userEvent.click(screen.getByTestId('middle-section-discard-0'));
-  expect(mockActivePlayerCanClaimToken).toHaveBeenCalledTimes(1);
+  expect(mockDiscardCard).toHaveBeenCalledTimes(1);
+  expect(mockGetPlayers).toHaveBeenCalledTimes(1);
+  expect(mockGetActivePlayerIndex).toHaveBeenCalledTimes(2);
   expect(mockNextPlayer).toHaveBeenCalledTimes(1);
 });
 
 test('renderGameMode pass', () => {
+  mockGetActivePlayerIndex.mockReturnValue(0);
+  mockGetPlayers.mockReturnValue([new Player([{seen:true, value:0},{seen:true, value:2},{seen:true, value:4},{seen:true, value:4},{seen:true, value:6}], [])]);
+
   startGame();
   userEvent.click(screen.getByTestId('middle-section-discard-0'));
   userEvent.click(screen.getByTestId('footer-section-pass'));
@@ -168,7 +179,8 @@ test('renderGameMode pass', () => {
 
   userEvent.click(screen.getByTestId('middle-section-discard-0'));
   expect(mockDiscardCard).toHaveBeenCalledTimes(1);
-  expect(mockActivePlayerCanClaimToken).toHaveBeenCalledTimes(1);
+  expect(mockGetPlayers).toHaveBeenCalledTimes(1);
+  expect(mockGetActivePlayerIndex).toHaveBeenCalledTimes(1);
   expect(mockNextPlayer).toHaveBeenCalledTimes(1);
   expect(mockTurnCardFaceUp).toHaveBeenCalledTimes(0);
   expect(mockSwapCards).toHaveBeenCalledTimes(0);
@@ -177,6 +189,8 @@ test('renderGameMode pass', () => {
 
 test('renderGameMode discardsToEmptyDiscard', () => {
   mockDiscardPileHas0Cards.mockReturnValue(0);
+  mockGetActivePlayerIndex.mockReturnValue(0);
+  mockGetPlayers.mockReturnValue([new Player([{seen:true, value:0},{seen:true, value:2},{seen:true, value:4},{seen:true, value:4},{seen:true, value:6}], [])]);
   startGame();
   userEvent.click(screen.getByTestId('middle-section-discard-0'));
   userEvent.click(screen.getByTestId('footer-section-pass'));
@@ -187,7 +201,7 @@ test('renderGameMode discardsToEmptyDiscard', () => {
 
 test('renderGameMode turnCardFaceUp drawDiscard', () => {
   mockGetActivePlayerIndex.mockReturnValue(0);
-  mockActivePlayerCanClaimToken.mockReturnValue(false);
+  mockGetPlayers.mockReturnValue([new Player([{seen:true, value:0},{seen:true, value:2},{seen:true, value:4},{seen:true, value:4},{seen:true, value:6}], [])]);
   mockTurnCardFaceUp.mockReturnValue(true);
   mockActivePlayerHasAllCardsFaceUp.mockReturnValue(false);
 
@@ -203,18 +217,20 @@ test('renderGameMode turnCardFaceUp drawDiscard', () => {
   userEvent.click(screen.getAllByTestId('hand')[0]);
   expect(mockTurnCardFaceUp).toHaveBeenCalledTimes(1);
   expect(mockTurnCardFaceUp.mock.calls[0][0]).toBe(0);
-  expect(mockActivePlayerCanClaimToken).toHaveBeenCalledTimes(0);
+  expect(mockGetPlayers).toHaveBeenCalledTimes(0);
+  expect(mockGetActivePlayerIndex).toHaveBeenCalledTimes(1);
 
   userEvent.click(screen.getAllByTestId('hand')[0]);
   expect(mockTurnCardFaceUp).toHaveBeenCalledTimes(2);
   expect(mockTurnCardFaceUp.mock.calls[1][0]).toBe(0);
-  expect(mockActivePlayerCanClaimToken).toHaveBeenCalledTimes(1);
+  expect(mockGetPlayers).toHaveBeenCalledTimes(1);
+  expect(mockGetActivePlayerIndex).toHaveBeenCalledTimes(3);
   expect(mockNextPlayer).toHaveBeenCalledTimes(1);
 });
 
 test('renderGameMode turnCardFaceUp end when all face-up', () => {
   mockGetActivePlayerIndex.mockReturnValue(0);
-  mockActivePlayerCanClaimToken.mockReturnValue(false);
+  mockGetPlayers.mockReturnValue([new Player([{seen:true, value:0},{seen:true, value:2},{seen:true, value:4},{seen:true, value:4},{seen:true, value:6}], [])]);
   mockTurnCardFaceUp.mockReturnValue(true);
   mockActivePlayerHasAllCardsFaceUp.mockReturnValue(true);
 
@@ -230,14 +246,15 @@ test('renderGameMode turnCardFaceUp end when all face-up', () => {
   userEvent.click(screen.getAllByTestId('hand')[0]);
   expect(mockTurnCardFaceUp).toHaveBeenCalledTimes(1);
   expect(mockTurnCardFaceUp.mock.calls[0][0]).toBe(0);
-  expect(mockActivePlayerCanClaimToken).toHaveBeenCalledTimes(1);
+  expect(mockGetPlayers).toHaveBeenCalledTimes(1);
+  expect(mockGetActivePlayerIndex).toHaveBeenCalledTimes(2);
   expect(mockNextPlayer).toHaveBeenCalledTimes(1);
 });
 
 
 test('renderGameMode swapCards', () => {
   mockGetActivePlayerIndex.mockReturnValue(0);
-  mockActivePlayerCanClaimToken.mockReturnValue(false);
+  mockGetPlayers.mockReturnValue([new Player([{seen:true, value:0},{seen:true, value:2},{seen:true, value:4},{seen:true, value:4},{seen:true, value:6}], [])]);
   mockSwapIsValid.mockReturnValueOnce(false).mockReturnValueOnce(true);
 
   startGame();
@@ -262,14 +279,15 @@ test('renderGameMode swapCards', () => {
 });
 
 test('renderGameMode claimToken threeOfAKind', () => {
-  mockActivePlayerCanClaimToken.mockReturnValue(true);
+  mockGetPlayers.mockReturnValue([new Player([{seen:true, value:0},{seen:true, value:0},{seen:true, value:0},{seen:true, value:4},{seen:true, value:6}], [])]);
   mockGetActivePlayersTokens.mockReturnValue(0);
 
   startGame();
   userEvent.click(screen.getByTestId('middle-section-discard-0'));
   userEvent.click(screen.getByTestId('footer-section-pass'));
   userEvent.click(screen.getByTestId('middle-section-discard-0'));
-  expect(mockActivePlayerCanClaimToken).toHaveBeenCalledTimes(1);
+  expect(mockGetPlayers).toHaveBeenCalledTimes(1);
+  expect(mockGetActivePlayerIndex).toHaveBeenCalledTimes(1);
   expect(mockNextPlayer).toHaveBeenCalledTimes(0);
 
   userEvent.click(screen.getByTestId('footer-section-claimToken-threeOfAKind'));
@@ -280,27 +298,32 @@ test('renderGameMode claimToken threeOfAKind', () => {
 });
 
 test('renderGameMode changeTurn', () => {
-  mockActivePlayerCanClaimToken.mockReturnValue(true);
-  mockGetActivePlayersTokens.mockReturnValue(0);
-  mockIsValidIndexForToken.mockReturnValue(true);
+  const deck = [{seen:true, value:1},{seen:true, value:2},{seen:true, value:3},{seen:true, value:4},{seen:true, value:5}];
+  mockGetPlayers.mockReturnValue([new Player(deck, [])]);
+  mockGetTokenToClaim.mockReturnValue(TokenType.THREE_IN_A_ROW);
+  mockGetActivePlayerIndex.mockReturnValue(0);
+  mockGetActivePlayersTokens.mockReturnValue([]);
+  mockGetActivePlayersDeck.mockReturnValue(deck);
 
   startGame();
   userEvent.click(screen.getByTestId('middle-section-discard-0'));
   userEvent.click(screen.getByTestId('footer-section-pass'));
   userEvent.click(screen.getByTestId('middle-section-discard-0'));
-  expect(mockActivePlayerCanClaimToken).toHaveBeenCalledTimes(1);
+  expect(mockGetPlayers).toHaveBeenCalledTimes(1);
+  expect(mockGetActivePlayerIndex).toHaveBeenCalledTimes(1);
   expect(mockNextPlayer).toHaveBeenCalledTimes(0);
 
   userEvent.click(screen.getByTestId('footer-section-claimToken-threeInARow'));
   expect(mockSetTokenToClaim).toHaveBeenCalledTimes(1);
   expect(mockSetTokenToClaim.mock.calls[0][0]).toBe(TokenType.THREE_IN_A_ROW);
   expect(mockClaimToken).toHaveBeenCalledTimes(0);
-  expect(mockActivePlayerCanClaimToken).toHaveBeenCalledTimes(1);
+  expect(mockGetPlayers).toHaveBeenCalledTimes(1);
+  expect(mockGetActivePlayerIndex).toHaveBeenCalledTimes(1);
 
   userEvent.click(screen.getAllByTestId('hand')[0]);
-  expect(mockIsValidIndexForToken).toHaveBeenCalledTimes(1);
-  expect(mockIsValidIndexForToken.mock.calls[0][0]).toBe(0);
+  expect(mockGetActivePlayersDeck).toHaveBeenCalledTimes(1);
   expect(mockClaimToken).toHaveBeenCalledTimes(1);
+  expect(mockGetTokenToClaim).toHaveBeenCalledTimes(1);
   expect(mockClaimToken.mock.calls[0][0]).toBe(0);
   expect(mockNextPlayer).toHaveBeenCalledTimes(1);
 });
@@ -312,12 +335,13 @@ test('renderGameMode clickPlayerCard in StartState should do nothing', () => {
   expect(mockSwapIsValid).toHaveBeenCalledTimes(0);
   expect(mockTurnCardFaceUp).toHaveBeenCalledTimes(0);
   expect(mockSetTokenToClaim).toHaveBeenCalledTimes(0);
-  expect(mockActivePlayerCanClaimToken).toHaveBeenCalledTimes(0);
+  expect(mockGetPlayers).toHaveBeenCalledTimes(0);
+  expect(mockGetActivePlayerIndex).toHaveBeenCalledTimes(1);
   expect(mockNextPlayer).toHaveBeenCalledTimes(0);
 });
 
 test('renderGameMode winner and renderPlayerWin', () => {
-  mockActivePlayerCanClaimToken.mockReturnValue(true);
+  mockGetPlayers.mockReturnValue([[], [], [], [], new Player([{seen:true, value:0},{seen:true, value:0},{seen:true, value:0},{seen:true, value:4},{seen:true, value:6}], [])]);
   mockGetActivePlayersTokens.mockReturnValue([TokenType.THREE_IN_A_ROW, TokenType.FOUR_IN_A_ROW, TokenType.FIVE_IN_A_ROW, TokenType.THREE_OF_A_KIND, TokenType.FULL_HOUSE]);
   mockGetActivePlayerIndex.mockReturnValue(4);
 
@@ -341,6 +365,6 @@ test('renderGameMode winner and renderPlayerWin', () => {
 });
 
 function startGame() {
-  render(<Straight5 gameService={gameService} playerService={playerService} configService={configService}/>);
+  render(<Straight5 gameService={gameService} playerService={playerService} configService={configService} tokenService={tokenService}/>);
   userEvent.click(screen.getByRole('button'));
 }
