@@ -83,6 +83,15 @@ class TokenService {
     return false;
   }
 
+  getAllFirstIndecesForToken(deck, token) {
+    let fullIndeces = this.getAllIndecesForToken(deck, token);
+    let firstIndeces = [];
+    for (let i = 0; i < fullIndeces.length; i ++) {
+      firstIndeces.push(fullIndeces[i][0]);
+    }
+    return firstIndeces;
+  }
+  
   getAllIndecesForToken(deck, token) {
     if (token === TokenType.THREE_IN_A_ROW) {
       return this.getAllIndecesForStraight(deck, 3);

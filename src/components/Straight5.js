@@ -230,9 +230,9 @@ class Straight5 extends Component {
 
     {this.state.AppMode  === AppMode.GAME &&
     <React.Fragment>
-      <Hand gameService={this.gameService} moveState={this.state.MoveState} playerService={this.playerService} id={0} cardPressedCallback={this.handlePlayerCardPressed} />
+      <Hand gameState={this.gameState} tokenService={this.tokenService} moveState={this.state.MoveState} playerService={this.playerService} id={0} cardPressedCallback={this.handlePlayerCardPressed} />
       <MiddleSection gameService={this.gameService} drawCallback={this.deckAndDiscardPressed} moveState={this.state.MoveState}/>
-      <Hand gameService={this.gameService} moveState={this.state.MoveState} playerService={this.playerService} id={1} cardPressedCallback={this.handlePlayerCardPressed} />
+      <Hand gameState={this.gameState} tokenService={this.tokenService} moveState={this.state.MoveState} playerService={this.playerService} id={1} cardPressedCallback={this.handlePlayerCardPressed} />
     </React.Fragment>}
 
     {this.state.AppMode === AppMode.PLAYER_WIN &&
