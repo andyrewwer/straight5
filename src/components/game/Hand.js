@@ -16,11 +16,11 @@ class Hand extends Component {
   // TODO the 0/4 win tracking should be done dynamically and pass in rather than hard-coded
    // TODO testing lol!
   cardCanBePressed(card, index) {
-    return this.props.id === this.props.gameService.getActivePlayerIndex()
+    return this.props.id === this.props.gameService.getGameState().getActivePlayerIndex()
      && (
        ([MoveState.TURN_FACE_UP_CHOSEN, MoveState.TURN_FACE_UP_IN_PROGRESS].includes(this.props.moveState) && !card.seen)
            ||
-       (MoveState.SWAP_IN_PROGRESS === this.props.moveState && this.props.gameService.getSwapCardIndex() !== index)
+       (MoveState.SWAP_IN_PROGRESS === this.props.moveState && this.props.gameService.getGameState().getSwapCardIndex() !== index)
            ||
        [MoveState.CARD_DRAWN, MoveState.SWAP_CHOSEN,  MoveState.CLAIMING_TOKEN].includes(this.props.moveState));
   }

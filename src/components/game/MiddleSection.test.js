@@ -8,6 +8,7 @@ import {cleanup, render, screen} from '@testing-library/react';
 import userEvent from '@testing-library/user-event'
 import MiddleSection from './MiddleSection.js'
 const {GameService} = require('../../service/GameService.js')
+const {GameState} = require('../../model/GameState.js')
 const {ConfigService} = require('../../service/ConfigService.js');
 const {PlayerService} = require('../../service/PlayerService.js')
 const {DrawType, MoveState, TokenType} = require('../../model/Enums.js')
@@ -18,11 +19,11 @@ let gameService;
 beforeEach(() => {
   const configService = new ConfigService(6, 9, 2, 2);
   const playerService = new PlayerService(configService);
-  gameService = new GameService(playerService, configService)
+  gameService = new GameService(playerService, null, configService, new GameState())
 })
 
 test('render with Discard shows value', () => {
-  gameService.setDiscard([[{value:0}, {value:1}, {value:2}]])
+  gameService.getGameState().setDiscard([[{value:0}, {value:1}, {value:2}]])
   render(<MiddleSection gameService={gameService} moveState={MoveState.START_STATE} />);
   expect(screen.getAllByRole('header').length).toBe(2);
   expect(screen.getAllByRole('header')[0]).toHaveTextContent('Discard');

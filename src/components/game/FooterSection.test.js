@@ -9,6 +9,7 @@ import userEvent from '@testing-library/user-event';
 import FooterSection from './FooterSection.js';
 const {PlayerService} = require('../../service/PlayerService.js');
 const {ConfigService} = require('../../service/ConfigService.js');
+const {GameState} = require('../../model/GameState.js');
 const {TokenService} = require('../../service/TokenService.js');
 const GameService = require('../../service/GameService.js');
 const { ActionType, MoveState, TokenType } = require('../../model/Enums.js')
@@ -16,8 +17,9 @@ const { ActionType, MoveState, TokenType } = require('../../model/Enums.js')
 jest.mock('../../service/GameService', () => jest.fn());
 
 let gameService;
+let gameState;
 const tokenService = new TokenService();
-const mockGetActiveCard = jest.fn()
+const mockGetGameState = jest.fn()
 const mockGetActivePlayersDeck = jest.fn()
 const mockGetActivePlayersTokens = jest.fn()
 const mockAllCardsFaceUp = jest.fn()
@@ -25,7 +27,7 @@ const mockAllCardsFaceUp = jest.fn()
 beforeEach(() => {
   GameService.mockImplementation(() => {
     return {
-      getActiveCard: mockGetActiveCard,
+      getGameState: mockGetGameState,
       getActivePlayersDeck: mockGetActivePlayersDeck,
       getActivePlayersTokens: mockGetActivePlayersTokens,
       activePlayerHasAllCardsFaceUp: mockAllCardsFaceUp
@@ -34,6 +36,9 @@ beforeEach(() => {
   const configService = new ConfigService(6, 9, 2, 2);
   const playerService = new PlayerService(configService);
   gameService = new GameService(playerService, tokenService, configService);
+  gameState = new GameState();
+  gameState.setActiveCard({value: 10});
+  mockGetGameState.mockReturnValue(gameState)
 });
 
 test('render given basic state hides all subsections and displays right text', () => {
@@ -74,7 +79,6 @@ test('render PreEndState shows end actions with all tokens are', () => {
 
 test('render CardDrawn activeCard and options', () => {
   mockAllCardsFaceUp.mockReturnValue(false);
-  mockGetActiveCard.mockReturnValue({value: 10})
   render(<FooterSection gameService={gameService} tokenService={tokenService} moveState={MoveState.CARD_DRAWN}  />)
   expect(screen.queryAllByRole('button').length).toBe(3);
   expect(screen.queryAllByRole('button')[0]).toHaveTextContent('Discard to swap two');
@@ -83,12 +87,11 @@ test('render CardDrawn activeCard and options', () => {
   expect(screen.queryByRole('activeCard')).toHaveTextContent('10');
   expect(mockGetActivePlayersTokens.mock.calls.length).toBe(0);
   expect(mockGetActivePlayersDeck.mock.calls.length).toBe(0);
-  expect(mockGetActiveCard.mock.calls.length).toBe(3);
+  expect(mockGetGameState).toHaveBeenCalledTimes(3);
 });
 
 test('render givenAllCardsFaceUp shouldHideTurnFaceUp', () => {
   mockAllCardsFaceUp.mockReturnValue(true);
-  mockGetActiveCard.mockReturnValue({value: 10})
   render(<FooterSection gameService={gameService} tokenService={tokenService} moveState={MoveState.CARD_DRAWN}  />)
   expect(screen.queryAllByRole('button').length).toBe(2);
   expect(screen.queryAllByRole('button')[0]).toHaveTextContent('Discard to swap two');
@@ -97,14 +100,12 @@ test('render givenAllCardsFaceUp shouldHideTurnFaceUp', () => {
 
 test('render DISCARD CHOSEN', () => {
   mockAllCardsFaceUp.mockReturnValue(false);
-  mockGetActiveCard.mockReturnValue({value: 10})
   render(<FooterSection gameService={gameService} tokenService={tokenService} moveState={MoveState.DISCARD_CHOSEN}  />)
   expect(screen.queryAllByRole('button').length).toBe(0);
 });
 
 test('activeCard callbacks', () => {
   mockAllCardsFaceUp.mockReturnValue(false);
-  mockGetActiveCard.mockReturnValue({value: 10})
   const mockCallback = jest.fn();
   render(<FooterSection gameService={gameService} tokenService={tokenService} moveState={MoveState.CARD_DRAWN}
   buttonPressedCallback={mockCallback} />)

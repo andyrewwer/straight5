@@ -37,10 +37,10 @@ class FooterSection extends Component {
       <div className="CardTableFooter" data-testid="footer-section">
         {this.ShowCardActions() &&
           <React.Fragment>
-              {(!!this.gameService.getActiveCard() && !!this.gameService.getActiveCard().value) &&
+              {(!!this.gameService.getGameState().getActiveCard() && !!this.gameService.getGameState().getActiveCard().value) &&
               <React.Fragment>
                 <div className="PlayerCard PlayerCardFront" role="activeCard">
-                  {this.gameService.getActiveCard().value}
+                  {this.gameService.getGameState().getActiveCard().value}
                 </div>
                 {this.showInitialActions() &&
                 <div>

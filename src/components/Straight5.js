@@ -20,6 +20,7 @@ class Straight5 extends Component {
     };
     this.playerService = props.playerService;
     this.gameService = props.gameService;
+    this.gameState = props.gameState;
     this.configService = props.configService;
     this.tokenService = props.tokenService;
   }
@@ -96,18 +97,18 @@ class Straight5 extends Component {
       this.EndMove();
       return
     }
-    this.gameService.setSwapCardIndex(index);
+    this.gameState.setSwapCardIndex(index);
     this.setState({
       MoveState: MoveState.SWAP_IN_PROGRESS
     })
   }
 
   EndMove = () => {
-    if (this.tokenService.playerCanClaimToken(this.playerService.getPlayers()[this.gameService.getActivePlayerIndex()])) {
+    if (this.tokenService.playerCanClaimToken(this.playerService.getPlayers()[this.gameState.getActivePlayerIndex()])) {
       this.setState({MoveState: MoveState.PRE_END_STATE});
       return;
     }
-    this.ChangeTurn();
+  this.ChangeTurn();
 
   }
 
@@ -122,10 +123,10 @@ class Straight5 extends Component {
   }
 
   ClaimTokenCardPress = index => {
-    if (this.tokenService.isValidIndexForToken(this.gameService.getTokenToClaim(), this.gameService.getActivePlayersDeck(), index)) {
+    if (this.tokenService.isValidIndexForToken(this.gameState.getTokenToClaim(), this.gameService.getActivePlayersDeck(), index)) {
       this.gameService.claimToken(index);
       if (!this.checkIfWinner()) {
-        return this.ChangeTurn();
+      return this.ChangeTurn();
       }
     } else {
       console.error('invalid index :(')
@@ -165,7 +166,7 @@ class Straight5 extends Component {
       return this.ChangeTurn()
     }
     if (action === ActionType.CLAIM_TOKEN) {
-      this.gameService.setTokenToClaim(token);
+      this.gameState.setTokenToClaim(token);
 
       const indeces = this.tokenService.getAllIndecesForToken(this.gameService.getActivePlayersDeck(), token);
       if (indeces.length === 1 || token === TokenType.FULL_HOUSE || token === TokenType.THREE_OF_A_KIND) {
@@ -174,7 +175,6 @@ class Straight5 extends Component {
           return this.ChangeTurn();
         }
       }
-
       // TODO Less autoclaim if multiple options for three of a
       this.setState({
         MoveState: MoveState.CLAIMING_TOKEN
@@ -183,7 +183,7 @@ class Straight5 extends Component {
   }
 
   handlePlayerCardPressed = (player, index)  =>  {
-    if (player !== this.gameService.getActivePlayerIndex()) {
+    if (player !== this.gameState.getActivePlayerIndex()) {
       console.log('card from wrong player clicked')
       return;
     }
@@ -238,12 +238,12 @@ class Straight5 extends Component {
     {this.state.AppMode === AppMode.PLAYER_WIN &&
     <React.Fragment>
         <div className="mb-4" data-testid="win-header">
-        Congratulations to Player {this.gameService.getActivePlayerIndex()+1}
+        Congratulations to Player {this.gameState.getActivePlayerIndex()+1}
         <button data-testid="win-startNewGame" className="mt-2" onClick={this.StartNewGame}>Start a new Game</button>
         </div>
     </React.Fragment>}
   </div>
-    {this.state.AppMode  === AppMode.GAME && <NewstickerSection gameService={this.gameService} moveState={this.state.MoveState}/>}
+    {this.state.AppMode  === AppMode.GAME && <NewstickerSection gameState={this.gameState} moveState={this.state.MoveState}/>}
     {this.state.AppMode  === AppMode.GAME && <FooterSection gameService={this.gameService} moveState={this.state.MoveState} tokenService={this.tokenService} buttonPressedCallback={this.handleActionButtonPressed} />}
   </React.Fragment>
   )}

@@ -2,58 +2,52 @@ const { shuffleArray } = require('../Utils.js')
 const { TokenType } = require('../model/Enums.js')
 class GameService {
 
-  constructor(playerService, tokenService, configService) {
+  constructor(playerService, tokenService, configService, gameState) {
       this.playerService = playerService;
       this.tokenService = tokenService;
       this.configService = configService;
-
-      this.deck = [];
-      this.discard = [[]];
-      this.swapCardIndex = -1;
-      this.activeCard = {};
-      this.activePlayerIndex = 0;
-      this.tokenToClaim = '';
+      this.gameState =  gameState;
   }
 
   createDeck() {
     const repeats = this.configService.getRepeatsPerNumber();
     const max = this.configService.getMaxNumberInDeck();
-    this.deck = [];
+    this.getGameState().setDeck([]);
     for (let i = 0; i < repeats; i++) {
       for (let j = 0; j < max; j++) {
-        this.deck.push({value: j+1, seen: false})
+        this.getGameState().getDeck().push({value: j+1, seen: false})
       }
     }
-    shuffleArray(this.deck);
+    shuffleArray(this.getGameState().getDeck());
   }
 
   getTopCardFromDeck() {
-    if (this.getDeck().length === 0) {
-      this.setDeck([]);
-      for(let i = 0; i < this.getDiscard().length; i ++) {
-        this.getDeck().push(...this.getDiscard()[i].splice(0, this.getDiscard()[i].length - 1));
+    if (this.getGameState().getDeck().length === 0) {
+      this.getGameState().setDeck([]);
+      for(let i = 0; i < this.getGameState().getDiscard().length; i ++) {
+        this.getGameState().getDeck().push(...this.getGameState().getDiscard()[i].splice(0, this.getGameState().getDiscard()[i].length - 1));
       }
-      shuffleArray(this.getDeck());
+      shuffleArray(this.getGameState().getDeck());
     }
-    const card = this.getDeck().pop();
+    const card = this.getGameState().getDeck().pop();
     card.seen = false;
     return card;
   }
 
   drawCardFromDeck() {
-    this.setActiveCard(this.getTopCardFromDeck());
+    this.getGameState().setActiveCard(this.getTopCardFromDeck());
   }
 
   drawCardFromDiscard(index) {
-    if (this.getDiscard()[index].length === 0) {
+    if (this.getGameState().getDiscard()[index].length === 0) {
       console.error('SOMETHING went wrong, discard length = 0')
     }
-    this.setActiveCard(this.getDiscard()[index].pop());
+    this.getGameState().setActiveCard(this.getGameState().getDiscard()[index].pop());
   }
 
   discardPileHas0Cards() {
     for (let i = 0; i < this.configService.getNumberOfDiscards(); i ++) {
-      if (this.getDiscard()[i].length === 0) {
+      if (this.getGameState().getDiscard()[i].length === 0) {
         return i;
       }
     }
@@ -61,35 +55,35 @@ class GameService {
   }
 
   initializeDiscard() {
-    this.setDiscard([]);
+    this.getGameState().setDiscard([]);
     for (let i = 0; i < this.configService.getNumberOfDiscards(); i ++) {
-      this.getDiscard().push([]);
-      this.getDiscard()[i].push(this.getDeck().pop());
+      this.getGameState().getDiscard().push([]);
+      this.getGameState().getDiscard()[i].push(this.getGameState().getDeck().pop());
     }
   }
 
   swapIsValid(index) {
-    return this.getSwapCardIndex() > 0 && this.getSwapCardIndex() !== index;
+    return this.getGameState().getSwapCardIndex() > 0 && this.getGameState().getSwapCardIndex() !== index;
   }
 
   swapCards(index) {
     const playerCards = this.getActivePlayersDeck();
     const temp = playerCards[index];
-    playerCards[index] = playerCards[this.swapCardIndex];
-    playerCards[this.swapCardIndex] = temp;
-    this.setSwapCardIndex(-1);
+    playerCards[index] = playerCards[this.getGameState().getSwapCardIndex()];
+    playerCards[this.getGameState().getSwapCardIndex()] = temp;
+    this.getGameState().setSwapCardIndex(-1);
   }
 
   replaceCard(index) {
     const temp = this.getActivePlayersDeck()[index];
-    this.getActiveCard().seen = true;
-    this.getActivePlayersDeck()[index] = this.getActiveCard();
-    this.setActiveCard(temp);
+    this.getGameState().getActiveCard().seen = true;
+    this.getActivePlayersDeck()[index] = this.getGameState().getActiveCard();
+    this.getGameState().setActiveCard(temp);
   }
 
   discardCard(discardIndex) {
-    this.getDiscard()[discardIndex].push(this.getActiveCard());
-    this.setActiveCard({});
+    this.getGameState().getDiscard()[discardIndex].push(this.getGameState().getActiveCard());
+    this.getGameState().setActiveCard({});
   }
 
   turnCardFaceUp(index) {
@@ -103,57 +97,58 @@ class GameService {
 
   startNewGame() {
     this.createDeck();
-    this.playerService.dealCardsToPlayers(this.getDeck());
+    this.playerService.dealCardsToPlayers(this.getGameState().getDeck());
     this.initializeDiscard();
-    this.setSwapCardIndex(-1);
-    this.setActiveCard({});
-    this.setActivePlayerIndex(0);
-    this.setTokenToClaim('');
+    this.getGameState().setSwapCardIndex(-1);
+    this.getGameState().setActiveCard({});
+    this.getGameState().setActivePlayerIndex(0);
+    this.getGameState().setTokenToClaim('');
   }
 
   nextPlayer() {
-    this.setActivePlayerIndex(this.getActivePlayerIndex() + 1 === this.configService.getNumberOfPlayers() ? 0 : this.getActivePlayerIndex() + 1);
+    const activePlayerIndex = this.getGameState().getActivePlayerIndex();
+    this.getGameState().setActivePlayerIndex(activePlayerIndex + 1 === this.configService.getNumberOfPlayers() ? 0 : activePlayerIndex + 1);
   }
 
 //TODO call token token service directly from above?
   claimToken(index) {
     //TODO come back to this to pick discard
     //TODO come back to this to pick top card
-    const deck = this.getActivePlayersDeck();
-    switch (this.getTokenToClaim()) {
+    const hand = this.getActivePlayersDeck();
+    switch (this.getGameState().getTokenToClaim()) {
       case TokenType.FIVE_IN_A_ROW:
       case TokenType.FULL_HOUSE:
-        for (let i = 0; i < deck.length; i ++) {
-          this.getDiscard()[0].push(deck[i]);
-          deck[i] = this.getTopCardFromDeck();
+        for (let i = 0; i < hand.length; i ++) {
+          this.getGameState().getDiscard()[0].push(hand[i]);
+          hand[i] = this.getTopCardFromDeck();
         }
         break;
       case TokenType.THREE_OF_A_KIND:
-        let indeces = this.tokenService.getAllIndecesForSets(deck, 3)[0];
+        let indeces = this.tokenService.getAllIndecesForSets(hand, 3)[0];
         for (let i = 0; i < 3; i++) {
-            this.getDiscard()[0].push(deck[indeces[i]]);
-            deck[indeces[i]] = this.getTopCardFromDeck();
+            this.getGameState().getDiscard()[0].push(hand[indeces[i]]);
+            hand[indeces[i]] = this.getTopCardFromDeck();
           }
         break;
       case TokenType.THREE_IN_A_ROW:
       for (let i = index; i < index + 3; i++) {
-        this.getDiscard()[0].push(deck[i]);
-        deck[i] = this.getTopCardFromDeck();
-        deck[i].seen = false;
+        this.getGameState().getDiscard()[0].push(hand[i]);
+        hand[i] = this.getTopCardFromDeck();
+        hand[i].seen = false;
       }
         break;
       case TokenType.FOUR_IN_A_ROW:
       for (let i = index; i < index + 4; i++) {
-        this.getDiscard()[0].push(deck[i]);
-        deck[i] = this.getTopCardFromDeck();
+        this.getGameState().getDiscard()[0].push(hand[i]);
+        hand[i] = this.getTopCardFromDeck();
       }
         break;
       default:
         console.error('something went wrong');
         return
     }
-    this.getActivePlayersTokens().push(this.getTokenToClaim());
-    this.setTokenToClaim('');
+    this.getActivePlayersTokens().push(this.getGameState().getTokenToClaim());
+    this.getGameState().setTokenToClaim('');
   }
 
   activePlayerHasAllCardsFaceUp() {
@@ -166,60 +161,20 @@ class GameService {
     return true;
   }
 
+  getGameState()  {
+    return this.gameState;
+  }
+
+  setGameState(gameState) {
+    this.gameState = gameState;
+  }
+
   getActivePlayersTokens() {
-    return this.playerService.getPlayers()[this.getActivePlayerIndex()].getTokens();
+    return this.playerService.getPlayers()[this.getGameState().getActivePlayerIndex()].getTokens();
   }
 
   getActivePlayersDeck() {
-    return this.playerService.getPlayers()[this.getActivePlayerIndex()].getDeck();
-  }
-
-  getDeck() {
-    return this.deck;
-  }
-
-  getDiscard() {
-    return this.discard;
-  }
-
-  getSwapCardIndex() {
-    return this.swapCardIndex;
-  }
-
-  getActiveCard() {
-    return this.activeCard;
-  }
-
-  getActivePlayerIndex() {
-    return this.activePlayerIndex;
-  }
-
-  getTokenToClaim() {
-    return this.tokenToClaim;
-  }
-
-  setDeck(deck) {
-    this.deck = deck;
-  }
-
-  setDiscard(discard) {
-    this.discard = discard;
-  }
-
-  setSwapCardIndex(swapCardIndex) {
-    this.swapCardIndex = swapCardIndex;
-  }
-
-  setActiveCard(activeCard) {
-    this.activeCard = activeCard;
-  }
-
-  setActivePlayerIndex(activePlayerIndex) {
-    this.activePlayerIndex = activePlayerIndex;
-  }
-
-  setTokenToClaim(tokenToClaim) {
-    this.tokenToClaim = tokenToClaim;
+    return this.playerService.getPlayers()[this.getGameState().getActivePlayerIndex()].getDeck();
   }
 }
 

@@ -128,7 +128,6 @@ class TokenService {
   }
 
   getAllIndecesForSets(deck, set_length) {
-    //assumes hand size of 5. for 11112 return [1,2,3,4]
     let returnArray = []
     let map = {};
     for (let i = 0; i < 5; i++) {

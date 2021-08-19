@@ -12,7 +12,7 @@ class MiddleSection extends Component {
   }
 
   getTopDiscardValue(index) {
-    const discard = this.gameService.getDiscard()[index];
+    const discard = this.gameService.getGameState().getDiscard()[index];
     return discard.length > 0 ? discard[discard.length-1].value : '';
   }
 
@@ -30,7 +30,7 @@ class MiddleSection extends Component {
   render = () => {
     return (
       <div className="MiddleSection" data-testid="middle-section">
-      {this.gameService.getDiscard().map((discard, index) => (
+      {this.gameService.getGameState().getDiscard().map((discard, index) => (
         <div className="DiscardSection" key={index}>
           <div className="FullWidth" role="header">
             Discard {index + 1}

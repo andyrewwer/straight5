@@ -5,7 +5,6 @@ const { getPlayerTextForMoveState } = require('../../Utils.js')
 class NewstickerSection extends Component {
   constructor(props) {
     super(props);
-    this.gameService = props.gameService;
     this.TableCanvas = React.createRef();
     this.render.bind(this);
   }
@@ -16,7 +15,7 @@ class NewstickerSection extends Component {
       <div className="newsTicker" data-testid="newsticker">
         <div className="newsTickerTriangleLeft"/>
         <div className="newsTickerMain">
-          {getPlayerTextForMoveState(this.props.moveState, this.gameService.getSwapCardIndex() + 1)}
+          {getPlayerTextForMoveState(this.props.moveState, this.props.gameState.getSwapCardIndex() + 1)}
         </div>
         <div className="newsTickerTriangleRight"/>
       </div>

@@ -2,7 +2,7 @@ class Player {
 
   constructor(deck, tokens) {
       this.deck = deck;
-      this.tokens = tokens; // THREE_IN_A_ROW, FOUR_IN_A_ROW, FIVE_IN_A_ROW, THREE_OF_A_KIND, FULL_HOUSE
+      this.tokens = tokens;
   }
 
   getDeck() {

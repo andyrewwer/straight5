@@ -11,6 +11,7 @@ const {PlayerService} = require('../../service/PlayerService.js')
 const {ConfigService} = require('../../service/ConfigService.js');
 const {TokenService} = require('../../service/TokenService.js');
 const {GameService} = require('../../service/GameService.js')
+const {GameState} = require('../../model/GameState.js')
 const {TokenType, MoveState} = require('../../model/Enums.js')
 
 let playerService;
@@ -20,12 +21,12 @@ beforeEach(() => {
   const configService = new ConfigService(6, 9, 2, 2);
   const tokenService = new TokenService();
   playerService = new PlayerService(configService);
-  gameService = new GameService(playerService, tokenService, configService);
+  gameService = new GameService(playerService, tokenService, configService, new GameState());
   gameService.startNewGame(6, 9);
 })
 
 test('render new component has 5 face down cards and no tokens', () => {
-  gameService.setActivePlayerIndex(0);
+  gameService.getGameState().setActivePlayerIndex(0);
   render(<Hand playerService={playerService} gameService={gameService} moveState={MoveState.CARD_DRAWN} id={0} />);
   expect(screen.getByRole('header')).toHaveTextContent('Player 1');
   expect(screen.getAllByRole('playerCard').length).toEqual(5);
@@ -39,7 +40,7 @@ test('render new component has 5 face down cards and no tokens', () => {
 });
 
 test('render new component has 5 face up cards and tokens', () => {
-  gameService.setActivePlayerIndex(0);
+  gameService.getGameState().setActivePlayerIndex(0);
   playerService.getPlayers()[1].setDeck([{value:0, seen:true},{value:5, seen:true},{value:0, seen:false},{value:2, seen:true},{value:9, seen:true}])
   playerService.getPlayers()[1].setTokens([TokenType.THREE_IN_A_ROW, TokenType.FULL_HOUSE]);
   render(<Hand playerService={playerService} id={1} gameService={gameService} moveState={MoveState.CARD_DRAWN} />);
@@ -61,7 +62,7 @@ test('render new component has 5 face up cards and tokens', () => {
 });
 
 test('render with START STATE does not highlight buttons', () => {
-  gameService.setActivePlayerIndex(0);
+  gameService.getGameState().setActivePlayerIndex(0);
   render(<Hand playerService={playerService} id={0} gameService={gameService} moveState={MoveState.START_STATE} />);
   expect(screen.getAllByRole('playerCard').length).toEqual(5);
   expect(screen.getAllByRole('playerCard')[0]).not.toHaveClass('PlayerCardIsActive');
@@ -92,7 +93,7 @@ test('render callbackWorks as expected', () => {
 });
 
 test('render with TURN_FACE_UP_CHOSEN Highlights face-up', () => {
-  gameService.setActivePlayerIndex(0);
+  gameService.getGameState().setActivePlayerIndex(0);
   playerService.getPlayers()[0].setDeck([{value:0, seen:true},{value:5, seen:false},{value:0, seen:false},{value:2, seen:false},{value:9, seen:false}])
   render(<Hand playerService={playerService} id={0} gameService={gameService} moveState={MoveState.TURN_FACE_UP_CHOSEN} />);
   expect(screen.getAllByRole('playerCard').length).toEqual(5);
@@ -104,7 +105,7 @@ test('render with TURN_FACE_UP_CHOSEN Highlights face-up', () => {
 });
 
 test('render with TURN_FACE_UP_IN_PROGRESS Highlights face-up', () => {
-  gameService.setActivePlayerIndex(0);
+  gameService.getGameState().setActivePlayerIndex(0);
   playerService.getPlayers()[0].setDeck([{value:0, seen:false},{value:5, seen:true},{value:0, seen:true},{value:2, seen:false},{value:9, seen:false}])
   render(<Hand playerService={playerService} id={0} gameService={gameService} moveState={MoveState.TURN_FACE_UP_CHOSEN} />);
   expect(screen.getAllByRole('playerCard').length).toEqual(5);
@@ -116,8 +117,8 @@ test('render with TURN_FACE_UP_IN_PROGRESS Highlights face-up', () => {
 });
 
 test('render with SWAP_IN_PROGRESS Highlights face-up', () => {
-  gameService.setActivePlayerIndex(0);
-  gameService.setSwapCardIndex(2);
+  gameService.getGameState().setActivePlayerIndex(0);
+  gameService.getGameState().setSwapCardIndex(2);
   playerService.getPlayers()[0].setDeck([{value:0, seen:false},{value:5, seen:true},{value:0, seen:true},{value:2, seen:false},{value:9, seen:false}])
   render(<Hand playerService={playerService} id={0} gameService={gameService} moveState={MoveState.SWAP_IN_PROGRESS} />);
   expect(screen.getAllByRole('playerCard').length).toEqual(5);
