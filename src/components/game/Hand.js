@@ -12,8 +12,6 @@ class Hand extends Component {
     this.tokens = this.props.playerService.getPlayers()[this.props.id].getTokens();
   }
 
-  // TODO maybe add this for claimToken logic. Think too much
-  // TODO the 0/4 win tracking should be done dynamically and pass in rather than hard-coded
    // TODO testing lol!
   cardCanBePressed(card, index) {
     return this.props.id === this.props.gameService.getGameState().getActivePlayerIndex()

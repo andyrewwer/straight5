@@ -8,7 +8,6 @@ import './Straight5.css';
 const {ActionType, AppMode, DrawType, MoveState, TokenType} = require('../model/Enums.js')
 const classNames = require('classnames');
 
-// TODO should discard card at the END of your TURN instead of START
 // TODO maybe pop-up when turn changes
 // TODO only highlight options that can be clicked when claiming a token
 class Straight5 extends Component {
@@ -37,15 +36,15 @@ class Straight5 extends Component {
 
   handleDiscard(index, action) {
     this.gameService.discardCard(index);
-    if (action === ActionType.PASS) {
-      return this.EndMove();
-    } else if (action === ActionType.SWAP) {
-      return this.setState({MoveState: MoveState.SWAP_CHOSEN});
-    } else if (action ===  ActionType.TURN_FACE_UP) {
-      return this.setState({MoveState: MoveState.TURN_FACE_UP_CHOSEN});
-    } else if (action === ActionType.REPLACE_CARD) {
+    // if (action === ActionType.PASS) {
+    //   return this.EndMove();
+    // } else if (action === ActionType.SWAP) {
+    //   return this.setState({MoveState: MoveState.SWAP_CHOSEN});
+    // } else if (action ===  ActionType.TURN_FACE_UP) {
+    //   return this.setState({MoveState: MoveState.TURN_FACE_UP_CHOSEN});
+    // } else if (action === ActionType.REPLACE_CARD) {
       this.EndMove();
-    }
+    // }
   }
   //TODO animation
   deckAndDiscardPressed = (type, index) => {
@@ -78,13 +77,8 @@ class Straight5 extends Component {
     if (!this.gameService.turnCardFaceUp(index)) {
       return;
     }
-    if (this.state.MoveState === MoveState.TURN_FACE_UP_IN_PROGRESS) {
-      this.EndMove();
-      return;
-    }
-    if (this.gameService.activePlayerHasAllCardsFaceUp()) {
-      this.EndMove();
-      return;
+    if (this.state.MoveState === MoveState.TURN_FACE_UP_IN_PROGRESS || this.gameService.activePlayerHasAllCardsFaceUp()) {
+      return this.setState({MoveState: MoveState.DISCARD_CHOSEN});
     }
     this.setState({
       MoveState: MoveState.TURN_FACE_UP_IN_PROGRESS,
@@ -94,8 +88,7 @@ class Straight5 extends Component {
   SwapCards = index => {
     if (this.gameService.swapIsValid(index)) {
       this.gameService.swapCards(index);
-      this.EndMove();
-      return
+      return this.setState({MoveState: MoveState.DISCARD_CHOSEN});
     }
     this.gameState.setSwapCardIndex(index);
     this.setState({
@@ -158,10 +151,22 @@ class Straight5 extends Component {
         return this.setDiscardChosenState(action);
       }
       return this.EndMove();
+    } else if (action === ActionType.SWAP) {
+      return this.setState({MoveState: MoveState.SWAP_CHOSEN});
+    } else if (action ===  ActionType.TURN_FACE_UP) {
+      return this.setState({MoveState: MoveState.TURN_FACE_UP_CHOSEN});
     }
-    if ([ActionType.SWAP, ActionType.TURN_FACE_UP].includes(action)) {
-        return this.setDiscardChosenState(action);
-    }
+
+
+    // if ([ActionType.SWAP, ActionType.TURN_FACE_UP].includes(action)) {
+    //   // } else if (action === ActionType.SWAP) {
+    //   //   return this.setState({MoveState: MoveState.SWAP_CHOSEN});
+    //   // } else if (action ===  ActionType.TURN_FACE_UP) {
+    //   //   return this.setState({MoveState: MoveState.TURN_FACE_UP_CHOSEN});
+    //
+    //     return this.setState({MoveState: action});
+    //     // return this.setDiscardChosenState(action);
+    // }
     if (action === ActionType.CHANGE_TURN) {
       return this.ChangeTurn()
     }

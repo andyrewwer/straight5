@@ -24,11 +24,11 @@ class MiddleSection extends Component {
     return [MoveState.START_STATE, MoveState.DISCARD_CHOSEN].includes(this.props.moveState);
   }
 
-  // TODO - move this.state.MoveState to a dedicated service.
-  // Now MOVE STATE IS HERE DO WE WANT TO MOVE THE DRAW LOGIC DOWN OR  KEEP IT HIGHER?
+  // TODO the 0/4 win tracking should be done dynamically and pass in rather than hard-coded
+  // Now MOVE STATE IS HERE DO WE WANT TO MOVE THE DRAW LOGIC DOWN OR KEEP IT HIGHER?
   // TODO mobile playable
   render = () => {
-    return (
+     return (
       <div className="MiddleSection" data-testid="middle-section">
       {this.gameService.getGameState().getDiscard().map((discard, index) => (
         <div className="DiscardSection" key={index}>

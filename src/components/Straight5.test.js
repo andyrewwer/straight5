@@ -199,8 +199,6 @@ test('renderGameMode turnCardFaceUp drawDiscard', () => {
   expect(mockDrawCardFromDiscard).toHaveBeenCalledTimes(1);
 
   userEvent.click(screen.getByTestId('footer-section-faceup'));
-  userEvent.click(screen.getByTestId('middle-section-discard-0'));
-  expect(mockDiscardCard).toHaveBeenCalledTimes(1);
 
   userEvent.click(screen.getAllByTestId('hand')[0]);
   expect(mockTurnCardFaceUp).toHaveBeenCalledTimes(1);
@@ -210,6 +208,9 @@ test('renderGameMode turnCardFaceUp drawDiscard', () => {
   userEvent.click(screen.getAllByTestId('hand')[0]);
   expect(mockTurnCardFaceUp).toHaveBeenCalledTimes(2);
   expect(mockTurnCardFaceUp.mock.calls[1][0]).toBe(0);
+
+  userEvent.click(screen.getByTestId('middle-section-discard-0'));
+  expect(mockDiscardCard).toHaveBeenCalledTimes(1);
   expect(mockGetPlayers).toHaveBeenCalledTimes(1);
   expect(mockNextPlayer).toHaveBeenCalledTimes(1);
 });
@@ -225,12 +226,13 @@ test('renderGameMode turnCardFaceUp end when all face-up', () => {
   expect(mockDrawCardFromDiscard).toHaveBeenCalledTimes(1);
 
   userEvent.click(screen.getByTestId('footer-section-faceup'));
-  userEvent.click(screen.getByTestId('middle-section-discard-0'));
-  expect(mockDiscardCard).toHaveBeenCalledTimes(1);
 
   userEvent.click(screen.getAllByTestId('hand')[0]);
   expect(mockTurnCardFaceUp).toHaveBeenCalledTimes(1);
   expect(mockTurnCardFaceUp.mock.calls[0][0]).toBe(0);
+
+  userEvent.click(screen.getByTestId('middle-section-discard-0'));
+  expect(mockDiscardCard).toHaveBeenCalledTimes(1);
   expect(mockGetPlayers).toHaveBeenCalledTimes(1);
   expect(mockNextPlayer).toHaveBeenCalledTimes(1);
 });
@@ -244,9 +246,6 @@ test('renderGameMode swapCards', () => {
 
   userEvent.click(screen.getByTestId('middle-section-discard-0'));
   userEvent.click(screen.getByTestId('footer-section-swap'));
-  userEvent.click(screen.getByTestId('middle-section-discard-0'));
-
-  expect(mockDiscardCard).toHaveBeenCalledTimes(1);
 
   userEvent.click(screen.getAllByTestId('hand')[0]);
   expect(mockSwapIsValid).toHaveBeenCalledTimes(1);
@@ -257,6 +256,10 @@ test('renderGameMode swapCards', () => {
   expect(mockSwapCards).toHaveBeenCalledTimes(1);
   expect(mockSwapCards.mock.calls[0][0]).toBe(0);
 
+  userEvent.click(screen.getByTestId('middle-section-discard-0'));
+  expect(mockDiscardCard).toHaveBeenCalledTimes(1);
+  expect(mockGetPlayers).toHaveBeenCalledTimes(1);
+  expect(mockNextPlayer).toHaveBeenCalledTimes(1);
 });
 
 test('renderGameMode claimToken threeOfAKind', () => {
