@@ -1,10 +1,11 @@
 class ConfigService {
 
-  constructor(maxNumberInDeck, repeatsPerNumber, numberOfPlayers, numberOfDiscards) {
+  constructor(maxNumberInDeck, repeatsPerNumber, numberOfPlayers, numberOfDiscards, numberOfJokers) {
     this.maxNumberInDeck = maxNumberInDeck;
     this.repeatsPerNumber = repeatsPerNumber;
     this.numberOfPlayers = numberOfPlayers;
     this.numberOfDiscards = numberOfDiscards;
+    this.numberOfJokers = numberOfJokers;
   }
 
   getMaxNumberInDeck() {
@@ -21,6 +22,10 @@ class ConfigService {
 
   getNumberOfDiscards() {
     return this.numberOfDiscards;
+  }
+
+  getNumberOfJokers() {
+    return this.numberOfJokers;
   }
 
 }

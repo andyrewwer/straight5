@@ -5,8 +5,8 @@ const {PlayerService} = require('./PlayerService.js')
 const {ConfigService} = require('./ConfigService.js')
 const {TokenService} = require('./TokenService.js')
 const {Player} = require('../model/Player.js');
-const {TokenType} = require('../model/Enums.js')
-let configService = new ConfigService(6, 9, 2, 2);
+const {CardValues, TokenType} = require('../model/Enums.js')
+let configService = new ConfigService(6, 9, 2, 2,2);
 const tokenService = new TokenService;
 let playerService;
 let gameService;
@@ -21,17 +21,17 @@ jest.mock('../Utils', () => ({
 ));
 //TODO Test for multiple discard piles! Then implement it
 beforeEach(() => {
-  configService = new ConfigService(6, 9, 2, 2);
+  configService = new ConfigService(6, 9, 2, 2,2);
   playerService = new PlayerService(configService);
   gameService = new GameService(playerService, tokenService, configService, new GameState());
 });
 
 test('createDeck creates and calls shuffle', () => {
-  configService = new ConfigService(2, 2, 2, 2);
+  configService = new ConfigService(2, 2, 2, 2, 4);
   playerService = new PlayerService(configService);
   gameService = new GameService(playerService, tokenService, configService, gameState);
   gameService.createDeck();
-  expect(gameService.getGameState().getDeck()).toEqual([{value: 1, seen: false}, {value: 2, seen: false},{value: 1, seen: false}, {value: 2, seen: false}]);
+  expect(gameService.getGameState().getDeck()).toEqual([{value: 1, seen: false}, {value: 2, seen: false},{value: 1, seen: false}, {value: 2, seen: false}, {value: CardValues.WILD, seen: false}, {value: CardValues.WILD, seen: false}, {value: CardValues.WILD, seen: false}, {value: CardValues.WILD, seen: false}]);
   // TODO check if mock was called
 });
 
@@ -76,13 +76,13 @@ test('drawCardFromDiscard', () => {
 });
 
 test('initializeDiscard', () => {
-  configService = new ConfigService(0,0,0,1);
+  configService = new ConfigService(0,0,0,1,2);
   gameService = new GameService(playerService, tokenService, configService, gameState)
   gameService.getGameState().setDeck([0,1,2]);
   gameService.initializeDiscard()
   expect(gameService.getGameState().getDiscard()).toEqual([[2]]);
 
-  configService = new ConfigService(0,0,0,2);
+  configService = new ConfigService(0,0,0,2,2);
   gameService = new GameService(playerService, tokenService, configService, gameState)
   gameService.getGameState().setDeck([0,1,2]);
   gameService.initializeDiscard()
@@ -146,7 +146,7 @@ test('startNewGame', () => {
   gameService.getGameState().setTokenToClaim(TokenType.THREE_IN_A_ROW);
   gameService.getGameState().setSwapCardIndex(2);
   gameService.startNewGame(6, 9);
-  expect(gameService.getGameState().getDeck().length).toBe(42);
+  expect(gameService.getGameState().getDeck().length).toBe(44);
   expect(playerService.getPlayers().length).toBe(2);
   expect(playerService.getPlayers()[0].getDeck().length).toBe(5);
   expect(playerService.getPlayers()[1].getDeck().length).toBe(5);

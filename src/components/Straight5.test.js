@@ -50,7 +50,7 @@ jest.mock('./game/FooterSection.js', () => (props) => {
 let gameService;
 let playerService;
 let gameState = new GameState();
-const configService = new ConfigService(6, 9, 2, 2);
+const configService = new ConfigService(6, 9, 2, 2, 2);
 const tokenService = new TokenService(2);
 
 const mockStartNewGame = jest.fn()

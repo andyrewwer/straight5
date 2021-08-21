@@ -51,7 +51,7 @@ class Straight5 extends Component {
     if (this.state.MoveState !== MoveState.START_STATE) {
       if (this.state.MoveState === MoveState.DISCARD_CHOSEN &&
            type === DrawType.DISCARD) {
-             this.handleDiscard(index, this.state.InterruptedActionType);
+             this.handleDiscard(index);
       }
       return;
     }
@@ -78,7 +78,7 @@ class Straight5 extends Component {
       return;
     }
     if (this.state.MoveState === MoveState.TURN_FACE_UP_IN_PROGRESS || this.gameService.activePlayerHasAllCardsFaceUp()) {
-      return this.setState({MoveState: MoveState.DISCARD_CHOSEN});
+      return this.setDiscardChosenState();
     }
     this.setState({
       MoveState: MoveState.TURN_FACE_UP_IN_PROGRESS,
@@ -88,7 +88,7 @@ class Straight5 extends Component {
   SwapCards = index => {
     if (this.gameService.swapIsValid(index)) {
       this.gameService.swapCards(index);
-      return this.setState({MoveState: MoveState.DISCARD_CHOSEN});
+      return this.setDiscardChosenState();
     }
     this.gameState.setSwapCardIndex(index);
     this.setState({
@@ -133,22 +133,19 @@ class Straight5 extends Component {
     });
   }
 
-  setDiscardChosenState(action) {
+  setDiscardChosenState() {
     const index = this.gameService.discardPileHas0Cards();
     if (index >= 0) {
-      this.handleDiscard(index, action);
+      this.handleDiscard(index);
       return
     }
-    this.setState({
-      MoveState: MoveState.DISCARD_CHOSEN,
-      InterruptedActionType: action
-    });
+    this.setState({MoveState: MoveState.DISCARD_CHOSEN});
   }
 
   handleActionButtonPressed = (action, token) => {
     if (action === ActionType.PASS) {
       if (this.state.MoveState === MoveState.CARD_DRAWN) {
-        return this.setDiscardChosenState(action);
+        return this.setDiscardChosenState();
       }
       return this.EndMove();
     } else if (action === ActionType.SWAP) {
@@ -156,17 +153,6 @@ class Straight5 extends Component {
     } else if (action ===  ActionType.TURN_FACE_UP) {
       return this.setState({MoveState: MoveState.TURN_FACE_UP_CHOSEN});
     }
-
-
-    // if ([ActionType.SWAP, ActionType.TURN_FACE_UP].includes(action)) {
-    //   // } else if (action === ActionType.SWAP) {
-    //   //   return this.setState({MoveState: MoveState.SWAP_CHOSEN});
-    //   // } else if (action ===  ActionType.TURN_FACE_UP) {
-    //   //   return this.setState({MoveState: MoveState.TURN_FACE_UP_CHOSEN});
-    //
-    //     return this.setState({MoveState: action});
-    //     // return this.setDiscardChosenState(action);
-    // }
     if (action === ActionType.CHANGE_TURN) {
       return this.ChangeTurn()
     }

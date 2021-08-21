@@ -13,7 +13,7 @@ const {ConfigService} = require('../service/ConfigService.js');
 const {TokenService} = require('../service/TokenService.js');
 const { PlayerService } = require('../service/PlayerService.js')
 
-const configService = new ConfigService(6, 9, 2, 2);
+const configService = new ConfigService(6, 9, 2, 2, 2);
 const tokenService = new TokenService();
 const playerService = new PlayerService(configService);
 const gameState = new GameState()
@@ -30,7 +30,7 @@ test('render Start Section', () => {
   expect(screen.getAllByTestId('hand').length).toBe(2);
   expect(screen.getAllByTestId('hand')[0]).toHaveTextContent('Tokens [0/4]');
   expect(screen.getAllByTestId('hand')[1]).toHaveTextContent('Tokens [0/4]');
-  expect(screen.getByTestId('middle-section')).toHaveTextContent(/Discard 1\dDiscard 2\dDeck/);
+  expect(screen.getByTestId('middle-section')).toHaveTextContent(/Discard 1(\d|WILD)Discard 2(\d|WILD)Deck/);
   expect(screen.getByTestId('footer-section')).toBeInTheDocument();
 
   userEvent.click(screen.getByTestId('middle-section-deck'));
@@ -45,7 +45,7 @@ test('render Start Section', () => {
   userEvent.click(screen.getByTestId('middle-section-discard-0'));
 
   expect(screen.getByTestId('newsticker')).toHaveTextContent('Please draw a card from Deck or Discard');
-  expect(screen.getAllByTestId('hand')[0]).toHaveTextContent(/Tokens \[0\/4\]\d{2}/);
+  expect(screen.getAllByTestId('hand')[0]).toHaveTextContent(/Tokens \[0\/4\](\d|WILD){2}/);
 
   userEvent.click(screen.getByTestId('middle-section-deck'));
   userEvent.click(screen.getByTestId('turn-face-up-button'));
@@ -54,5 +54,5 @@ test('render Start Section', () => {
   userEvent.click(screen.getByTestId('middle-section-discard-0'));
 
   expect(screen.getByTestId('newsticker')).toHaveTextContent('Please draw a card from Deck or Discard');
-  expect(screen.getAllByTestId('hand')[1]).toHaveTextContent(/Tokens \[0\/4\]\d\d/);
+  expect(screen.getAllByTestId('hand')[1]).toHaveTextContent(/Tokens \[0\/4\](\d|WILD){2}/);
 });

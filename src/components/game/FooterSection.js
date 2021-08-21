@@ -11,8 +11,16 @@ class FooterSection extends Component {
     this.render.bind(this);
   }
 
-  ShowCardActions = () => {
+  ShowCardActionsSection = () => {
     return [MoveState.CARD_DRAWN, MoveState.TURN_FACE_UP_CHOSEN, MoveState.TURN_FACE_UP_IN_PROGRESS, MoveState.SWAP_CHOSEN, MoveState.SWAP_IN_PROGRESS, MoveState.DISCARD_CHOSEN].includes(this.props.moveState)
+  }
+
+  showActiveCard = () => {
+    return !!this.gameService.getGameState().getActiveCard() && !!this.gameService.getGameState().getActiveCard().value
+  }
+
+  showCardActionButtons = () => {
+    return this.props.moveState === MoveState.CARD_DRAWN;
   }
 
   ShowTurnUpAction = () => {
@@ -27,43 +35,46 @@ class FooterSection extends Component {
     return this.tokenService.canClaimToken(token, this.gameService.getActivePlayersDeck(), this.gameService.getActivePlayersTokens());
   }
 
-  showInitialActions = () => {
+  showPassActions = () => {
     return this.props.moveState !== MoveState.DISCARD_CHOSEN;
   }
 
+// TODO test all these new changes
+// TODO maybe even separate into two components later
   render = () => {
     return (
       <React.Fragment>
       <div className="CardTableFooter" data-testid="footer-section">
-        {this.ShowCardActions() &&
-          <React.Fragment>
-              {(!!this.gameService.getGameState().getActiveCard() && !!this.gameService.getGameState().getActiveCard().value) &&
-              <React.Fragment>
-                <div className="PlayerCard PlayerCardFront" role="activeCard">
-                  {this.gameService.getGameState().getActiveCard().value}
-                </div>
-                {this.showInitialActions() &&
-                <div>
-                <button className="swapButton" onClick={() => {this.props.buttonPressedCallback(ActionType.SWAP)}}> Discard to swap two </button>
-                {this.ShowTurnUpAction() && <button className="turnFaceUpButton" data-testid='turn-face-up-button' onClick={() => {this.props.buttonPressedCallback(ActionType.TURN_FACE_UP)}}> Discard to turn two face up </button>}
-                </div>}
-            </React.Fragment>}
-        {this.showInitialActions() &&  <div className="FullWidth"><button className="mb-2 FullWidth" onClick={() => {this.props.buttonPressedCallback(ActionType.PASS)}}> Pass </button></div>}
+      {this.ShowCardActionsSection() &&
+        <React.Fragment>
+        {this.showActiveCard() &&
+          <div className="PlayerCard PlayerCardFront" role="activeCard">
+            {this.gameService.getGameState().getActiveCard().value}
+          </div>
+        }
+        {this.showCardActionButtons() &&
+          <div>
+            <button className="swapButton" onClick={() => {this.props.buttonPressedCallback(ActionType.SWAP)}}> Discard to swap two </button>
+            {this.ShowTurnUpAction() && <button className="turnFaceUpButton" data-testid='turn-face-up-button' onClick={() => {this.props.buttonPressedCallback(ActionType.TURN_FACE_UP)}}> Discard to turn two face up </button>}
+          </div>
+        }
+        {this.showPassActions() &&  <div className="FullWidth"><button className="mb-2 FullWidth" onClick={() => {this.props.buttonPressedCallback(ActionType.PASS)}}> Pass </button></div>}
+        </React.Fragment>
+      }
 
-          </React.Fragment>}
-
-          {this.ShowEndActions() &&
-            <React.Fragment>
-                {this.ShowToken(TokenType.THREE_IN_A_ROW) && <div><button onClick={() => this.props.buttonPressedCallback(ActionType.CLAIM_TOKEN, TokenType.THREE_IN_A_ROW)}> THREE IN A ROW </button></div>}
-                {this.ShowToken(TokenType.FOUR_IN_A_ROW) && <div><button onClick={() => this.props.buttonPressedCallback(ActionType.CLAIM_TOKEN, TokenType.FOUR_IN_A_ROW)}> FOUR IN A ROW </button></div>}
-                {this.ShowToken(TokenType.FIVE_IN_A_ROW) && <div><button onClick={() => this.props.buttonPressedCallback(ActionType.CLAIM_TOKEN, TokenType.FIVE_IN_A_ROW)}> FIVE IN A ROW </button></div>}
-                {this.ShowToken(TokenType.THREE_OF_A_KIND) && <div><button onClick={() => this.props.buttonPressedCallback(ActionType.CLAIM_TOKEN, TokenType.THREE_OF_A_KIND)}> THREE OF A KIND </button></div>}
-                {this.ShowToken(TokenType.FULL_HOUSE) && <div><button onClick={() => this.props.buttonPressedCallback(ActionType.CLAIM_TOKEN, TokenType.FULL_HOUSE)}> FULL HOUSE </button></div>}
-                <div className="FullWidth"><button className="mb-2 FullWidth" onClick={() => {this.props.buttonPressedCallback(ActionType.CHANGE_TURN)}}> Pass </button></div>
-            </React.Fragment>}
-      </div>
-      </React.Fragment>
-  )}
+      {this.ShowEndActions() &&
+        <React.Fragment>
+        {this.ShowToken(TokenType.THREE_IN_A_ROW) && <div><button onClick={() => this.props.buttonPressedCallback(ActionType.CLAIM_TOKEN, TokenType.THREE_IN_A_ROW)}> THREE IN A ROW </button></div>}
+        {this.ShowToken(TokenType.FOUR_IN_A_ROW) && <div><button onClick={() => this.props.buttonPressedCallback(ActionType.CLAIM_TOKEN, TokenType.FOUR_IN_A_ROW)}> FOUR IN A ROW </button></div>}
+        {this.ShowToken(TokenType.FIVE_IN_A_ROW) && <div><button onClick={() => this.props.buttonPressedCallback(ActionType.CLAIM_TOKEN, TokenType.FIVE_IN_A_ROW)}> FIVE IN A ROW </button></div>}
+        {this.ShowToken(TokenType.THREE_OF_A_KIND) && <div><button onClick={() => this.props.buttonPressedCallback(ActionType.CLAIM_TOKEN, TokenType.THREE_OF_A_KIND)}> THREE OF A KIND </button></div>}
+        {this.ShowToken(TokenType.FULL_HOUSE) && <div><button onClick={() => this.props.buttonPressedCallback(ActionType.CLAIM_TOKEN, TokenType.FULL_HOUSE)}> FULL HOUSE </button></div>}
+        <div className="FullWidth"><button className="mb-2 FullWidth" onClick={() => {this.props.buttonPressedCallback(ActionType.CHANGE_TURN)}}> Pass </button></div>
+        </React.Fragment>}
+        </div>
+        </React.Fragment>
+      )
+    }
 }
 
-export default FooterSection;
+          export default FooterSection;

@@ -1,5 +1,4 @@
-const { shuffleArray } = require('../Utils.js')
-const { TokenType } = require('../model/Enums.js')
+const { TokenType,CardValues } = require('../model/Enums.js')
 
 class TokenService {
 
@@ -30,8 +29,7 @@ class TokenService {
       case TokenType.THREE_OF_A_KIND:
         return this.getAllIndecesForSets(deck, 3).length > 0
       case TokenType.FULL_HOUSE:
-        const indecesForFullHouse = this.getAllIndecesForSets(deck, 2);
-        return indecesForFullHouse.length === 2 && (indecesForFullHouse[0].length + indecesForFullHouse[1].length) === 5
+        return this.isFullHouse(deck)
    }
     return false;
   }
@@ -75,9 +73,7 @@ class TokenService {
         }
         return false
       case TokenType.FULL_HOUSE:
-        const indecesForFullHouse = this.getAllIndecesForSets(deck, 2);
-        //no logic here yet
-        return indecesForFullHouse.length === 2 && (indecesForFullHouse[0].length + indecesForFullHouse[1].length) === 5
+        return this.isFullHouse(deck)
    }
 
     return false;
@@ -97,7 +93,7 @@ class TokenService {
       return this.getAllIndecesForSets(deck, 3);
     }
     if (token === TokenType.FULL_HOUSE) {
-      if (this.canClaimToken(TokenType.FULL_HOUSE, deck, []))  {
+      if (this.isFullHouse(deck))  {
         return [[0,1,2,3,4]];
       }
     }
@@ -114,11 +110,19 @@ class TokenService {
         continue
       }
       indeces.push(i)
+      let prev_value = deck[i].value;
+      if (deck[i].value === CardValues.WILD) {
+        prev_value = deck[i+1].value - 1
+      }
+
       for (let j = i + 1; j < straight_length + i; j ++) {
-        if (!deck[j].seen || deck[j].value !== deck[j-1].value + 1) {
+        if (!deck[j].seen) {
           break;
         }
-        indeces.push(j)
+        if (deck[j].value === prev_value + 1 || deck[j].value === CardValues.WILD) {
+          indeces.push(j)
+          prev_value++;
+        }
       }
       if (indeces.length === straight_length) {
         possible_combinations.push(indeces)
@@ -139,13 +143,60 @@ class TokenService {
       }
       map[deck[i].value].push(i)
     }
-
+    let wildMap = [];
+    if (!!map[CardValues.WILD]) {
+      wildMap = map[CardValues.WILD];
+    }
+    //TODO wilds
     for (let key of Object.keys(map)) {
-      if (map[key].length >= set_length) {
-        returnArray.push(map[key]);
+      if (key === CardValues.WILD) {
+        if (map[key].length>= set_length) {
+          returnArray.push(map[key]);
+        }
+      } else {
+        if (map[key].length + wildMap.length >= set_length) {
+          returnArray.push(map[key].concat(wildMap));
+        }
       }
     }
     return returnArray
+  }
+
+  isFullHouse(deck) {
+    let returnArray = []
+    let map = {};
+    for (let i = 0; i < 5; i++) {
+      // with hand size 5, all cards need to be seen
+      if (!deck[i].seen) {
+        return false;
+      }
+      if (!map[deck[i].value]) {
+        map[deck[i].value] = []
+      }
+      // Full House has to be 2 cards + WILDS possible
+      if (Object.keys(map).length > 3 || Object.keys(map).length === 3 && !Object.keys(map).includes(CardValues.WILD)) {
+        return false;
+      }
+      map[deck[i].value].push(i)
+    }
+    let wildMap = [];
+    // at this point only 3 cards, 2 values + wild.
+    if (!!map[CardValues.WILD]) {
+      // if two wilds, its FH no matter what (e.g. W W 1 1 2, or W W 1 1 1)
+      if (map[CardValues.WILD].length >= 2) {
+        return true;
+      }
+      // if one wilds, and two other numbers its FH no matter what (e.g. W 2 1 1 2, or W 2 1 1 1)
+      if (map[CardValues.WILD].length === 1 && Object.keys(map).length === 3) {
+        return true;
+      }
+      // case where there one wild but then four of another value e.g. W 1 1 1 1 ->
+      return false;
+    }
+    const numFirstDigit = map[Object.keys(map)[0]].length;
+    const numSecondDigit = map[Object.keys(map)[1]].length;
+    return (numFirstDigit === 3 && numSecondDigit === 2)  ||
+              (numFirstDigit === 2 && numSecondDigit === 3);
   }
 }
 

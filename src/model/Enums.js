@@ -37,3 +37,7 @@ export const TokenType = {
   THREE_OF_A_KIND: 'THREE_OF_A_KIND',
   FULL_HOUSE: 'FULL_HOUSE'
 }
+
+export const CardValues = {
+  WILD: 'WILD'
+}

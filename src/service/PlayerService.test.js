@@ -5,7 +5,7 @@ const {ConfigService} = require('./ConfigService.js')
 let playerService;
 
 beforeEach(() => {
-  playerService = new PlayerService(new ConfigService(6, 9, 2, 2));
+  playerService = new PlayerService(new ConfigService(6, 9, 2, 2, 2));
 });
 
 test('playerService can create multiple players', ()  =>  {
@@ -14,7 +14,7 @@ test('playerService can create multiple players', ()  =>  {
 });
 
 test('playerService can create empty', ()  =>  {
-  playerService = new PlayerService(new ConfigService(6, 9, 1, 2));
+  playerService = new PlayerService(new ConfigService(6, 9, 1, 2, 2));
   expect(playerService.getPlayers().length).toBe(1);
 });
 

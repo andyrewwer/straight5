@@ -33,7 +33,7 @@ beforeEach(() => {
       activePlayerHasAllCardsFaceUp: mockAllCardsFaceUp
     }
   });
-  const configService = new ConfigService(6, 9, 2, 2);
+  const configService = new ConfigService(6, 9, 2, 2, 2);
   const playerService = new PlayerService(configService);
   gameService = new GameService(playerService, tokenService, configService);
   gameState = new GameState();

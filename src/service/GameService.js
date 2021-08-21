@@ -1,5 +1,5 @@
 const { shuffleArray } = require('../Utils.js')
-const { TokenType } = require('../model/Enums.js')
+const { CardValues, TokenType } = require('../model/Enums.js')
 class GameService {
 
   constructor(playerService, tokenService, configService, gameState) {
@@ -12,11 +12,15 @@ class GameService {
   createDeck() {
     const repeats = this.configService.getRepeatsPerNumber();
     const max = this.configService.getMaxNumberInDeck();
+    const jokers = this.configService.getNumberOfJokers();
     this.getGameState().setDeck([]);
     for (let i = 0; i < repeats; i++) {
       for (let j = 0; j < max; j++) {
         this.getGameState().getDeck().push({value: j+1, seen: false})
       }
+    }
+    for (let i = 0; i < jokers; i++) {
+      this.getGameState().getDeck().push({value: CardValues.WILD, seen:false})
     }
     shuffleArray(this.getGameState().getDeck());
   }

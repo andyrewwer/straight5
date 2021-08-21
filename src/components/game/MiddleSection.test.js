@@ -17,7 +17,7 @@ const {DrawType, MoveState, TokenType} = require('../../model/Enums.js')
 let gameService;
 
 beforeEach(() => {
-  const configService = new ConfigService(6, 9, 2, 2);
+  const configService = new ConfigService(6, 9, 2, 2, 2);
   const playerService = new PlayerService(configService);
   gameService = new GameService(playerService, null, configService, new GameState())
 })
