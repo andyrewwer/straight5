@@ -42,19 +42,20 @@ class Hand extends Component {
         </div>
         <div className="primary-background">
           <h4 className="rules-header">Turn Order</h4>
-          <p className="rules-p">Each consists of three phases:</p>
+          <p className="rules-p">Each consists of four phases:</p>
           <ol>
             <li><h4 className="phaseHeader">Draw Phase:</h4> draw the top card of the deck or discard piles</li>
             <li><h4 className="phaseHeader">Play Phase:</h4>
               <ul>
-                <li> Place card in front of you (and discard existing card), or; </li>
-                <li> Discard the drawn card (to any discard pile) and:  </li>
+                <li> Place card in front of you or; </li>
+                <li> Take one of the following actions:  </li>
                 <ul>
                   <li> Turn up to two cards face-up</li>
                   <li> Swap any two cards </li>
                 </ul>
               </ul>
             </li>
+            <li><h4 className="phaseHeader">Discard Phase:</h4> discard active card to one of the discard piles (your choice)</li>
             <li><h4 className="phaseHeader">Claim Token Phase</h4>: Claim a token by discarding the required cards (e.g. 1 2 3 4 for Four In a Row).</li>
           </ol>
         </div>
