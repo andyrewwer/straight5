@@ -16,7 +16,7 @@ const {TokenType} = require('../model/Enums.js')
 const {Player} = require('../model/Player.js')
 
 const mockHandComponent = jest.fn();
-const mockMiddleSection = jest.fn();
+const mockDeckAndDiscardSection = jest.fn();
 const mockFooterSection = jest.fn();
 
 // TODO redo this as a unit test
@@ -27,12 +27,12 @@ jest.mock('./game/Hand.js', () => (props) => {
   mockHandComponent(props)
   return  <div data-testid="hand" onClick={() => props.cardPressedCallback(0,0)}/>;
 });
-jest.mock('./game/MiddleSection.js', () => (props) => {
+jest.mock('./game/DeckAndDiscardSection.js', () => (props) => {
   const {DrawType} = require('../model/Enums.js')
-  mockMiddleSection(props)
+  mockDeckAndDiscardSection(props)
   return  <div data-testid="middle-section">
-            <div data-testid="middle-section-deck" onClick={() => props.drawCallback(DrawType.DECK)}/>
-            <div data-testid="middle-section-discard-0" onClick={() => props.drawCallback(DrawType.DISCARD, 1)}/>
+            <div data-testid="deck-pile-0" onClick={() => props.drawCallback(DrawType.DECK)}/>
+            <div data-testid="discard-pile-0" onClick={() => props.drawCallback(DrawType.DISCARD, 1)}/>
           </div>;
 });
 jest.mock('./game/FooterSection.js', () => (props) => {
@@ -119,8 +119,8 @@ test('renderGameMode sets up screen as expected', () => {
   expect(screen.queryByTestId('rules-section')).toBeNull();
   expect(screen.getAllByTestId('hand').length).toBe(2);
   expect(screen.queryByTestId('middle-section')).toBeInTheDocument();
-  expect(screen.queryByTestId('middle-section-deck')).toBeInTheDocument();
-  expect(screen.queryByTestId('middle-section-discard-0')).toBeInTheDocument();
+  expect(screen.queryByTestId('deck-pile-0')).toBeInTheDocument();
+  expect(screen.queryByTestId('discard-pile-0')).toBeInTheDocument();
   expect(screen.getByTestId('footer-section')).toBeInTheDocument();
   expect(mockResetPlayers).toHaveBeenCalledTimes(1);
   expect(mockStartNewGame).toHaveBeenCalledTimes(1);
@@ -132,9 +132,9 @@ test('renderGameMode sets up screen as expected', () => {
   expect(mockHandComponent.mock.calls[0][0]['playerService']).toEqual(playerService);
   expect(mockHandComponent.mock.calls[1][0]['playerService']).toEqual(playerService);
 
-  expect(mockMiddleSection).toHaveBeenCalledTimes(1);
-  expect(mockMiddleSection.mock.calls[0].length).toBe(1);
-  expect(mockMiddleSection.mock.calls[0][0]['gameService']).toBe(gameService);
+  expect(mockDeckAndDiscardSection).toHaveBeenCalledTimes(1);
+  expect(mockDeckAndDiscardSection.mock.calls[0].length).toBe(1);
+  expect(mockDeckAndDiscardSection.mock.calls[0][0]['gameService']).toBe(gameService);
 
   expect(mockFooterSection).toHaveBeenCalledTimes(1);
   expect(mockFooterSection.mock.calls[0].length).toBe(1);
@@ -146,7 +146,7 @@ test('renderGameMode replaceCard drawDeck', () => {
   mockGetPlayers.mockReturnValue([new Player([{seen:true, value:0},{seen:true, value:2},{seen:true, value:4},{seen:true, value:4},{seen:true, value:6}], [])]);
   startGame();
 
-  userEvent.click(screen.getByTestId('middle-section-deck'));
+  userEvent.click(screen.getByTestId('deck-pile-0'));
   expect(mockDrawCardFromDeck).toHaveBeenCalledTimes(1);
 
   userEvent.click(screen.getAllByTestId('hand')[0]);
@@ -154,7 +154,7 @@ test('renderGameMode replaceCard drawDeck', () => {
   expect(mockReplaceCard).toHaveBeenCalledTimes(1);
   expect(mockReplaceCard.mock.calls[0][0]).toBe(0);
 
-  userEvent.click(screen.getByTestId('middle-section-discard-0'));
+  userEvent.click(screen.getByTestId('discard-pile-0'));
   expect(mockDiscardCard).toHaveBeenCalledTimes(1);
   expect(mockGetPlayers).toHaveBeenCalledTimes(1);
   expect(mockNextPlayer).toHaveBeenCalledTimes(1);
@@ -164,11 +164,11 @@ test('renderGameMode pass', () => {
   mockGetPlayers.mockReturnValue([new Player([{seen:true, value:0},{seen:true, value:2},{seen:true, value:4},{seen:true, value:4},{seen:true, value:6}], [])]);
 
   startGame();
-  userEvent.click(screen.getByTestId('middle-section-discard-0'));
+  userEvent.click(screen.getByTestId('discard-pile-0'));
   userEvent.click(screen.getByTestId('footer-section-pass'));
   expect(mockDiscardPileHas0Cards).toHaveBeenCalledTimes(1);
 
-  userEvent.click(screen.getByTestId('middle-section-discard-0'));
+  userEvent.click(screen.getByTestId('discard-pile-0'));
   expect(mockDiscardCard).toHaveBeenCalledTimes(1);
   expect(mockGetPlayers).toHaveBeenCalledTimes(1);
   expect(mockNextPlayer).toHaveBeenCalledTimes(1);
@@ -181,7 +181,7 @@ test('renderGameMode discardsToEmptyDiscard', () => {
   mockDiscardPileHas0Cards.mockReturnValue(0);
   mockGetPlayers.mockReturnValue([new Player([{seen:true, value:0},{seen:true, value:2},{seen:true, value:4},{seen:true, value:4},{seen:true, value:6}], [])]);
   startGame();
-  userEvent.click(screen.getByTestId('middle-section-discard-0'));
+  userEvent.click(screen.getByTestId('discard-pile-0'));
   userEvent.click(screen.getByTestId('footer-section-pass'));
   expect(mockDiscardPileHas0Cards).toHaveBeenCalledTimes(1);
   expect(mockDiscardCard).toHaveBeenCalledTimes(1);
@@ -195,7 +195,7 @@ test('renderGameMode turnCardFaceUp drawDiscard', () => {
 
   startGame();
 
-  userEvent.click(screen.getByTestId('middle-section-discard-0'));
+  userEvent.click(screen.getByTestId('discard-pile-0'));
   expect(mockDrawCardFromDiscard).toHaveBeenCalledTimes(1);
 
   userEvent.click(screen.getByTestId('footer-section-faceup'));
@@ -209,7 +209,7 @@ test('renderGameMode turnCardFaceUp drawDiscard', () => {
   expect(mockTurnCardFaceUp).toHaveBeenCalledTimes(2);
   expect(mockTurnCardFaceUp.mock.calls[1][0]).toBe(0);
 
-  userEvent.click(screen.getByTestId('middle-section-discard-0'));
+  userEvent.click(screen.getByTestId('discard-pile-0'));
   expect(mockDiscardCard).toHaveBeenCalledTimes(1);
   expect(mockGetPlayers).toHaveBeenCalledTimes(1);
   expect(mockNextPlayer).toHaveBeenCalledTimes(1);
@@ -222,7 +222,7 @@ test('renderGameMode turnCardFaceUp end when all face-up', () => {
 
   startGame();
 
-  userEvent.click(screen.getByTestId('middle-section-discard-0'));
+  userEvent.click(screen.getByTestId('discard-pile-0'));
   expect(mockDrawCardFromDiscard).toHaveBeenCalledTimes(1);
 
   userEvent.click(screen.getByTestId('footer-section-faceup'));
@@ -231,7 +231,7 @@ test('renderGameMode turnCardFaceUp end when all face-up', () => {
   expect(mockTurnCardFaceUp).toHaveBeenCalledTimes(1);
   expect(mockTurnCardFaceUp.mock.calls[0][0]).toBe(0);
 
-  userEvent.click(screen.getByTestId('middle-section-discard-0'));
+  userEvent.click(screen.getByTestId('discard-pile-0'));
   expect(mockDiscardCard).toHaveBeenCalledTimes(1);
   expect(mockGetPlayers).toHaveBeenCalledTimes(1);
   expect(mockNextPlayer).toHaveBeenCalledTimes(1);
@@ -244,7 +244,7 @@ test('renderGameMode swapCards', () => {
 
   startGame();
 
-  userEvent.click(screen.getByTestId('middle-section-discard-0'));
+  userEvent.click(screen.getByTestId('discard-pile-0'));
   userEvent.click(screen.getByTestId('footer-section-swap'));
 
   userEvent.click(screen.getAllByTestId('hand')[0]);
@@ -256,7 +256,7 @@ test('renderGameMode swapCards', () => {
   expect(mockSwapCards).toHaveBeenCalledTimes(1);
   expect(mockSwapCards.mock.calls[0][0]).toBe(0);
 
-  userEvent.click(screen.getByTestId('middle-section-discard-0'));
+  userEvent.click(screen.getByTestId('discard-pile-0'));
   expect(mockDiscardCard).toHaveBeenCalledTimes(1);
   expect(mockGetPlayers).toHaveBeenCalledTimes(1);
   expect(mockNextPlayer).toHaveBeenCalledTimes(1);
@@ -270,9 +270,9 @@ test('renderGameMode claimToken threeOfAKind', () => {
   mockGetActivePlayersTokens.mockReturnValue([]);
 
   startGame();
-  userEvent.click(screen.getByTestId('middle-section-discard-0'));
+  userEvent.click(screen.getByTestId('discard-pile-0'));
   userEvent.click(screen.getByTestId('footer-section-pass'));
-  userEvent.click(screen.getByTestId('middle-section-discard-0'));
+  userEvent.click(screen.getByTestId('discard-pile-0'));
   expect(mockGetPlayers).toHaveBeenCalledTimes(1);
   expect(mockNextPlayer).toHaveBeenCalledTimes(0);
 
@@ -293,9 +293,9 @@ test('renderGameMode changeTurn', () => {
   mockGetActivePlayersDeck.mockReturnValue(deck);
 
   startGame();
-  userEvent.click(screen.getByTestId('middle-section-discard-0'));
+  userEvent.click(screen.getByTestId('discard-pile-0'));
   userEvent.click(screen.getByTestId('footer-section-pass'));
-  userEvent.click(screen.getByTestId('middle-section-discard-0'));
+  userEvent.click(screen.getByTestId('discard-pile-0'));
   expect(mockGetPlayers).toHaveBeenCalledTimes(1);
   expect(mockNextPlayer).toHaveBeenCalledTimes(0);
 
@@ -330,20 +330,20 @@ test('renderGameMode winner and renderPlayerWin', () => {
   mockGetActivePlayersDeck.mockReturnValue([{seen:true, value:0},{seen:true, value:0},{seen:true, value:0},{seen:true, value:4},{seen:true, value:6}])
 
   startGame();
-  userEvent.click(screen.getByTestId('middle-section-discard-0'));
+  userEvent.click(screen.getByTestId('discard-pile-0'));
   userEvent.click(screen.getByTestId('footer-section-pass'));
   userEvent.click(screen.getByTestId('footer-section-claimToken-threeOfAKind'));
 
   expect(screen.queryByTestId('game-header')).toBeNull();
   expect(screen.getByTestId('win-header')).toHaveTextContent('Congratulations to Player 5');
   expect(screen.getByTestId('win-header')).toHaveTextContent('Congratulations to Player 5');
-  expect(screen.getByTestId('win-startNewGame')).toHaveTextContent('Start a new Game');
+  expect(screen.getByTestId('startButton')).toHaveTextContent('Start New Game');
 
-  userEvent.click(screen.getByTestId('win-startNewGame'));
+  userEvent.click(screen.getByTestId('startButton'));
   expect(screen.getAllByTestId('hand').length).toBe(2);
   expect(screen.queryByTestId('middle-section')).toBeInTheDocument();
-  expect(screen.queryByTestId('middle-section-deck')).toBeInTheDocument();
-  expect(screen.queryByTestId('middle-section-discard-0')).toBeInTheDocument();
+  expect(screen.queryByTestId('deck-pile-0')).toBeInTheDocument();
+  expect(screen.queryByTestId('discard-pile-0')).toBeInTheDocument();
   expect(screen.getByTestId('footer-section')).toBeInTheDocument();
 
 });

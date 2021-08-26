@@ -159,7 +159,6 @@ class TokenService {
   }
 
   isFullHouse(deck) {
-    let returnArray = []
     let map = {};
     for (let i = 0; i < 5; i++) {
       // with hand size 5, all cards need to be seen
@@ -170,12 +169,11 @@ class TokenService {
         map[deck[i].value] = []
       }
       // Full House has to be 2 cards + WILDS possible
-      if (Object.keys(map).length > 3 || Object.keys(map).length === 3 && !Object.keys(map).includes(CardValues.WILD)) {
+      if ((Object.keys(map).length > 3) || (Object.keys(map).length === 3 && !Object.keys(map).includes(CardValues.WILD))) {
         return false;
       }
       map[deck[i].value].push(i)
     }
-    let wildMap = [];
     // at this point only 3 cards, 2 values + wild.
     if (!!map[CardValues.WILD]) {
       // if two wilds, its FH no matter what (e.g. W W 1 1 2, or W W 1 1 1)

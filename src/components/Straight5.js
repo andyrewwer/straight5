@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import Hand from './game/Hand.js';
-import MiddleSection from './game/MiddleSection.js';
+import DeckAndDiscardSection from './game/DeckAndDiscardSection.js';
 import FooterSection from './game/FooterSection.js';
 import HeaderSection from './HeaderSection.js';
+import StartSection from './game/start/StartSection.js';
 import NewstickerSection from './game/NewstickerSection.js';
 import './Straight5.css';
 const {ActionType, AppMode, DrawType, MoveState, TokenType} = require('../model/Enums.js')
@@ -199,35 +200,34 @@ class Straight5 extends Component {
   render = () => {
     return (
       <React.Fragment>
-  <div className={classNames('CardTable', {'CardTableGame': this.state.AppMode !== AppMode.START_STATE})}>
+  <div className={classNames('CardTable', {'CardTableGame': this.state.AppMode === AppMode.GAME})}>
 
     <HeaderSection></HeaderSection>
     {this.state.AppMode === AppMode.START_STATE &&
     <React.Fragment>
-        <div className="mb-4 mt-2">
-
-          <button className="small-width-button" data-testid="startButton" onClick={this.StartNewGame}>Start New Game</button>
-        </div>
-
+      <StartSection startNewGameCallback={this.StartNewGame}></StartSection>
     </React.Fragment>}
 
     {this.state.AppMode  === AppMode.GAME &&
     <React.Fragment>
       <Hand gameService={this.gameService} moveState={this.state.MoveState} playerService={this.playerService} id={0} cardPressedCallback={this.handlePlayerCardPressed} />
-      <MiddleSection gameService={this.gameService} drawCallback={this.deckAndDiscardPressed} moveState={this.state.MoveState}/>
+      <DeckAndDiscardSection gameService={this.gameService} drawCallback={this.deckAndDiscardPressed} moveState={this.state.MoveState}/>
       <Hand gameService={this.gameService} moveState={this.state.MoveState} playerService={this.playerService} id={1} cardPressedCallback={this.handlePlayerCardPressed} />
     </React.Fragment>}
 
     {this.state.AppMode === AppMode.PLAYER_WIN &&
     <React.Fragment>
         <div className="mb-4" data-testid="win-header">
-        Congratulations to Player {this.gameState.getActivePlayerIndex()+1}
-        <button data-testid="win-startNewGame" className="mt-2" onClick={this.StartNewGame}>Start a new Game</button>
+        Congratulations to Player {this.gameState.getActivePlayerIndex() + 1}
+        <StartSection startNewGameCallback={this.StartNewGame}/>
         </div>
     </React.Fragment>}
   </div>
+  {this.state.AppMode  === AppMode.GAME &&
+  <React.Fragment>
     {this.state.AppMode  === AppMode.GAME && <NewstickerSection gameState={this.gameState} moveState={this.state.MoveState}/>}
     {this.state.AppMode  === AppMode.GAME && <FooterSection gameService={this.gameService} moveState={this.state.MoveState} tokenService={this.tokenService} buttonPressedCallback={this.handleActionButtonPressed} />}
+  </React.Fragment>}
   </React.Fragment>
   )}
 }

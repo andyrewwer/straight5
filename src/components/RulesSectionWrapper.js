@@ -7,6 +7,7 @@ class RulesSectionWrapper extends Component {
   constructor(props) {
     super(props);
     this.render.bind(this);
+    // TODO This probably should just come from config service
     this.targetTokens = 4;
     this.maxTokens = 5;
     this.state = {

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import './RulesSection.css';
-import Modal from 'react-modal';
 
 class RulesSection extends Component {
   constructor(props) {

@@ -1,0 +1,30 @@
+.CardTableFooter .PlayerCard {
+  margin-left: calc(50% - 36px);
+}
+
+.CardTableFooter {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto;
+  text-align: center;
+  height: 200px;
+  justify-content: center;
+  align-content: center;
+
+  background-color: var(--primary-background);
+  border-radius: 7px;
+}
+
+.swapButton {
+  background: #D0ECE2;
+  /* background: #CFC6B6; */
+}
+
+.turnFaceUpButton {
+  /* TODO HELP FROM TRACEY!! */
+  /* background: #ECE2D0; */
+  background: #E2D0EC;
+  /* background: #CFC6B6; */
+  /* background: #B1A99C; */
+}
