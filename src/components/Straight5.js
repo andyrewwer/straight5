@@ -9,7 +9,6 @@ import './Straight5.css';
 const {ActionType, AppMode, DrawType, MoveState, TokenType} = require('../model/Enums.js')
 const classNames = require('classnames');
 
-// TODO Ability to change some core settings
 // TODO maybe pop-up when turn changes
 // TODO only highlight options that can be clicked when claiming a token
 class Straight5 extends Component {
@@ -100,7 +99,7 @@ class Straight5 extends Component {
   }
 
   checkIfWinner() {
-    if (this.gameService.getActivePlayersTokens().length >= 4) {
+    if (this.gameService.getActivePlayersTokens().length >= this.configService.getNumberOfTokensNeededToWin()) {
       this.setState({
         AppMode: AppMode.PLAYER_WIN
       });
@@ -193,7 +192,6 @@ class Straight5 extends Component {
     }
   }
   // TODO SHOW ACTIVE PLAYER
-  // TODO ADD joker
   // TODO ADD AI
   // TODO state service instead of this.state -- this is on wip-stateService but doesn't work because to update the UI you need to update the state
 
@@ -202,10 +200,10 @@ class Straight5 extends Component {
       <React.Fragment>
   <div className={classNames('CardTable', {'CardTableGame': this.state.AppMode === AppMode.GAME})}>
 
-    <HeaderSection></HeaderSection>
+    <HeaderSection configService={this.configService}></HeaderSection>
     {this.state.AppMode === AppMode.START_STATE &&
     <React.Fragment>
-      <StartSection startNewGameCallback={this.StartNewGame}></StartSection>
+      <StartSection startNewGameCallback={this.StartNewGame} configService={this.configService}/>
     </React.Fragment>}
 
     {this.state.AppMode  === AppMode.GAME &&
@@ -219,7 +217,7 @@ class Straight5 extends Component {
     <React.Fragment>
         <div className="mb-4" data-testid="win-header">
         Congratulations to Player {this.gameState.getActivePlayerIndex() + 1}
-        <StartSection startNewGameCallback={this.StartNewGame}/>
+        <StartSection startNewGameCallback={this.StartNewGame} configService={this.configService}/>
         </div>
     </React.Fragment>}
   </div>

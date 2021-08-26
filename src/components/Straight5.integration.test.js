@@ -13,7 +13,9 @@ const {ConfigService} = require('../service/ConfigService.js');
 const {TokenService} = require('../service/TokenService.js');
 const { PlayerService } = require('../service/PlayerService.js')
 
-const configService = new ConfigService(6, 9, 2, 2, 2);
+const configService = new ConfigService();
+configService.reset();
+configService.setNumberOfDiscards(2);
 const tokenService = new TokenService();
 const playerService = new PlayerService(configService);
 const gameState = new GameState()

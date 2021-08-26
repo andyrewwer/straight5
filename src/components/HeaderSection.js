@@ -17,7 +17,7 @@ class HeaderSection extends Component {
       </h2>
     </div>
     <div className="straight5-header-rulesSection">
-      <RulesSectionWrapper></RulesSectionWrapper>
+      <RulesSectionWrapper configService={this.props.configService}></RulesSectionWrapper>
     </div>
   </div>
   )}

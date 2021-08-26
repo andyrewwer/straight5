@@ -8,7 +8,8 @@ const { ConfigService } = require('./service/ConfigService.js')
 const { TokenService } = require('./service/TokenService.js')
 
 function App() {
-  const configService = new ConfigService(6, 9, 2, 3, 2);
+  const configService = new ConfigService();
+  configService.reset();
   const playerService = new PlayerService(configService)
   const tokenService = new TokenService();
   const gameState = new GameState();

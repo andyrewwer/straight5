@@ -7,11 +7,22 @@ import '@testing-library/jest-dom';
 import {cleanup, fireEvent, render, screen} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import StartSection from './StartSection.js';
+import {ConfigService} from '../../../service/ConfigService.js'
 const mockStartNewGame = jest.fn()
 
 test('render given basic state hides all subsections and displays right text', () => {
-  render(<StartSection startNewGameCallback={mockStartNewGame}></StartSection>);
+  const configService = new ConfigService();
+  configService.reset();
+  render(<StartSection startNewGameCallback={mockStartNewGame} configService={configService}></StartSection>);
   expect(screen.getByTestId('startButton')).toHaveTextContent('Start New Game');
+  expect(screen.getByTestId('start-section-hide-show-configuration-button')).toHaveTextContent('Show Configuration');
+  expect(screen.queryByTestId('start-section-slider-container')).not.toBeInTheDocument();
+
   userEvent.click(screen.getByTestId('startButton'));
-  expect(mockStartNewGame).toHaveBeenCalledTimes(1);  
+  expect(mockStartNewGame).toHaveBeenCalledTimes(1);
+
+  userEvent.click(screen.getByTestId('start-section-hide-show-configuration-button'));
+  expect(screen.getByTestId('start-section-hide-show-configuration-button')).toHaveTextContent('Hide Configuration');
+  expect(screen.queryByTestId('start-section-slider-container')).toBeInTheDocument();
+
 });

@@ -5,7 +5,7 @@ class RulesSection extends Component {
   constructor(props) {
     super(props);
     this.render.bind(this);
-    this.targetTokens = this.props.targetTokens;
+    this.numberOfTokensNeededToWin = this.props.numberOfTokensNeededToWin;
     this.maxTokens = this.props.maxTokens;
   }
   render () {
@@ -26,7 +26,7 @@ class RulesSection extends Component {
         <div className="primary-background rulesSectionContent">
           <h4 className="rules-header">Winning</h4>
           <p className="rules-p" data-testid="tokens-to-win">
-            The first player to claim {this.targetTokens} out of {this.maxTokens} tokens below wins.</p>
+            The first player to claim {this.numberOfTokensNeededToWin} out of {this.maxTokens} tokens below wins.</p>
           <ul>
             <li>Three in a row</li>
             <li>Four in a row</li>

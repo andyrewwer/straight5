@@ -7,9 +7,12 @@ import '@testing-library/jest-dom'
 import {cleanup, fireEvent, render, screen} from '@testing-library/react';
 import userEvent from '@testing-library/user-event'
 import HeaderSection from './HeaderSection.js'
+import {ConfigService} from '../service/ConfigService.js'
 
 test('render renders', () => {
-  render(<HeaderSection />);
+  const configService = new ConfigService();
+  configService.setNumberOfTokensNeededToWin(4);
+  render(<HeaderSection configService={configService}/>);
 
   expect(screen.getByTestId('header-section')).toHaveTextContent('Straight 5');
   expect(screen.queryByTestId('tokens-to-win')).not.toBeInTheDocument();

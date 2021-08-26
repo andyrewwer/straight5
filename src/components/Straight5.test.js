@@ -50,7 +50,8 @@ jest.mock('./game/FooterSection.js', () => (props) => {
 let gameService;
 let playerService;
 let gameState = new GameState();
-const configService = new ConfigService(6, 9, 2, 2, 2);
+const configService = new ConfigService();
+configService.reset();
 const tokenService = new TokenService(2);
 
 const mockStartNewGame = jest.fn()
@@ -328,14 +329,12 @@ test('renderGameMode winner and renderPlayerWin', () => {
   mockGetActivePlayersTokens.mockReturnValue([TokenType.THREE_IN_A_ROW, TokenType.FOUR_IN_A_ROW, TokenType.FIVE_IN_A_ROW, TokenType.THREE_OF_A_KIND, TokenType.FULL_HOUSE]);
   gameState.setActivePlayerIndex(4)
   mockGetActivePlayersDeck.mockReturnValue([{seen:true, value:0},{seen:true, value:0},{seen:true, value:0},{seen:true, value:4},{seen:true, value:6}])
-
   startGame();
   userEvent.click(screen.getByTestId('discard-pile-0'));
   userEvent.click(screen.getByTestId('footer-section-pass'));
   userEvent.click(screen.getByTestId('footer-section-claimToken-threeOfAKind'));
 
   expect(screen.queryByTestId('game-header')).toBeNull();
-  expect(screen.getByTestId('win-header')).toHaveTextContent('Congratulations to Player 5');
   expect(screen.getByTestId('win-header')).toHaveTextContent('Congratulations to Player 5');
   expect(screen.getByTestId('startButton')).toHaveTextContent('Start New Game');
 
@@ -345,7 +344,6 @@ test('renderGameMode winner and renderPlayerWin', () => {
   expect(screen.queryByTestId('deck-pile-0')).toBeInTheDocument();
   expect(screen.queryByTestId('discard-pile-0')).toBeInTheDocument();
   expect(screen.getByTestId('footer-section')).toBeInTheDocument();
-
 });
 
 function startGame() {
