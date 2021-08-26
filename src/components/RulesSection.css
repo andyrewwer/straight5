@@ -27,7 +27,7 @@ a {
 
 .scroll-component {
    width: calc(100vw - 2rem);
-   height: calc(100vh - 2rem);
+   height: 75vh;
    overflow-y: auto;
 }
 

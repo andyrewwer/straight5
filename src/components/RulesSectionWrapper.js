@@ -23,7 +23,7 @@ class RulesSectionWrapper extends Component {
       marginRight: '-50%',
       transform: 'translate(-50%, -50%)',
       maxWidth: '400px',
-      maxHeight: '80wh'
+      maxHeight: '80vh'
     },
   };
 
