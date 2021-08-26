@@ -2,9 +2,6 @@ const { TokenType,CardValues } = require('../model/Enums.js')
 
 class TokenService {
 
-  constructor() {
-  }
-
   playerCanClaimToken(player) {
     return this.canClaimToken(TokenType.THREE_IN_A_ROW, player.getDeck(), player.getTokens()) ||
     this.canClaimToken(TokenType.FOUR_IN_A_ROW, player.getDeck(), player.getTokens()) ||
@@ -30,8 +27,9 @@ class TokenService {
         return this.getAllIndecesForSets(deck, 3).length > 0
       case TokenType.FULL_HOUSE:
         return this.isFullHouse(deck)
+      default:
+        return false;
    }
-    return false;
   }
 
   //TODO Refactor away?
@@ -41,7 +39,6 @@ class TokenService {
     switch (token) {
       case TokenType.THREE_IN_A_ROW:
         possibleIndeces = this.getAllIndecesForStraight(deck, 3);
-        //get all the possible straights for 3 in a row
         for (let i = 0; i < possibleIndeces.length; i++) {
           if(index === possibleIndeces[i][0]) {
             return true
@@ -74,9 +71,9 @@ class TokenService {
         return false
       case TokenType.FULL_HOUSE:
         return this.isFullHouse(deck)
+      default:
+        return false;
    }
-
-    return false;
   }
 
   getAllIndecesForToken(deck, token) {
@@ -147,7 +144,6 @@ class TokenService {
     if (!!map[CardValues.WILD]) {
       wildMap = map[CardValues.WILD];
     }
-    //TODO wilds
     for (let key of Object.keys(map)) {
       if (key === CardValues.WILD) {
         if (map[key].length>= set_length) {

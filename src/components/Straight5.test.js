@@ -105,8 +105,8 @@ beforeEach(() => {
 test('render Start Section', () => {
   const straight5 = render(<Straight5 gameService={gameService} playerService={playerService} configService={configService}  tokenService={tokenService} gameState={gameState}/>);
   expect(screen.getByTestId('start-header')).toBeInTheDocument();
-  expect(screen.getByRole('button')).toHaveTextContent('Start New Game');
-  expect(screen.getByTestId('rules-section')).toBeInTheDocument();
+  expect(screen.getByTestId('startButton')).toHaveTextContent('Start New Game');
+  expect(screen.getByTestId('header-section')).toBeInTheDocument();
 
   expect(screen.queryByTestId('game-header')).toBeNull();
   expect(screen.queryByTestId('win-header')).toBeNull();
@@ -350,5 +350,5 @@ test('renderGameMode winner and renderPlayerWin', () => {
 
 function startGame() {
   render(<Straight5 gameService={gameService} playerService={playerService} configService={configService} tokenService={tokenService} gameState={gameState}/>);
-  userEvent.click(screen.getByRole('button'));
+  userEvent.click(screen.getByTestId('startButton'));
 }

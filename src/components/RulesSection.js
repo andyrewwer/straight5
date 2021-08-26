@@ -1,32 +1,33 @@
 import React, { Component } from 'react';
 import './RulesSection.css';
+import Modal from 'react-modal';
 
-class Hand extends Component {
+class RulesSection extends Component {
   constructor(props) {
     super(props);
     this.render.bind(this);
-    this.targetTokens = 4;
-    this.maxTokens = 5;
+    this.targetTokens = this.props.targetTokens;
+    this.maxTokens = this.props.maxTokens;
   }
-
-  // TODO ability to show rules anytime? (Maybe pop-up)
-  // TODO Ability to change some core settings
-
-  render = () => {
+  render () {
     return (
+  <div>
+    <div className="scroll-component">
+      <div className="scroll-content">
+
       <div className="rulesSection" data-testid="rules-section">
-        <div className="secondary-background">
+        <div className="secondary-background rulesSectionContent">
           <h3 className="rules-header">Rules</h3>
         </div>
-        <div className="secondary-background">
+        <div className="secondary-background rulesSectionContent">
           <h4 className="rules-header">Introduction</h4>
           <p className="rules-p">Welcome to Straight 5, a rummy-like, yahtzee-like card game! This is the (work-in-progress) digitial version of the (hopefully future) Straight 5 game. </p>
         </div>
 
-        <div className="primary-background">
+        <div className="primary-background rulesSectionContent">
           <h4 className="rules-header">Winning</h4>
-          <p className="rules-p">
-          The first player to claim {this.targetTokens} out of {this.maxTokens} tokens below wins.</p>
+          <p className="rules-p" data-testid="tokens-to-win">
+            The first player to claim {this.targetTokens} out of {this.maxTokens} tokens below wins.</p>
           <ul>
             <li>Three in a row</li>
             <li>Four in a row</li>
@@ -35,12 +36,12 @@ class Hand extends Component {
             <li>Full House</li>
           </ul>
         </div>
-        <div className="secondary-background">
+        <div className="secondary-background rulesSectionContent">
           <h4 className="rules-header">Set up</h4>
           <p className="rules-p">Each player begins with 5 cards face-down in front of them.
           The top card of the deck will be turned over as a discard</p>
         </div>
-        <div className="primary-background">
+        <div className="primary-background rulesSectionContent">
           <h4 className="rules-header">Turn Order</h4>
           <p className="rules-p">Each consists of four phases:</p>
           <ol>
@@ -59,7 +60,7 @@ class Hand extends Component {
             <li><h4 className="phaseHeader">Claim Token Phase</h4>: Claim a token by discarding the required cards (e.g. 1 2 3 4 for Four In a Row).</li>
           </ol>
         </div>
-        <div className="secondary-background">
+        <div className="secondary-background rulesSectionContent">
           <h4 className="rules-header">Rule Clarifications</h4>
           <p className="rules-p">Here are some clarifications on rules above:</p>
           <ol>
@@ -72,13 +73,11 @@ class Hand extends Component {
             <li>The cards to claim the tokens for three of a kind and full house can be anywhere</li>
           </ol>
         </div>
-        <div className="primary-background">
-          <h4 className="rules-header">Final notes</h4>
-          <p className="rules-p">If you find any bugs or issues with Straight 5 please submit an issue by <a href="https://github.com/andyrewwer/straight5/issues">clicking here</a> or you can email me at <a href="mailto:a.andyrewwer@gmail.com?subject = Feedback on Straight 5">a.andyrewwer@gmail.com.</a> Also feel free to email me with other thoughts/feedback/concerns (about the game or otherwise)!</p>
-        </div>
-
       </div>
+    </div>
+  </div>
+</div>
   )}
 }
 
-export default Hand;
+export default RulesSection;

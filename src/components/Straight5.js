@@ -2,12 +2,13 @@ import React, { Component } from 'react';
 import Hand from './game/Hand.js';
 import MiddleSection from './game/MiddleSection.js';
 import FooterSection from './game/FooterSection.js';
-import RulesSection from './RulesSection.js';
+import HeaderSection from './HeaderSection.js';
 import NewstickerSection from './game/NewstickerSection.js';
 import './Straight5.css';
 const {ActionType, AppMode, DrawType, MoveState, TokenType} = require('../model/Enums.js')
 const classNames = require('classnames');
 
+// TODO Ability to change some core settings
 // TODO maybe pop-up when turn changes
 // TODO only highlight options that can be clicked when claiming a token
 class Straight5 extends Component {
@@ -36,15 +37,7 @@ class Straight5 extends Component {
 
   handleDiscard(index, action) {
     this.gameService.discardCard(index);
-    // if (action === ActionType.PASS) {
-    //   return this.EndMove();
-    // } else if (action === ActionType.SWAP) {
-    //   return this.setState({MoveState: MoveState.SWAP_CHOSEN});
-    // } else if (action ===  ActionType.TURN_FACE_UP) {
-    //   return this.setState({MoveState: MoveState.TURN_FACE_UP_CHOSEN});
-    // } else if (action === ActionType.REPLACE_CARD) {
-      this.EndMove();
-    // }
+    this.EndMove();
   }
   //TODO animation
   deckAndDiscardPressed = (type, index) => {
@@ -207,14 +200,13 @@ class Straight5 extends Component {
     return (
       <React.Fragment>
   <div className={classNames('CardTable', {'CardTableGame': this.state.AppMode !== AppMode.START_STATE})}>
-    <h2 className="startHeader" data-testid="start-header">
-      Straight 5
-    </h2>
+
+    <HeaderSection></HeaderSection>
     {this.state.AppMode === AppMode.START_STATE &&
     <React.Fragment>
-        <RulesSection/>
         <div className="mb-4 mt-2">
-          <button className="small-width-button" onClick={this.StartNewGame}>Start New Game</button>
+
+          <button className="small-width-button" data-testid="startButton" onClick={this.StartNewGame}>Start New Game</button>
         </div>
 
     </React.Fragment>}

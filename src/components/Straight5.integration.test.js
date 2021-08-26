@@ -19,12 +19,30 @@ const playerService = new PlayerService(configService);
 const gameState = new GameState()
 const gameService = new GameService(playerService, tokenService, configService, gameState);
 
+test('render Rules Modal', () => {
+  render(<Straight5 gameService={gameService} playerService={playerService} configService={configService} tokenService={tokenService} gameState={gameState}/>);
+
+  expect(screen.queryByTestId('tokens-to-win')).not.toBeInTheDocument();
+  expect(screen.queryByTestId('rules-section')).not.toBeInTheDocument();
+
+  userEvent.click(screen.getByTestId('open-modal-button'));
+  expect(screen.getByTestId('header-section')).toHaveTextContent('Straight 5');
+  expect(screen.getByTestId('tokens-to-win')).toHaveTextContent('4 out of 5');
+  expect(screen.getByTestId('rules-section')).toBeInTheDocument();
+
+  userEvent.click(screen.getByTestId('close-modal-button'));
+  expect(screen.getByTestId('header-section')).toHaveTextContent('Straight 5');
+  expect(screen.queryByTestId('tokens-to-win')).not.toBeInTheDocument();
+  expect(screen.queryByTestId('rules-section')).not.toBeInTheDocument();
+});
+
 test('render Start Section', () => {
   render(<Straight5 gameService={gameService} playerService={playerService} configService={configService} tokenService={tokenService} gameState={gameState}/>);
   expect(screen.getByTestId('start-header')).toHaveTextContent('Straight 5');
-  expect(screen.queryByTestId('win-header')).toBeNull();expect(screen.getByRole('button')).toHaveTextContent('Start New Game');
+  expect(screen.queryByTestId('win-header')).toBeNull();
+  expect(screen.getByTestId('startButton')).toHaveTextContent('Start New Game');
 
-  userEvent.click(screen.getByRole('button'));
+  userEvent.click(screen.getByTestId('startButton'));
   expect(screen.queryByTestId('start-header')).toBeInTheDocument();
   expect(screen.queryByTestId('win-header')).toBeNull();
   expect(screen.getAllByTestId('hand').length).toBe(2);

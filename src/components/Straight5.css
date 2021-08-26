@@ -2,14 +2,11 @@ h2 {
   margin: 0 0 0 10px ;
 }
 
-.startHeader {
-  text-align: center;
-}
 .CardTable {
   display:  grid;
-  background: var(--primary-background);
   border-radius: 10px;
   text-align: center;
+  background: var(--primary-background);
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 }
 

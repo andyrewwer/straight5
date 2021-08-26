@@ -1,0 +1,15 @@
+.close-modal-button {
+  width: 100px;
+}
+
+.close-modal-container {
+  display: grid;
+  max-width: 400px;
+  justify-content: center;
+}
+
+
+.open-modal-container {
+  display: grid;
+  justify-content: center;
+}
