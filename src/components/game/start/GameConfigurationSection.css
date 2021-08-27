@@ -1,3 +1,8 @@
 .configuration-container {
   text-align: left;
 }
+
+.reset-configuration-button {
+  display: flex;
+  justify-content: center;
+}

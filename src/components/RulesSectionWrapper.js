@@ -2,37 +2,25 @@ import React, { Component } from 'react';
 import './RulesSectionWrapper.css';
 import RulesSection from './RulesSection.js';
 import Modal from 'react-modal';
+import {customStyles} from '../Styles.js'
 
 class RulesSectionWrapper extends Component {
   constructor(props) {
     super(props);
     this.maxTokens = 5; //TODO tokens to select and count should be a config
     this.state = {
-      'modelIsOpen': false
+      'modalIsOpen': false
     }
     this.render.bind(this);
   }
 
-  customStyles = {
-    content: {
-      top: '50%',
-      left: '50%',
-      right: 'auto',
-      bottom: 'auto',
-      marginRight: '-50%',
-      transform: 'translate(-50%, -50%)',
-      maxWidth: '400px',
-      maxHeight: '80vh'
-    },
-  };
-
   render () {
     const openModal = () => {
-      this.setState({'modelIsOpen': true})
+      this.setState({'modalIsOpen': true})
     }
 
     const closeModal = () => {
-      this.setState({'modelIsOpen': false})
+      this.setState({'modalIsOpen': false})
     }
     return (
       <div>
@@ -42,9 +30,9 @@ class RulesSectionWrapper extends Component {
           </div>
         </div>
         <Modal
-          isOpen={this.state.modelIsOpen}
+          isOpen={this.state.modalIsOpen}
           onRequestClose={closeModal}
-          style={this.customStyles}
+          style={customStyles}
           ariaHideApp={false}
           >
           <RulesSection numberOfTokensNeededToWin={this.props.configService.getNumberOfTokensNeededToWin()} maxTokens={this.maxTokens}></RulesSection>

@@ -122,11 +122,9 @@ class GameConfigurationSection extends Component {
     this.configService.reset();
     this.forceUpdate()
   }
-// TODO I think this would be cool as a modal
   render = () => {
     return (
       <div className="configuration-container">
-
         <Typography id="discrete-card-range" gutterBottom>
           Card Range
         </Typography>
@@ -174,8 +172,9 @@ class GameConfigurationSection extends Component {
           marks
           onChange={this.onNumberOfTokensNeededToWinChanged}
           />
-
-        <button onClick={this.reset}>Reset</button>
+        <div className="reset-configuration-button">
+            <button onClick={this.reset}>Reset</button>
+          </div>
       </div>
     )
   }

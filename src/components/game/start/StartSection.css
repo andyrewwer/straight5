@@ -3,3 +3,8 @@
   justify-content: center;
   grid-template-columns: minmax(1fr, 400px);
 }
+
+.configuration-modal-container {
+  background: var(--primary-background);
+  padding: 20px;
+}
