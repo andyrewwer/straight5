@@ -35,7 +35,7 @@ jest.mock('./game/DeckAndDiscardSection.js', () => (props) => {
             <div data-testid="discard-pile-0" onClick={() => props.drawCallback(DrawType.DISCARD, 1)}/>
           </div>;
 });
-jest.mock('./game/FooterSection.js', () => (props) => {
+jest.mock('./game/player-action/FooterSection.js', () => (props) => {
   const {ActionType, TokenType} = require('../model/Enums.js')
   mockFooterSection(props)
   return  <div data-testid="footer-section">

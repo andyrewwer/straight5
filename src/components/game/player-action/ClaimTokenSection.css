@@ -1,0 +1,10 @@
+.claim-token-section {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto;
+  text-align: center;
+  height: 200px;
+  justify-content: center;
+  align-content: center;
+}

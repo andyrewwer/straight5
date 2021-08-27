@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './NewstickerSection.css';
-const { getPlayerTextForMoveState } = require('../../Utils.js')
+const { getPlayerTextForMoveState } = require('../../../Utils.js')
 
 class NewstickerSection extends Component {
   constructor(props) {

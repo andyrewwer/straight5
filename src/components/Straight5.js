@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import Hand from './game/Hand.js';
 import DeckAndDiscardSection from './game/DeckAndDiscardSection.js';
-import FooterSection from './game/FooterSection.js';
+import FooterSection from './game/player-action/FooterSection.js';
 import HeaderSection from './HeaderSection.js';
 import StartSection from './game/start/StartSection.js';
-import NewstickerSection from './game/NewstickerSection.js';
+import NewstickerSection from './game/player-action/NewstickerSection.js';
 import './Straight5.css';
 const {ActionType, AppMode, DrawType, MoveState, TokenType} = require('../model/Enums.js')
 const classNames = require('classnames');
@@ -223,7 +223,7 @@ class Straight5 extends Component {
         </div>
     </React.Fragment>}
   </div>
-  {this.state.AppMode  === AppMode.GAME &&
+  {this.state.AppMode === AppMode.GAME &&
   <React.Fragment>
     {this.state.AppMode  === AppMode.GAME && <NewstickerSection gameState={this.gameState} moveState={this.state.MoveState}/>}
     {this.state.AppMode  === AppMode.GAME && <FooterSection gameService={this.gameService} moveState={this.state.MoveState} tokenService={this.tokenService} buttonPressedCallback={this.handleActionButtonPressed} />}
