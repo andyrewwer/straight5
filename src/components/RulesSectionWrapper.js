@@ -22,6 +22,7 @@ class RulesSectionWrapper extends Component {
     const closeModal = () => {
       this.setState({'modalIsOpen': false})
     }
+    // TODO maybe have two sections to show these rules and also configuration
     return (
       <div>
         <div className="open-modal-container" id="modal-div">

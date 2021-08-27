@@ -32,13 +32,18 @@ test('render new component has 5 face down cards and no tokens', () => {
   expect(screen.getByTestId('player-header')).toHaveTextContent('Player 1');
   expect(screen.getByTestId('hand-player-tokens')).toHaveTextContent('0/4');
   expect(screen.getAllByTestId('player-card').length).toEqual(5);
-  // TODO how to test for SVG exists
   expect(screen.getAllByTestId('player-card')[0]).toHaveClass('PlayerCardIsActive');
+  expect(screen.getAllByTestId('player-card')[0]).toContainHTML('<svg');
   expect(screen.getAllByTestId('player-card')[1]).toHaveClass('PlayerCardIsActive');
+  expect(screen.getAllByTestId('player-card')[1]).toContainHTML('<svg');
   expect(screen.getAllByTestId('player-card')[2]).toHaveClass('PlayerCardIsActive');
+  expect(screen.getAllByTestId('player-card')[2]).toContainHTML('<svg');
   expect(screen.getAllByTestId('player-card')[3]).toHaveClass('PlayerCardIsActive');
+  expect(screen.getAllByTestId('player-card')[3]).toContainHTML('<svg');
   expect(screen.getAllByTestId('player-card')[4]).toHaveClass('PlayerCardIsActive');
+  expect(screen.getAllByTestId('player-card')[4]).toContainHTML('<svg');
   expect(screen.queryByTestId('player-token')).not.toBeInTheDocument();
+expect(screen.queryByTestId('player-token')).not.toBeInTheDocument();
 });
 
 test('render new component has 5 face up cards and tokens', () => {

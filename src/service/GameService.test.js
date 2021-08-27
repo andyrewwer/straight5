@@ -12,9 +12,11 @@ let playerService;
 let gameService;
 let gameState = new GameState();
 
+let called = false;
 
 jest.mock('../Utils', () => ({
   shuffleArray(array) {
+    called = true;
     return array
   }
 }
@@ -29,9 +31,10 @@ test('createDeck creates and calls shuffle', () => {
   configService = new ConfigService(2, 2, 2, 2, 4);
   playerService = new PlayerService(configService);
   gameService = new GameService(playerService, tokenService, configService, gameState);
+  expect(called).toBe(false);
   gameService.createDeck();
   expect(gameService.getGameState().getDeck()).toEqual([{value: 1, seen: false}, {value: 2, seen: false},{value: 1, seen: false}, {value: 2, seen: false}, {value: CardValues.WILD, seen: false}, {value: CardValues.WILD, seen: false}, {value: CardValues.WILD, seen: false}, {value: CardValues.WILD, seen: false}]);
-  // TODO check if mock was called
+  expect(called).toBe(true);
 });
 
 test('getTopCardFromDeck given full deck returns top card', () => {

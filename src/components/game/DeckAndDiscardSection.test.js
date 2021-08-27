@@ -30,8 +30,7 @@ test('render with Discard shows value', () => {
   expect(screen.getByTestId('discard-pile-0')).toHaveTextContent('2');
   expect(screen.getByTestId('discard-pile-0')).toHaveClass('PlayerCard');
   expect(screen.getByTestId('discard-pile-0')).toHaveClass('PlayerCardIsActive');
-  // TODO  test for SVG
-  expect(screen.getByTestId('deck-pile-0')).toBeInTheDocument();
+  expect(screen.getByTestId('deck-pile-0')).toContainHTML('<svg');
   expect(screen.getByTestId('deck-pile-0')).toHaveClass('PlayerCard');
   expect(screen.getByTestId('deck-pile-0')).toHaveClass('PlayerCardIsActive');
 });
@@ -43,8 +42,7 @@ test('render without Discard shows question  mark', () => {
   expect(screen.getByTestId('discard-pile-0')).toHaveTextContent('');
   expect(screen.getByTestId('discard-pile-0')).toHaveClass('PlayerCard');
   expect(screen.getByTestId('discard-pile-0')).not.toHaveClass('PlayerCardIsActive');
-  // TODO  test for SVG
-  expect(screen.getByTestId('deck-pile-0')).toBeInTheDocument();
+  expect(screen.getByTestId('deck-pile-0')).toContainHTML('<svg');
   expect(screen.getByTestId('deck-pile-0')).toHaveClass('PlayerCard');
   expect(screen.getByTestId('deck-pile-0')).not.toHaveClass('PlayerCardIsActive');
 });

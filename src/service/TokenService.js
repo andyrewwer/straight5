@@ -32,7 +32,6 @@ class TokenService {
    }
   }
 
-  //TODO Refactor away?
   //TODO refactor for three/four/five in a row can be simpler. Maybe change on ENUM side
   isValidIndexForToken(token, deck, index) {
     let possibleIndeces = [];
