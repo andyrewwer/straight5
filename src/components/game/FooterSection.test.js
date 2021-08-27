@@ -45,7 +45,7 @@ test('render given basic state hides all subsections and displays right text', (
   render(<FooterSection gameService={gameService} tokenService={tokenService} moveState={MoveState.START_STATE}  />)
 
   expect(screen.queryByRole('button')).not.toBeInTheDocument();
-  expect(screen.queryByRole('activeCard')).not.toBeInTheDocument();
+  expect(screen.queryByTestId('footer-active-card')).not.toBeInTheDocument();
   expect(mockGetActivePlayersTokens.mock.calls.length).toBe(0);
   expect(mockGetActivePlayersDeck.mock.calls.length).toBe(0);
 });
@@ -58,7 +58,7 @@ test('render PreEndState shows end actions with all tokens are', () => {
   expect(screen.queryAllByRole('button')[0]).toHaveTextContent('THREE OF A KIND');
   expect(screen.queryAllByRole('button')[1]).toHaveTextContent('FULL HOUSE');
   expect(screen.queryAllByRole('button')[2]).toHaveTextContent('Pass');
-  expect(screen.queryByRole('activeCard')).not.toBeInTheDocument();
+  expect(screen.queryByTestId('footer-active-card')).not.toBeInTheDocument();
   expect(mockGetActivePlayersTokens.mock.calls.length).toBe(5);
   expect(mockGetActivePlayersDeck.mock.calls.length).toBe(5);
 });
@@ -72,7 +72,7 @@ test('render PreEndState shows end actions with all tokens are', () => {
   expect(screen.queryAllByRole('button')[1]).toHaveTextContent('FOUR IN A ROW');
   expect(screen.queryAllByRole('button')[2]).toHaveTextContent('FIVE IN A ROW');
   expect(screen.queryAllByRole('button')[3]).toHaveTextContent('Pass');
-  expect(screen.queryByRole('activeCard')).not.toBeInTheDocument();
+  expect(screen.queryByTestId('footer-active-card')).not.toBeInTheDocument();
   expect(mockGetActivePlayersTokens.mock.calls.length).toBe(5);
   expect(mockGetActivePlayersDeck.mock.calls.length).toBe(5);
 });
@@ -84,7 +84,7 @@ test('render CardDrawn activeCard and options', () => {
   expect(screen.queryAllByRole('button')[0]).toHaveTextContent('Discard to swap two');
   expect(screen.queryAllByRole('button')[1]).toHaveTextContent('Discard to turn two face up');
   expect(screen.queryAllByRole('button')[2]).toHaveTextContent('Pass');
-  expect(screen.queryByRole('activeCard')).toHaveTextContent('10');
+  expect(screen.queryByTestId('footer-active-card')).toHaveTextContent('10');
   expect(mockGetActivePlayersTokens.mock.calls.length).toBe(0);
   expect(mockGetActivePlayersDeck.mock.calls.length).toBe(0);
   expect(mockGetGameState).toHaveBeenCalledTimes(3);

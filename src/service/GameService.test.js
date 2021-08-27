@@ -19,9 +19,8 @@ jest.mock('../Utils', () => ({
   }
 }
 ));
-//TODO Test for multiple discard piles! Then implement it
 beforeEach(() => {
-  configService = new ConfigService(6, 9, 2, 2,2);
+  configService = new ConfigService(6, 9, 2, 2, 2);
   playerService = new PlayerService(configService);
   gameService = new GameService(playerService, tokenService, configService, new GameState());
 });

@@ -58,8 +58,8 @@ test('render Start Section', () => {
   userEvent.click(screen.getByTestId('turn-face-up-button'));
 
   expect(screen.getByTestId('newsticker')).toHaveTextContent('Select the first card to turn face up');
-  userEvent.click(screen.getAllByRole('playerCard')[0]);
-  userEvent.click(screen.getAllByRole('playerCard')[1]);
+  userEvent.click(screen.getAllByTestId('player-card')[0]);
+  userEvent.click(screen.getAllByTestId('player-card')[1]);
   expect(screen.queryByTestId('turn-face-up-button')).not.toBeInTheDocument();
   expect(screen.getByTestId('newsticker')).toHaveTextContent('Please select the discard pile you would like to discard the card to');
   userEvent.click(screen.getByTestId('discard-pile-0'));
@@ -69,8 +69,8 @@ test('render Start Section', () => {
 
   userEvent.click(screen.getByTestId('deck-pile-0'));
   userEvent.click(screen.getByTestId('turn-face-up-button'));
-  userEvent.click(screen.getAllByRole('playerCard')[6]);
-  userEvent.click(screen.getAllByRole('playerCard')[9]);
+  userEvent.click(screen.getAllByTestId('player-card')[6]);
+  userEvent.click(screen.getAllByTestId('player-card')[9]);
   userEvent.click(screen.getByTestId('discard-pile-0'));
 
   expect(screen.getByTestId('newsticker')).toHaveTextContent('Please draw a card from Deck or Discard');

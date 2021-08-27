@@ -117,7 +117,7 @@ class GameService {
 //TODO call token token service directly from above?
   claimToken(index) {
     //TODO come back to this to pick discard
-    //TODO come back to this to pick top card
+    //TODO come back to this to pick top card that goes to discard
     const hand = this.getActivePlayersDeck();
     switch (this.getGameState().getTokenToClaim()) {
       case TokenType.FIVE_IN_A_ROW:

@@ -39,8 +39,6 @@ class FooterSection extends Component {
     return this.props.moveState !== MoveState.DISCARD_CHOSEN;
   }
 
-// TODO test all these new changes
-// TODO maybe even separate into two components later
   render = () => {
     return (
       <React.Fragment>
@@ -48,7 +46,7 @@ class FooterSection extends Component {
       {this.ShowCardActionsSection() &&
         <React.Fragment>
         {this.showActiveCard() &&
-          <div className="PlayerCard PlayerCardFront" role="activeCard">
+          <div className="PlayerCard PlayerCardFront" data-testid="footer-active-card">
             {this.gameService.getGameState().getActiveCard().value}
           </div>
         }

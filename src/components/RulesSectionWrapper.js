@@ -6,8 +6,7 @@ import Modal from 'react-modal';
 class RulesSectionWrapper extends Component {
   constructor(props) {
     super(props);
-    // TODO This probably should just come from config service
-    this.maxTokens = 5;
+    this.maxTokens = 5; //TODO tokens to select and count should be a config
     this.state = {
       'modelIsOpen': false
     }
