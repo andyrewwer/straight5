@@ -39,7 +39,7 @@ class StartSection extends Component {
             </div>
             <div className="close-modal-container">
               <div className="close-modal-content">
-                <button className="open-modal-button" data-testid="close-modal-button" onClick={closeModal}>Close</button>
+                <button className="open-modal-button" data-testid="close-modal-button" onClick={this.props.startNewGameCallback}>Start New Game</button>
               </div>
             </div>
           </div>

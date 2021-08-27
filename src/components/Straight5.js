@@ -10,6 +10,8 @@ const {ActionType, AppMode, DrawType, MoveState, TokenType} = require('../model/
 const classNames = require('classnames');
 
 // TODO maybe pop-up when turn changes
+// TODO undo move
+// TODO keep track of number of moves etc
 // TODO only highlight options that can be clicked when claiming a token
 class Straight5 extends Component {
   constructor(props) {

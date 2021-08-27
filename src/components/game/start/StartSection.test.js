@@ -23,7 +23,9 @@ test('render given basic state hides all subsections and displays right text', (
 
   userEvent.click(screen.getByTestId('start-section-hide-show-configuration-button'));
   expect(screen.getByTestId('start-section-hide-show-configuration-button')).toHaveTextContent('Show Configuration');
-  expect(screen.getByTestId('close-modal-button')).toBeInTheDocument();
+  expect(screen.getByTestId('close-modal-button')).toHaveTextContent('Start New Game');
   expect(screen.queryByTestId('start-section-slider-container')).toBeInTheDocument();
 
+  userEvent.click(screen.getByTestId('close-modal-button'));
+  expect(mockStartNewGame).toHaveBeenCalledTimes(2);
 });

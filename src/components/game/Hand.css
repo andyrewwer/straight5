@@ -25,6 +25,10 @@
 @media screen and (max-width: 510px) {
   .PlayerHand {
     grid-template-columns: repeat(5, 36px) 75px;
-    /* max-d */
+    grid-template-rows: auto 50px;
+  }
+  .PlaayerTokens {
+    max-height: 50px;
+    overflow-y: scroll;
   }
 }
