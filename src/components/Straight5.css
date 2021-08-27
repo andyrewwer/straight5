@@ -45,7 +45,6 @@ button:hover{
 }
 
 .PlayerCard {
-  /* border: 10px solid gold; */
   border-radius: 10%;
   display: flex;
   justify-content: center;
@@ -70,4 +69,11 @@ button:hover{
 }
 .PlayerCardIsActive {
   border: 2px solid var(--card-active-border-color);
+}
+
+@media screen and (max-width: 510px) {
+  .PlayerCard {
+    height: 50px;
+    width: 36px;
+  }
 }

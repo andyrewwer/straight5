@@ -32,7 +32,7 @@ class DeckAndDiscardSection extends Component {
       {this.gameService.getGameState().getDiscard().map((discard, index) => (
         <div className="DiscardSection" key={index}>
           <div className="FullWidth" data-testid="discard-header">
-            Discard {index + 1}
+            Discard
           </div>
           <div className="PlayerCardWrapper">
             <div className={classNames('PlayerCard', 'PlayerCardFront', {"PlayerCardIsActive" : this.highlightDiscard()})} data-testid={'discard-pile-' + index} onClick={() => {this.props.drawCallback(DrawType.DISCARD, index)}}>

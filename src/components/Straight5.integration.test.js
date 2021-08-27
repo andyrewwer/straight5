@@ -50,7 +50,8 @@ test('render Start Section', () => {
   expect(screen.getAllByTestId('hand').length).toBe(2);
   expect(screen.getAllByTestId('hand')[0]).toHaveTextContent('Tokens [0/4]');
   expect(screen.getAllByTestId('hand')[1]).toHaveTextContent('Tokens [0/4]');
-  expect(screen.getByTestId('middle-section')).toHaveTextContent(/Discard 1(\d|WILD)Discard 2(\d|WILD)Deck/);
+  // TODO rename
+  expect(screen.getByTestId('middle-section')).toHaveTextContent(/Discard(\d|WILD)Discard(\d|WILD)Deck/);
   expect(screen.getByTestId('footer-section')).toBeInTheDocument();
 
   userEvent.click(screen.getByTestId('deck-pile-0'));

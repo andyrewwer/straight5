@@ -1,6 +1,14 @@
 .Container {
   margin: 20px 0 20px 50%;
-  min-width: 510px;
+  width: 510px;
   width: 80vw;
   transform: translateX(-50%);
+}
+
+@media screen and (max-width: 510px) {
+  body {
+    font-size: 15px;
+    max-width: 375px;
+    width: 375px;
+  }
 }

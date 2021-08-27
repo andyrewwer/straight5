@@ -21,3 +21,10 @@
 .playerTag {
   margin: 5px 0px 0px 0px;
 }
+
+@media screen and (max-width: 510px) {
+  .PlayerHand {
+    grid-template-columns: repeat(5, 36px) 75px;
+    /* max-d */
+  }
+}
