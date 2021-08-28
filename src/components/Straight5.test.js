@@ -30,7 +30,7 @@ jest.mock('./game/Hand.js', () => (props) => {
 jest.mock('./game/DeckAndDiscardSection.js', () => (props) => {
   const {DrawType} = require('../model/Enums.js')
   mockDeckAndDiscardSection(props)
-  return  <div data-testid="middle-section">
+  return  <div data-testid="deck-and-discard-section">
             <div data-testid="deck-pile-0" onClick={() => props.drawCallback(DrawType.DECK)}/>
             <div data-testid="discard-pile-0" onClick={() => props.drawCallback(DrawType.DISCARD, 1)}/>
           </div>;
@@ -119,7 +119,7 @@ test('renderGameMode sets up screen as expected', () => {
   expect(screen.queryByTestId('start-header')).toBeInTheDocument();
   expect(screen.queryByTestId('rules-section')).toBeNull();
   expect(screen.getAllByTestId('hand').length).toBe(2);
-  expect(screen.queryByTestId('middle-section')).toBeInTheDocument();
+  expect(screen.queryByTestId('deck-and-discard-section')).toBeInTheDocument();
   expect(screen.queryByTestId('deck-pile-0')).toBeInTheDocument();
   expect(screen.queryByTestId('discard-pile-0')).toBeInTheDocument();
   expect(screen.getByTestId('footer-section')).toBeInTheDocument();
@@ -340,7 +340,7 @@ test('renderGameMode winner and renderPlayerWin', () => {
 
   userEvent.click(screen.getByTestId('startButton'));
   expect(screen.getAllByTestId('hand').length).toBe(2);
-  expect(screen.queryByTestId('middle-section')).toBeInTheDocument();
+  expect(screen.queryByTestId('deck-and-discard-section')).toBeInTheDocument();
   expect(screen.queryByTestId('deck-pile-0')).toBeInTheDocument();
   expect(screen.queryByTestId('discard-pile-0')).toBeInTheDocument();
   expect(screen.getByTestId('footer-section')).toBeInTheDocument();

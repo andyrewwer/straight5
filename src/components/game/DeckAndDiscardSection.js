@@ -25,14 +25,13 @@ class DeckAndDiscardSection extends Component {
   }
 
   // TODO Now MOVE STATE IS HERE DO WE WANT TO MOVE THE DRAW LOGIC DOWN OR KEEP IT HIGHER?
-  // TODO mobile playable
   render = () => {
      return (
-      <div className="DeckAndDiscardSection" data-testid="middle-section">
+      <div className="DeckAndDiscardSection" data-testid="deck-and-discard-section">
       {this.gameService.getGameState().getDiscard().map((discard, index) => (
         <div className="DiscardSection" key={index}>
           <div className="FullWidth" data-testid="discard-header">
-            Discard 
+            Discard
           </div>
           <div className="PlayerCardWrapper">
             <div className={classNames('PlayerCard', 'PlayerCardFront', {"PlayerCardIsActive" : this.highlightDiscard()})} data-testid={'discard-pile-' + index} onClick={() => {this.props.drawCallback(DrawType.DISCARD, index)}}>
