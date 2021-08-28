@@ -28,6 +28,8 @@ function getPlayerTextForMoveState(moveState, cardIndex) {
       return 'Please select the first card of your run';
     case MoveState.DISCARD_CHOSEN:
       return 'Please select the discard pile you would like to discard the card to';
+    case MoveState.CHANGE_TURN_STATE:
+      return 'Click anywhere to start your turn';
     default:
       return 'UNKONWN STATE DETECTED'
   }

@@ -77,3 +77,7 @@ button:hover{
     width: 36px;
   }
 }
+
+.change-turn-modal-title {
+  color: black;
+}

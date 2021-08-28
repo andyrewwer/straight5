@@ -10,3 +10,17 @@ export const customStyles = {
       maxHeight: '80vh'
     }
 };
+
+
+export const changeTurnStyles = {
+    content: {
+      top: '35%',
+      left: '50%',
+      right: 'auto',
+      bottom: 'auto',
+      marginRight: '-50%',
+      transform: 'translate(-50%, -50%)',
+      maxWidth: '400px',
+      maxHeight: '80vh'
+    }
+};

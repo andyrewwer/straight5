@@ -6,6 +6,9 @@ import HeaderSection from './HeaderSection.js';
 import StartSection from './game/start/StartSection.js';
 import NewstickerSection from './game/player-action/NewstickerSection.js';
 import './Straight5.css';
+import {changeTurnStyles} from '../Styles.js'
+import Modal from 'react-modal';
+
 const {ActionType, AppMode, DrawType, MoveState, TokenType} = require('../model/Enums.js')
 const classNames = require('classnames');
 
@@ -124,7 +127,7 @@ class Straight5 extends Component {
   ChangeTurn = () => {
     this.gameService.nextPlayer();
     return this.setState({
-      MoveState: MoveState.START_STATE
+      MoveState: MoveState.CHANGE_TURN_STATE
     });
   }
 
@@ -198,6 +201,10 @@ class Straight5 extends Component {
   // TODO state service instead of this.state -- this is on wip-stateService but doesn't work because to update the UI you need to update the state
 
   render = () => {
+    const closeModal = () => {
+      this.setState({MoveState: MoveState.START_STATE})
+    }
+
     return (
       <React.Fragment>
   <div className={classNames('CardTable', {'CardTableGame': this.state.AppMode === AppMode.GAME})}>
@@ -228,6 +235,15 @@ class Straight5 extends Component {
     {this.state.AppMode  === AppMode.GAME && <NewstickerSection gameState={this.gameState} moveState={this.state.MoveState}/>}
     {this.state.AppMode  === AppMode.GAME && <FooterSection gameService={this.gameService} moveState={this.state.MoveState} tokenService={this.tokenService} buttonPressedCallback={this.handleActionButtonPressed} />}
   </React.Fragment>}
+  <Modal
+          isOpen={this.state.MoveState === MoveState.CHANGE_TURN_STATE}
+          onRequestClose={closeModal}
+          style={changeTurnStyles}
+          ariaHideApp={false}>
+          <h1 className="change-turn-modal-title" data-testid="change-turn-modal-title"> Player {this.gameState.getActivePlayerIndex() + 1} Turn
+          </h1>
+          <button data-testid="change-turn-modal-title-button" hidden onClick={closeModal}>Hide</button>
+        </Modal>
   </React.Fragment>
   )}
 }
