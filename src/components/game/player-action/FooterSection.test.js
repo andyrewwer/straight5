@@ -45,10 +45,8 @@ test('render given basic state hides all subsections and displays right text', (
   render(<FooterSection gameService={gameService} tokenService={tokenService} moveState={MoveState.START_STATE}  />)
 
   expect(screen.queryByRole('button')).not.toBeInTheDocument();
-  expect(screen.queryByTestId('footer-active-card')).not.toBeInTheDocument();
+  expect(screen.queryByTestId('player-turn-action-section')).not.toBeInTheDocument();
   expect(screen.queryByTestId('claim-token-section')).not.toBeInTheDocument();
-  expect(mockGetActivePlayersTokens.mock.calls.length).toBe(0);
-  expect(mockGetActivePlayersDeck.mock.calls.length).toBe(0);
 });
 
 test('render PreEndState shows end actions with all tokens are', () => {
@@ -56,59 +54,12 @@ test('render PreEndState shows end actions with all tokens are', () => {
   mockGetActivePlayersDeck.mockReturnValue([{seen:true, value:0},{seen:true, value:0},{seen:true, value:4},{seen:true, value:4},{seen:true, value:4}])
   render(<FooterSection gameService={gameService} tokenService={tokenService} moveState={MoveState.PRE_END_STATE}  />)
   expect(screen.queryByTestId('claim-token-section')).toBeInTheDocument();
-  expect(screen.queryByTestId('footer-active-card')).not.toBeInTheDocument();
+  expect(screen.queryByTestId('player-turn-action-section')).not.toBeInTheDocument();
 });
 
 test('render CardDrawn activeCard and options', () => {
   mockAllCardsFaceUp.mockReturnValue(false);
   render(<FooterSection gameService={gameService} tokenService={tokenService} moveState={MoveState.CARD_DRAWN}  />)
-  expect(screen.queryAllByRole('button').length).toBe(3);
-  expect(screen.queryAllByRole('button')[0]).toHaveTextContent('Discard to swap two');
-  expect(screen.queryAllByRole('button')[1]).toHaveTextContent('Discard to turn two face up');
-  expect(screen.queryAllByRole('button')[2]).toHaveTextContent('Pass');
-  expect(screen.queryByTestId('footer-active-card')).toHaveTextContent('10');
+  expect(screen.queryByTestId('player-turn-action-section')).toBeInTheDocument();
   expect(screen.queryByTestId('claim-token-section')).not.toBeInTheDocument();
-  expect(mockGetActivePlayersTokens.mock.calls.length).toBe(0);
-  expect(mockGetActivePlayersDeck.mock.calls.length).toBe(0);
-  expect(mockGetGameState).toHaveBeenCalledTimes(3);
-});
-
-test('render givenAllCardsFaceUp shouldHideTurnFaceUp', () => {
-  mockAllCardsFaceUp.mockReturnValue(true);
-  render(<FooterSection gameService={gameService} tokenService={tokenService} moveState={MoveState.CARD_DRAWN}  />)
-  expect(screen.queryAllByRole('button').length).toBe(2);
-  expect(screen.queryAllByRole('button')[0]).toHaveTextContent('Discard to swap two');
-  expect(screen.queryAllByRole('button')[1]).toHaveTextContent('Pass');
-  expect(screen.queryByTestId('claim-token-section')).not.toBeInTheDocument();
-});
-
-test('render DISCARD CHOSEN', () => {
-  mockAllCardsFaceUp.mockReturnValue(false);
-  render(<FooterSection gameService={gameService} tokenService={tokenService} moveState={MoveState.DISCARD_CHOSEN}  />)
-  expect(screen.queryAllByRole('button').length).toBe(0);
-  expect(screen.queryByTestId('claim-token-section')).not.toBeInTheDocument();
-});
-
-test('activeCard callbacks', () => {
-  mockAllCardsFaceUp.mockReturnValue(false);
-  const mockCallback = jest.fn();
-  render(<FooterSection gameService={gameService} tokenService={tokenService} moveState={MoveState.CARD_DRAWN}
-  buttonPressedCallback={mockCallback} />)
-
-  expect(screen.queryAllByRole('button').length).toBe(3);
-
-  userEvent.click(screen.getAllByRole('button')[0]);
-  expect(mockCallback.mock.calls.length).toBe(1);
-  expect(mockCallback.mock.calls[0][0]).toBe(ActionType.SWAP);
-  mockCallback.mockClear();
-
-  userEvent.click(screen.getAllByRole('button')[1]);
-  expect(mockCallback.mock.calls.length).toBe(1);
-  expect(mockCallback.mock.calls[0][0]).toBe(ActionType.TURN_FACE_UP);
-  mockCallback.mockClear();
-
-  userEvent.click(screen.getAllByRole('button')[2]);
-  expect(mockCallback.mock.calls.length).toBe(1);
-  expect(mockCallback.mock.calls[0][0]).toBe(ActionType.PASS);
-
 });
