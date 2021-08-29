@@ -42,7 +42,7 @@ class Hand extends Component {
         <div className='PlayerTokens'>
         {this.tokens.map((token, index) => (
           <div className='PlayerToken' data-testid='player-token' key={index}>
-            {token}
+            {token.viewValue}
           </div>
         ))}
         </div>

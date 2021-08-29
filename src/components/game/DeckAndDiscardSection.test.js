@@ -11,7 +11,7 @@ const {GameService} = require('../../service/GameService.js')
 const {GameState} = require('../../model/GameState.js')
 const {ConfigService} = require('../../service/ConfigService.js');
 const {PlayerService} = require('../../service/PlayerService.js')
-const {DrawType, MoveState, TokenType} = require('../../model/Enums.js')
+const {DrawType, MoveState} = require('../../model/Enums.js')
 
 
 let gameService;

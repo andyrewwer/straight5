@@ -12,7 +12,7 @@ const {ConfigService} = require('../../../service/ConfigService.js');
 const {GameState} = require('../../../model/GameState.js');
 const {TokenService} = require('../../../service/TokenService.js');
 const GameService = require('../../../service/GameService.js');
-const { ActionType, MoveState, TokenType } = require('../../../model/Enums.js')
+const { ActionType, MoveState } = require('../../../model/Enums.js')
 
 jest.mock('../../../service/GameService', () => jest.fn());
 

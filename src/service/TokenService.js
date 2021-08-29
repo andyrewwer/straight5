@@ -1,99 +1,56 @@
-const { TokenType,CardValues } = require('../model/Enums.js')
+const { TokenType, TokenSetType, CardValues } = require('../model/Enums.js')
 
 class TokenService {
 
+// TODO checkonly active tokenService
   playerCanClaimToken(player) {
-    return this.canClaimToken(TokenType.THREE_IN_A_ROW, player.getDeck(), player.getTokens()) ||
-    this.canClaimToken(TokenType.FOUR_IN_A_ROW, player.getDeck(), player.getTokens()) ||
-    this.canClaimToken(TokenType.FIVE_IN_A_ROW, player.getDeck(), player.getTokens()) ||
-    this.canClaimToken(TokenType.THREE_OF_A_KIND, player.getDeck(), player.getTokens()) ||
-    this.canClaimToken(TokenType.FULL_HOUSE, player.getDeck(), player.getTokens());
+    return this.canClaimToken(player.getDeck(), TokenType.THREE_IN_A_ROW, player.getTokens()) ||
+    this.canClaimToken(player.getDeck(), TokenType.FOUR_IN_A_ROW, player.getTokens()) ||
+    this.canClaimToken(player.getDeck(), TokenType.FIVE_IN_A_ROW, player.getTokens()) ||
+    this.canClaimToken(player.getDeck(), TokenType.THREE_OF_A_KIND, player.getTokens()) ||
+    this.canClaimToken(player.getDeck(), TokenType.FULL_HOUSE, player.getTokens());
   }
 
-  canClaimToken(token, deck, existing_tokens) {
+  canClaimToken(deck, token, existing_tokens) {
     //TODO does this logic belong here?
-    if (existing_tokens.includes(token)) {
-      return false;
-    }
-
-    switch (token) {
-      case TokenType.THREE_IN_A_ROW:
-        return this.getAllIndecesForStraight(deck, 3).length > 0
-      case TokenType.FOUR_IN_A_ROW:
-        return this.getAllIndecesForStraight(deck, 4).length > 0
-      case TokenType.FIVE_IN_A_ROW:
-        return this.getAllIndecesForStraight(deck, 5).length > 0
-      case TokenType.THREE_OF_A_KIND:
-        return this.getAllIndecesForSets(deck, 3).length > 0
-      case TokenType.FULL_HOUSE:
-        return this.isFullHouse(deck)
-      default:
-        return false;
-   }
+    return !existing_tokens.includes(token) && this.getAllIndecesForToken(deck, token).length > 0
   }
 
-  //TODO refactor for three/four/five in a row can be simpler. Maybe change on ENUM side
-  isValidIndexForToken(token, deck, index) {
-    let possibleIndeces = [];
-    switch (token) {
-      case TokenType.THREE_IN_A_ROW:
-        possibleIndeces = this.getAllIndecesForStraight(deck, 3);
-        for (let i = 0; i < possibleIndeces.length; i++) {
-          if(index === possibleIndeces[i][0]) {
-            return true
-          }
+  isValidIndexForToken(deck, token, index) {
+    if (token.type === TokenSetType.FULL_HOUSE) {
+      return this.isFullHouse(deck)
+    }
+    let possibleIndeces = this.getAllIndecesForToken(deck, token);
+    for (let i = 0; i < possibleIndeces.length; i++) {
+      if (token.type === TokenSetType.STRAIGHT) {
+        if(index === possibleIndeces[i][0]) {
+          return true
         }
-        return false
-      case TokenType.FOUR_IN_A_ROW:
-        possibleIndeces = this.getAllIndecesForStraight(deck, 4);
-        for (let i = 0; i < possibleIndeces.length; i++) {
-          if(index === possibleIndeces[i][0]) {
-            return true
-          }
+      }
+      if (token.type === TokenSetType.SET) {
+        if(possibleIndeces[i].includes(index)) {
+          return true;
         }
-        return false
-      case TokenType.FIVE_IN_A_ROW:
-        possibleIndeces = this.getAllIndecesForStraight(deck, 5);
-        for (let i = 0; i < possibleIndeces.length; i++) {
-          if(index === possibleIndeces[i][0]) {
-            return true
-          }
-        }
-        return false
-      case TokenType.THREE_OF_A_KIND:
-        possibleIndeces = this.getAllIndecesForSets(deck, 3);
-        for (let i = 0; i < possibleIndeces.length; i++) {
-          if(possibleIndeces[i].includes(index)) {
-            return true
-          }
-        }
-        return false
-      case TokenType.FULL_HOUSE:
-        return this.isFullHouse(deck)
-      default:
-        return false;
-   }
+      }
+    }
+    return false;
   }
 
   getAllIndecesForToken(deck, token) {
-    if (token === TokenType.THREE_IN_A_ROW) {
-      return this.getAllIndecesForStraight(deck, 3);
+    switch (token.type) {
+      case TokenSetType.STRAIGHT:
+        return this.getAllIndecesForStraight(deck, token.length);
+      case TokenSetType.SET:
+        return this.getAllIndecesForSets(deck, token.length);
+      case TokenSetType.FULL_HOUSE:
+        if (this.isFullHouse(deck))  {
+          return [[0,1,2,3,4]];
+        }
+        return []
+      default:
+      // TODO Test this exception
+        throw new Error('Invalid TokenSetType')
     }
-    if (token === TokenType.FOUR_IN_A_ROW) {
-      return this.getAllIndecesForStraight(deck, 4);
-    }
-    if (token === TokenType.FIVE_IN_A_ROW) {
-      return this.getAllIndecesForStraight(deck, 5);
-    }
-    if (token === TokenType.THREE_OF_A_KIND) {
-      return this.getAllIndecesForSets(deck, 3);
-    }
-    if (token === TokenType.FULL_HOUSE) {
-      if (this.isFullHouse(deck))  {
-        return [[0,1,2,3,4]];
-      }
-    }
-    return []
   }
 
   getAllIndecesForStraight(deck, straight_length) {

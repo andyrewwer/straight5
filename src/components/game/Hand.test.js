@@ -64,8 +64,8 @@ test('render new component has 5 face up cards and tokens', () => {
   expect(screen.getAllByTestId('player-card')[4]).toHaveTextContent('9');
   expect(screen.getAllByTestId('player-card')[4]).not.toHaveClass('PlayerCardIsActive');
   expect(screen.getAllByTestId('player-token').length).toEqual(2);
-  expect(screen.getAllByTestId('player-token')[0]).toHaveTextContent(TokenType.THREE_IN_A_ROW);
-  expect(screen.getAllByTestId('player-token')[1]).toHaveTextContent(TokenType.FULL_HOUSE);
+  expect(screen.getAllByTestId('player-token')[0]).toHaveTextContent(TokenType.THREE_IN_A_ROW.viewValue);
+  expect(screen.getAllByTestId('player-token')[1]).toHaveTextContent(TokenType.FULL_HOUSE.viewValue);
 });
 
 test('render with START STATE does not highlight buttons', () => {

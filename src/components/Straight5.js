@@ -113,7 +113,7 @@ class Straight5 extends Component {
   }
 
   ClaimTokenCardPress = index => {
-    if (this.tokenService.isValidIndexForToken(this.gameState.getTokenToClaim(), this.gameService.getActivePlayersDeck(), index)) {
+    if (this.tokenService.isValidIndexForToken(this.gameService.getActivePlayersDeck(), this.gameState.getTokenToClaim(), index)) {
       this.gameService.claimToken(index);
       if (!this.checkIfWinner()) {
       return this.ChangeTurn();

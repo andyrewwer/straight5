@@ -31,12 +31,43 @@ export const MoveState = {
   CHANGE_TURN_STATE: 'CHANGE_TURN_STATE',
 }
 
-export const TokenType = {
-  THREE_IN_A_ROW: 'THREE_IN_A_ROW',
-  FOUR_IN_A_ROW: 'FOUR_IN_A_ROW',
-  FIVE_IN_A_ROW: 'FIVE_IN_A_ROW',
-  THREE_OF_A_KIND: 'THREE_OF_A_KIND',
+export const TokenSetType = {
+  STRAIGHT: 'STRAIGHT',
+  SET: 'SET',
   FULL_HOUSE: 'FULL_HOUSE'
+}
+
+export const TokenType = {
+  THREE_IN_A_ROW: {
+    value: 'THREE_IN_A_ROW',
+    viewValue: 'THREE IN A ROW',
+    type: TokenSetType.STRAIGHT,
+    length: 3
+  },
+  FOUR_IN_A_ROW: {
+    value: 'FOUR_IN_A_ROW',
+    viewValue: 'FOUR IN A ROW',
+    type: TokenSetType.STRAIGHT,
+    length: 4
+  },
+  FIVE_IN_A_ROW: {
+    value: 'FIVE_IN_A_ROW',
+    viewValue: 'FIVE IN A ROW',
+    type: TokenSetType.STRAIGHT,
+    length: 5
+  },
+  THREE_OF_A_KIND: {
+    value: 'THREE_OF_A_KIND',
+    viewValue: 'THREE OF A KIND',
+    type: TokenSetType.SET,
+    length: 3
+  },
+  FULL_HOUSE: {
+    value: 'FULL_HOUSE',
+    viewValue: 'FULL HOUSE',
+    type: TokenSetType.FULL_HOUSE,
+    length: 5
+  }
 }
 
 export const CardValues = {
