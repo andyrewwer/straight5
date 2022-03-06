@@ -8,12 +8,12 @@ import NewstickerSection from './game/player-action/NewstickerSection.js';
 import './Straight5.css';
 import {changeTurnStyles} from '../Styles.js'
 import Modal from 'react-modal';
-
 const {ActionType, AppMode, DrawType, MoveState, TokenType} = require('../model/Enums.js')
 const classNames = require('classnames');
 
 // TODO undo move
-// TODO keep track of number of moves etc
+// TODO keep track of number of moves etc and be able to replay games
+// TODO discard should be last thing  after token claiming too
 // TODO only highlight options that can be clicked when claiming a token
 class Straight5 extends Component {
   constructor(props) {
